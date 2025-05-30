@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +25,14 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
+
+    @Autowired
     private final UserService userService;
+
+    @Autowired
     private final JwtUtil jwtUtil;
+
+    @Autowired
     private final LogoutService logoutService;
 
     @GetMapping("/register")
@@ -68,7 +75,7 @@ public class AuthController {
             UserDetail user = userOpt.get();
             String role = user.getUserTypes().iterator().next().getUserType().getName();
 
-            String token = jwtUtil.generateToken(user.getUsername(), role);
+            String token = jwtUtil.generateToken(user.getEmail(), role);
 
             Cookie jwtCookie = new Cookie("jwt", token);
             jwtCookie.setHttpOnly(true);

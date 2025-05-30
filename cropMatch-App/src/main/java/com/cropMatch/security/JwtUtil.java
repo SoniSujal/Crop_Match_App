@@ -15,10 +15,10 @@ public class JwtUtil {
     private static final byte[] SECRET_KEY_BYTES = "e5f8d2a1b7c3d9e4f6a2b8c1d5e9f3a7b2c8d1e6f4a9b3c7d2e5f8a1b4c9d3e6".getBytes(StandardCharsets.UTF_8);
     private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String userEmail, String role) {
         return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)
+                .setSubject(userEmail)
+                .claim("role", role.toUpperCase()) // Ensure prefix and uppercase
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY_BYTES)
@@ -29,7 +29,7 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(SECRET_KEY_BYTES).parseClaimsJws(token).getBody();
     }
 
-    public String extractUsername(String token) {
+    public String extractUserEmail(String token) {
         return extractAllClaims(token).getSubject();
     }
 

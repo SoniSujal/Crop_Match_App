@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/logout").permitAll()
-                        .requestMatchers("/welcome/farmer").hasRole("FARMER") // Exact match
+                        .requestMatchers("/welcome/farmer").hasAuthority("FARMER")
                         .requestMatchers("/welcome/buyer").hasAuthority("BUYER")
                         .requestMatchers("/welcome/admin").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
@@ -43,7 +43,6 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .permitAll()
                 );
-
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

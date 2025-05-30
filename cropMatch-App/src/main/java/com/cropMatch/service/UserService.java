@@ -19,10 +19,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     @Autowired
     private final UserDetailRepository userDetailRepository;
+
     @Autowired
     private final UserTypeRepository userTypeRepository;
+
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
@@ -58,8 +61,8 @@ public class UserService {
         userDetailRepository.save(user);
     }
 
-    public Optional<UserDetail> authenticate(String username, String password) {
-        return userDetailRepository.findByUsername(username)
+    public Optional<UserDetail> authenticate(String userEmail, String password) {
+        return userDetailRepository.findByEmail(userEmail)
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()))
                 .filter(UserDetail::getActive);
     }

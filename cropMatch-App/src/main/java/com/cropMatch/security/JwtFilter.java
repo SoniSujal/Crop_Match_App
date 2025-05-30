@@ -34,7 +34,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private final TokenBlacklist tokenBlacklist;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -50,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             if (jwtToken != null && jwtUtil.validateToken(jwtToken) && !tokenBlacklist.isBlacklisted(jwtToken)) {
-                String username = jwtUtil.extractUsername(jwtToken);
+                String username = jwtUtil.extractUserEmail(jwtToken);
                 authenticateUser(username, request);
             }
         } catch (Exception e) {
@@ -74,8 +73,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private void authenticateUser(String username, HttpServletRequest request) {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            userDetailRepository.findByUsername(username).ifPresent(user -> {
-                String role = user.getUserTypes().iterator().next().getUserType().getName();
+            userDetailRepository.findByEmail(username).ifPresent(user -> {
+                String token = extractJwtToken(request);
+                String role = jwtUtil.extractAllClaims(token).get("role", String.class);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         new UserPrincipal(user),
