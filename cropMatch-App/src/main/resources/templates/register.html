@@ -11,11 +11,12 @@
     <label>Password: <input type="password" th:field="*{password}" required /></label><br>
     <label>Mobile: <input type="text" th:field="*{mobile}" required /></label><br>
     <label>Email: <input type="email" th:field="*{email}" required /></label><br>
+    <label>Pincode: <input type="text" th:field="*{pincode}" /></label><br>
+    <label>Country: <input type="text" th:field="*{country}" /></label><br>
     <label>Role:
         <select th:field="*{userType}">
             <option value="FARMER">Farmer</option>
             <option value="BUYER">Buyer</option>
-            <option value="ADMIN">Admin</option>
         </select>
     </label><br>
     <button type="submit">Register</button>

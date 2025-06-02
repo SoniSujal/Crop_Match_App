@@ -9,6 +9,18 @@
 <body>
     <h1>Welcome, Buyer!</h1>
     <p>This is your Buyer dashboard.</p>
+
+    <button>
+        <a th:href="@{/updateProfile}">Edit Profile</a>
+    </button>
+
+    <br><br>
+
+    <p th:if="${updateSuccess}" style="color:green;">Profile updated successfully!</p>
+    <p th:if="${updateSuccess == false}" style="color:red;">Profile update failed!</p>
+
+    <br>
+
     <button><a th:href="@{/logout}">Logout</a></button>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.cropMatch.controller;
 
 import com.cropMatch.dto.ApiResponse;
 import com.cropMatch.dto.UserRegistrationDto;
+import com.cropMatch.dto.UserUpdateDto;
 import com.cropMatch.exception.BusinessException;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.security.JwtUtil;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -103,4 +105,62 @@ public class AuthController {
                                                        HttpServletResponse response) {
         return logoutService.logout(request, response);
     }
+
+
+    @GetMapping("/updateProfile")
+    public String showEditProfileForm(Model model,Principal principal){
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String username = principal.getName();  // gives us the username
+        UserDetail userDetail = userService.findByUsername(username);
+
+        UserUpdateDto dto = new UserUpdateDto();
+        dto.setUsername(userDetail.getUsername());
+        dto.setMobile(userDetail.getMobile());
+        dto.setPincode(userDetail.getPincode());
+        dto.setCountry(userDetail.getCountry());
+
+        model.addAttribute("user",dto);
+
+        return "edit_profile";
+    }
+
+
+    @PostMapping("/updateProfile")
+    public String processUpdateProfile( @ModelAttribute("user") UserUpdateDto dto,BindingResult result,Model model,Principal principal,RedirectAttributes redirectAttributes)
+    {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        if (result.hasErrors()) {
+            return "edit_profile";
+        }
+
+        String username = principal.getName();
+        String role = "farmer"; // fallback--default
+
+        try {
+            UserDetail user = userService.findByUsername(username);
+            role = user.getUserTypes()
+                    .stream()
+                    .findFirst()
+                    .map(mapping -> mapping.getUserType().getName().toLowerCase())
+                    .orElse("farmer");
+
+            userService.updateUserProfile(dto, username);
+            redirectAttributes.addFlashAttribute("updateSuccess", true);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("updateSuccess", false);
+        }
+        return "redirect:/welcome/" + role;
+    }
+
+
+
+
+
 }

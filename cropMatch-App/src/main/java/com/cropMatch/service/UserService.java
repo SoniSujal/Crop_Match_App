@@ -1,6 +1,7 @@
 package com.cropMatch.service;
 
 import com.cropMatch.dto.UserRegistrationDto;
+import com.cropMatch.dto.UserUpdateDto;
 import com.cropMatch.exception.BusinessException;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.model.UserType;
@@ -46,6 +47,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         user.setMobile(registrationDto.getMobile());
         user.setEmail(registrationDto.getEmail());
+        user.setPincode(registrationDto.getPincode());
+        user.setCountry(registrationDto.getCountry());
         user.setCreatedOn(LocalDateTime.now());
         user.setActive(true);
 
@@ -59,6 +62,24 @@ public class UserService {
 
         user.getUserTypes().add(mapping);
         userDetailRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserProfile(UserUpdateDto dto,String username) {
+
+        UserDetail user = userDetailRepository.findByUsername(username).orElseThrow(() -> new BusinessException("User not found"));
+
+        user.setUsername(dto.getUsername());
+        user.setMobile(dto.getMobile());
+        user.setPincode(dto.getPincode());
+        user.setCountry(dto.getCountry());
+
+        userDetailRepository.save(user);
+    }
+
+    public  UserDetail findByUsername(String username){
+        return  userDetailRepository.findByUsername(username)
+                .orElseThrow(() -> new BusinessException("User not Found"));
     }
 
     public Optional<UserDetail> authenticate(String userEmail, String password) {

@@ -29,4 +29,10 @@ public class UserRegistrationDto {
 
     @NotBlank
     private String userType; // "FARMER", "BUYER", or "ADMIN"
+
+    @NotBlank
+    private String pincode;
+
+    @NotBlank
+    private String country;
 }

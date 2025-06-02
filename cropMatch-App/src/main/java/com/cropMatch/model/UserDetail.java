@@ -34,8 +34,17 @@ public class UserDetail {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "pincode")
+    private String pincode;
+
+    @Column(name = "country")
+    private String country;
+
     @Column(name = "created_on")
     private LocalDateTime createdOn;
+
+    @Column(name = "updated_on",updatable = false,insertable = false)
+    private LocalDateTime updatedOn;
 
     @Column(name = "is_active")
     private Boolean active = true;
