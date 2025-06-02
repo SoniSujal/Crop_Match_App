@@ -85,13 +85,13 @@ public class AuthController {
             jwtCookie.setMaxAge(60 * 60);
             response.addCookie(jwtCookie);
 
-            return "redirect:/welcome/" + role.toLowerCase();
+            return "redirect:/" + role.toLowerCase();
         }
         model.addAttribute("error", "Invalid username or password");
         return "login";
     }
 
-    @GetMapping("/welcome/{role}")
+    @GetMapping("/{role}")
     public String showWelcomePage(@PathVariable String role, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
@@ -104,6 +104,17 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletRequest request,
                                                        HttpServletResponse response) {
         return logoutService.logout(request, response);
+    }
+
+    // ✅ Added for routing to static farmers and buyers pages
+    @GetMapping("/farmers")
+    public String showFarmersPage() {
+        return "farmers";
+    }
+
+    @GetMapping("/buyers")
+    public String showBuyersPage() {
+        return "buyers";
     }
 
 

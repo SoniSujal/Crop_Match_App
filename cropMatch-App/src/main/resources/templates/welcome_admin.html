@@ -6,6 +6,14 @@
 <body>
     <h1>Welcome, Admin!</h1>
     <p>This is your admin dashboard.</p>
-    <button></button><a th:href="@{/logout}">Logout</a></button>
+    <button>
+        <a th:href="@{/logout}" class="button">Logout</a>
+    </button>
+    <button>
+        <a href="/farmers" class="button">Show All Farmers</a>
+    </button>
+    <button>
+        <a href="/buyers" class="button">Show All Buyers</a>
+    </button>
 </body>
 </html>

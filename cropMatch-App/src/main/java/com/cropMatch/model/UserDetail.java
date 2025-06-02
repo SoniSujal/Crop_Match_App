@@ -1,5 +1,6 @@
 package com.cropMatch.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,5 +51,6 @@ public class UserDetail {
     private Boolean active = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore  // Add this to break the cycle
     private Set<UserTypeMapping> userTypes = new HashSet<>();
 }

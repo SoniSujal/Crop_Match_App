@@ -1,5 +1,6 @@
 package com.cropMatch.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class UserTypeMapping {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore  // Add this to break the cycle
     private UserDetail user;
 
     @ManyToOne
