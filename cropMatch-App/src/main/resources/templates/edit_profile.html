@@ -14,6 +14,10 @@
         <input type="text" th:field="*{username}" required />
     </label><br>
 
+    <label>Email:
+        <input type="email" th:field="*{email}" readonly style="background-color: #B8B8B8;" />
+    </label><br>
+
     <label>Mobile:
         <input type="text" th:field="*{mobile}" />
     </label><br>
@@ -29,7 +33,7 @@
     <button type="submit">Save Changes</button>
     <br><br>
 
-    <!-- New button -->
+    <!-- Change Password button -->
     <a th:href="@{/changePassword}" style="margin-left: 10px;">
         <button type="button">Change Password</button>
     </a>

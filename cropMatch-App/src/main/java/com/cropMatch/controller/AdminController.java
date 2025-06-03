@@ -2,12 +2,9 @@ package com.cropMatch.controller;
 
 import com.cropMatch.dto.BuyerDTO;
 import com.cropMatch.dto.FarmerDTO;
-import com.cropMatch.model.UserDetail;
 import com.cropMatch.service.AdminService;
+import com.cropMatch.service.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

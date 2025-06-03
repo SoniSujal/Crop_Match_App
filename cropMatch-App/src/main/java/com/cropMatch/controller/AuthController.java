@@ -28,13 +28,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
     private final UserService userService;
 
     @Autowired
     private final JwtUtil jwtUtil;
 
-    @Autowired
     private final LogoutService logoutService;
 
     @GetMapping("/register")
@@ -130,6 +128,7 @@ public class AuthController {
 
         UserUpdateDto dto = new UserUpdateDto();
         dto.setUsername(userDetail.getUsername());
+        dto.setEmail(userDetail.getEmail());
         dto.setMobile(userDetail.getMobile());
         dto.setPincode(userDetail.getPincode());
         dto.setCountry(userDetail.getCountry());

@@ -13,6 +13,9 @@ public class UserUpdateDto {
     @NotBlank(message = "Username is Required!")
     private String username;
 
+    @Email(message = "Invalid email format")
+    private String email;
+
     @Pattern(regexp = "\\d{10}",message = "Mobile number must be exactly 10 digits")
     private String mobile;
 
