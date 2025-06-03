@@ -1,24 +1,118 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Welcome Farmer</title>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .button-group a {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-group a:hover {
+            background-color: #0056b3;
+        }
+
+        .logout-button {
+            background-color: #dc3545;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+
+        .message-success {
+            color: green;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .message-failure {
+            color: red;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h1>Welcome, Admin!</h1>
     <p>This is your admin dashboard.</p>
-    <button>
-        <a th:href="@{/logout}" class="button">Logout</a>
-    </button>
-    <button>
-        <a href="/farmers" class="button">Show All Farmers</a>
-    </button>
-    <button>
-        <a href="/buyers" class="button">Show All Buyers</a>
-    </button>
 
-    <br><br>
+    <div class="button-group">
+        <a th:href="@{/logout}" class="logout-button">Logout</a>
+        <a href="/farmers">Show All Farmers</a>
+        <a href="/buyers">Show All Buyers</a>
+    </div>
 
-    <p th:if="${updateSuccess}" style="color:green;">Profile updated successfully!</p>
-    <p th:if="${updateSuccess == false}" style="color:red;">Profile update failed!</p>
+    <p th:if="${updateSuccess}" class="message-success">Profile updated successfully!</p>
+    <p th:if="${updateSuccess == false}" class="message-failure">Profile update failed!</p>
+</div>
 </body>
 </html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">-->
+<!--<head>-->
+<!--    <title>Welcome Farmer</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1>Welcome, Admin!</h1>-->
+<!--    <p>This is your admin dashboard.</p>-->
+<!--    <button>-->
+<!--        <a th:href="@{/logout}" class="button">Logout</a>-->
+<!--    </button>-->
+<!--    <button>-->
+<!--        <a href="/farmers" class="button">Show All Farmers</a>-->
+<!--    </button>-->
+<!--    <button>-->
+<!--        <a href="/buyers" class="button">Show All Buyers</a>-->
+<!--    </button>-->
+
+<!--    <br><br>-->
+
+<!--    <p th:if="${updateSuccess}" style="color:green;">Profile updated successfully!</p>-->
+<!--    <p th:if="${updateSuccess == false}" style="color:red;">Profile update failed!</p>-->
+<!--</body>-->
+<!--</html>-->

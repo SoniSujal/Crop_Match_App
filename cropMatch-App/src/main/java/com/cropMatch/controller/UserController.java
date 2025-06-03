@@ -75,22 +75,22 @@ public class UserController {
         return "redirect:/welcome/" + role;
     }
 
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") UserUpdateDTO user1, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-        try {
-            String email = user1.getEmail();
-            UserDetail user = userService.findByUserEmail(email);
-            userService.updateUserProfile(user1, user.getUsername());
-            model.addAttribute("message", "User updated successfully!");
-
-            redirectAttributes.addFlashAttribute("updateSuccess", true);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error updating user. Please try again.");
-            redirectAttributes.addFlashAttribute("updateSuccess", false);
-        }
-        return "redirect:/admin";
-    }
+//    @PostMapping("/update")
+//    public String updateUser(@ModelAttribute("user") UserUpdateDTO user1, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
+//        if (principal == null) {
+//            return "redirect:/login";
+//        }
+//        try {
+//            String email = user1.getEmail();
+//            UserDetail user = userService.findByUserEmail(email);
+//            userService.updateUserProfile(user1, user.getUsername());
+//            model.addAttribute("message", "User updated successfully!");
+//
+//            redirectAttributes.addFlashAttribute("updateSuccess", true);
+//        } catch (Exception e) {
+//            model.addAttribute("errorMessage", "Error updating user. Please try again.");
+//            redirectAttributes.addFlashAttribute("updateSuccess", false);
+//        }
+//        return "redirect:/admin";
+//    }
 }

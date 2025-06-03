@@ -2,6 +2,7 @@ package com.cropMatch.controller.admin;
 
 import com.cropMatch.dto.BuyerDTO;
 import com.cropMatch.dto.FarmerDTO;
+import com.cropMatch.dto.UserUpdateDTO;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.service.admin.AdminService;
 import com.cropMatch.service.user.UserService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -68,6 +70,33 @@ public class AdminController {
         return "edit_user";
     }
 
+    @PostMapping("/update")
+    public String updateUser(
+            @ModelAttribute("user") UserUpdateDTO userDto,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            String email = userDto.getEmail();
+            UserDetail user = userService.findByUserEmail(email);
+
+            if (user == null) {
+                model.addAttribute("errorMessage", "User not found.");
+                redirectAttributes.addFlashAttribute("updateSuccess", false);
+                return "redirect:/admin";
+            }
+
+            userService.updateUserProfile(userDto, user.getUsername());
+
+            redirectAttributes.addFlashAttribute("updateSuccess", true);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error updating user. Please try again.");
+            redirectAttributes.addFlashAttribute("updateSuccess", false);
+            return "redirect:/admin";
+        }
+    }
 
     @GetMapping("/delete/{username}")
     public String deleteUser(@PathVariable("username") String username, Model model, RedirectAttributes redirectAttributes) {

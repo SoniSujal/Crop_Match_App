@@ -2,44 +2,178 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 500px;
+            margin: 60px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        input[readonly] {
+            background-color: #e0e0e0;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 25px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .secondary-button {
+            background-color: #007bff;
+            margin-top: 10px;
+        }
+
+        .secondary-button:hover {
+            background-color: #0056b3;
+        }
+
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            text-decoration: none;
+        }
+
+        .cancel-link:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+
+        .btn-wrapper {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+    </style>
 </head>
 <body>
-<h2>Edit Profile</h2>
+<div class="container">
+    <h2>Edit Profile</h2>
 
-<form th:action="@{/update}" method="post" th:object="${user}">
+    <form th:action="@{/admin/update}" method="post" th:object="${user}">
+        <label>Username:
+            <input type="text" th:field="*{username}" required />
+        </label>
 
-<!--    <input type="hidden" th:field="*{id}" />-->
+        <label>Email:
+            <input type="email" th:field="*{email}" readonly />
+        </label>
 
-    <label>Username:
-        <input type="text" th:field="*{username}" required />
-    </label><br>
+        <label>Mobile:
+            <input type="text" th:field="*{mobile}" />
+        </label>
 
-    <label>Email:
-        <input type="email" th:field="*{email}" readonly style="background-color: #B8B8B8;" />
-    </label><br>
+        <label>Pincode:
+            <input type="text" th:field="*{pincode}" />
+        </label>
 
-    <label>Mobile:
-        <input type="text" th:field="*{mobile}" />
-    </label><br>
+        <label>Country:
+            <input type="text" th:field="*{country}" />
+        </label>
 
-    <label>Pincode:
-        <input type="text" th:field="*{pincode}" />
-    </label><br>
+        <div class="btn-wrapper">
+            <button type="submit">Save Changes</button>
 
-    <label>Country:
-        <input type="text" th:field="*{country}" />
-    </label><br><br>
+            <a th:href="@{/changePassword}">
+                <button type="button" class="secondary-button">Change Password</button>
+            </a>
+        </div>
+    </form>
 
-    <button type="submit">Save Changes</button>
-    <br><br>
-
-    <!-- New button -->
-    <a th:href="@{/changePassword}" style="margin-left: 10px;">
-        <button type="button">Change Password</button>
-    </a>
-
-</form>
-
-<a th:href="@{/admin/welcome}">Cancel</a>
+    <a th:href="@{/admin/welcome}" class="cancel-link">Cancel</a>
+</div>
 </body>
 </html>
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Edit Profile</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Edit Profile</h2>-->
+
+<!--&lt;!&ndash;<form th:action="@{/update}" method="post" th:object="${user}">&ndash;&gt;-->
+<!--<form th:action="@{/admin/update}" method="post" th:object="${user}">-->
+
+<!--&lt;!&ndash;    <input type="hidden" th:field="*{id}" />&ndash;&gt;-->
+
+<!--    <label>Username:-->
+<!--        <input type="text" th:field="*{username}" required />-->
+<!--    </label><br>-->
+
+<!--    <label>Email:-->
+<!--        <input type="email" th:field="*{email}" readonly style="background-color: #B8B8B8;" />-->
+<!--    </label><br>-->
+
+<!--    <label>Mobile:-->
+<!--        <input type="text" th:field="*{mobile}" />-->
+<!--    </label><br>-->
+
+<!--    <label>Pincode:-->
+<!--        <input type="text" th:field="*{pincode}" />-->
+<!--    </label><br>-->
+
+<!--    <label>Country:-->
+<!--        <input type="text" th:field="*{country}" />-->
+<!--    </label><br><br>-->
+
+<!--    <button type="submit">Save Changes</button>-->
+<!--    <br><br>-->
+
+<!--    &lt;!&ndash; New button &ndash;&gt;-->
+<!--    <a th:href="@{/changePassword}" style="margin-left: 10px;">-->
+<!--        <button type="button">Change Password</button>-->
+<!--    </a>-->
+
+<!--</form>-->
+
+<!--<a th:href="@{/admin/welcome}">Cancel</a>-->
+<!--</body>-->
+<!--</html>-->
