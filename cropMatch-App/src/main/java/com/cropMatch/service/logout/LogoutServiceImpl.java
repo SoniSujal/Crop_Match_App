@@ -1,4 +1,4 @@
-package com.cropMatch.service;
+package com.cropMatch.service.logout;
 
 import com.cropMatch.dto.ApiResponse;
 import com.cropMatch.security.TokenBlacklist;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogoutServiceImpl implements LogoutService{
 
+    @Autowired
     private final TokenBlacklist tokenBlacklist;
 
     @Override

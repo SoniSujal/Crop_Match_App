@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserUpdateDto {
+public class UserUpdateDTO {
 
     @NotBlank(message = "Username is Required!")
     private String username;

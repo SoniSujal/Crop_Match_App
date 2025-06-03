@@ -1,4 +1,4 @@
-package com.cropMatch.service;
+package com.cropMatch.service.logout;
 
 import com.cropMatch.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;

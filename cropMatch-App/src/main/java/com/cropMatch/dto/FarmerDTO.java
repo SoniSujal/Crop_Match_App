@@ -14,4 +14,6 @@ public class FarmerDTO {
     private String username;
     private String email;
     private String mobile;
+    private String pincode;
+    private String country;
 }

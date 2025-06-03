@@ -57,12 +57,12 @@
         <th>Username</th>
         <th>Email</th>
         <th>Mobile</th>
+        <th>PinCode</th>
+        <th>Country</th>
         <th>Action</th>
     </tr>
     </thead>
-    <tbody id="farmerTableBody">
-    <tr><td colspan="5">Loading...</td></tr>
-    </tbody>
+    <tbody id="farmerTableBody"></tbody>
 </table>
 
 <script>
@@ -78,13 +78,15 @@
         })
         .then(response => {
             if (!response.ok) {
-                return response.text().then(text => { throw new Error(text || "Failed to fetch farmers"); });
+                return response.text().then(text => {
+                    throw new Error(text || "Failed to fetch farmers");
+                });
             }
             return response.json();
         })
         .then(data => {
             if (!data || data.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='5'>No farmers found</td></tr>";
+                tableBody.innerHTML = "<tr><td colspan='7'>No farmers found</td></tr>";
                 return;
             }
 
@@ -97,6 +99,8 @@
                     <td>${farmer.username}</td>
                     <td>${farmer.email}</td>
                     <td>${farmer.mobile}</td>
+                    <td>${farmer.pincode}</td>
+                    <td>${farmer.country}</td>
                     <td>
                         <a href="/admin/edit/${farmer.username}" class="button">Edit</a>
                         <a href="/admin/delete/${farmer.username}" class="button" style="background: #dc3545;">Delete</a>
@@ -107,7 +111,7 @@
         })
         .catch(error => {
             console.error("Error loading farmers:", error);
-            tableBody.innerHTML = `<tr><td colspan="5">Error: ${error.message}</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7">Error: ${error.message}</td></tr>`;
         });
     });
 </script>

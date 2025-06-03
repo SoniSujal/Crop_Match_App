@@ -1,7 +1,7 @@
-package com.cropMatch.service;
+package com.cropMatch.service.user;
 
-import com.cropMatch.dto.UserRegistrationDto;
-import com.cropMatch.dto.UserUpdateDto;
+import com.cropMatch.dto.UserRegistrationDTO;
+import com.cropMatch.dto.UserUpdateDTO;
 import com.cropMatch.exception.BusinessException;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.model.UserType;
@@ -21,15 +21,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
+    @Autowired
     private final UserDetailRepository userDetailRepository;
 
+    @Autowired
     private final UserTypeRepository userTypeRepository;
 
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
-    public void register(UserRegistrationDto registrationDto) {
+    public void register(UserRegistrationDTO registrationDto) {
         if (userDetailRepository.existsByUsername(registrationDto.getUsername())) {
             throw new BusinessException("Username already exists");
         }
@@ -64,11 +67,12 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateUserProfile(UserUpdateDto dto,String username) {
+    public void updateUserProfile(UserUpdateDTO dto, String username) {
 
         UserDetail user = userDetailRepository.findByUsername(username).orElseThrow(() -> new BusinessException("User not found"));
 
         user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
         user.setMobile(dto.getMobile());
         user.setPincode(dto.getPincode());
         user.setCountry(dto.getCountry());
@@ -81,6 +85,18 @@ public class UserServiceImpl implements UserService{
         return  userDetailRepository.findByUsername(username)
                 .orElseThrow(() -> new BusinessException("User not Found"));
     }
+
+    @Override
+    public  UserDetail findByUserEmail(String email){
+        return  userDetailRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException("User not Found"));
+    }
+
+    @Override
+    public int deletUserByName(String username) {
+        return userDetailRepository.softDeleteUserByName(username);
+    }
+
 
     @Override
     public Optional<UserDetail> authenticate(String userEmail, String password) {
