@@ -1,61 +1,52 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <title>Farmers</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h2>Farmers</h2>-->
-<!--<a href="/buyers" class="button">View Buyers</a>-->
-
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Username</th>-->
-<!--        <th>Email</th>-->
-<!--        <th>Mobile</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr th:each="farmer : ${farmers}">-->
-<!--        <td th:text="${farmer.id}">ID</td>-->
-<!--        <td th:text="${farmer.username}">Username</td>-->
-<!--        <td th:text="${farmer.email}">Email</td>-->
-<!--        <td th:text="${farmer.mobile}">Mobile</td>-->
-<!--    </tr>-->
-<!--    <tr th:if="${#lists.isEmpty(farmers)}">-->
-<!--        <td colspan="4">No farmers found.</td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--</body>-->
-<!--</html>-->
-
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Farmers List</title>
     <style>
-        body { font-family: Arial; background: #fdfdfd; padding: 30px; }
-        h2 { color: #333; }
-        a.button {
-            padding: 8px 15px; background: #007bff; color: white; text-decoration: none;
-            border-radius: 5px; margin-right: 10px;
+        body {
+            font-family: Arial, sans-serif;
+            background: #fdfdfd;
+            padding: 30px;
         }
-        a.button:hover { background: #0056b3; }
+        h2 {
+            color: #333;
+        }
+        a.button {
+            padding: 8px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        a.button:hover {
+            background: #0056b3;
+        }
         table {
-            width: 100%; border-collapse: collapse; margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
         th, td {
-            padding: 10px; border: 1px solid #ccc; text-align: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
         }
-        th { background-color: #007bff; color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin: 0 5px;
+            padding: 5px 10px;
+        }
     </style>
 </head>
 <body>
+
 <h2>Farmers</h2>
 <a href="/buyers" class="button">View Buyers</a>
 
@@ -66,62 +57,59 @@
         <th>Username</th>
         <th>Email</th>
         <th>Mobile</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody id="farmerTableBody">
-    <tr><td colspan="4">Loading...</td></tr>
+    <tr><td colspan="5">Loading...</td></tr>
     </tbody>
 </table>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const tableBody = document.getElementById("farmerTableBody");
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableBody = document.getElementById("farmerTableBody");
 
-    fetch("/admin/List-Farmers", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-            "Accept": "application/json"
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => {
-                throw new Error(text || "Failed to fetch farmers");
+        fetch("/admin/List-Farmers", {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Accept": "application/json"
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text || "Failed to fetch farmers"); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='5'>No farmers found</td></tr>";
+                return;
+            }
+
+            tableBody.innerHTML = "";
+
+            data.forEach(farmer => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${farmer.id}</td>
+                    <td>${farmer.username}</td>
+                    <td>${farmer.email}</td>
+                    <td>${farmer.mobile}</td>
+                    <td>
+                        <a href="/admin/edit/${farmer.username}" class="button">Edit</a>
+                        <a href="/admin/delete/${farmer.username}" class="button" style="background: #dc3545;">Delete</a>
+                    </td>
+                `;
+                tableBody.appendChild(row);
             });
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Farmers data:", data);
-        if (!data || data.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='4'>No farmers found</td></tr>";
-            return;
-        }
-
-        // Clear loading message
-        tableBody.innerHTML = "";
-
-        // Add each farmer as a row
-        data.forEach(farmer => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${farmer.id}</td>
-                <td>${farmer.username}</td>
-                <td>${farmer.email}</td>
-                <td>${farmer.mobile}</td>
-            `;
-            tableBody.appendChild(row);
+        })
+        .catch(error => {
+            console.error("Error loading farmers:", error);
+            tableBody.innerHTML = `<tr><td colspan="5">Error: ${error.message}</td></tr>`;
         });
-    })
-    .catch(error => {
-        console.error("Error loading farmers:", error);
-        const errorRow = document.createElement("tr");
-        errorRow.innerHTML = `<td colspan='4'>Error: ${error.message}</td>`;
-        tableBody.innerHTML = "";
-        tableBody.appendChild(errorRow);
     });
-});
 </script>
 
 </body>

@@ -18,14 +18,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-//    @GetMapping("/List-Farmers")
-//    public List<UserDetail> getAllFarmers() {
-//        List<UserDetail> farmers = adminService.getAllFarmers("FARMER");
-//        System.out.println("Fetched Farmers: " + farmers.size());
-//        farmers.forEach(f -> System.out.println(f.getEmail()));
-//        return farmers;
-//    }
-
     @GetMapping("/List-Farmers")
     public List<FarmerDTO> getAllFarmers() {
         return adminService.getAllFarmers("FARMER").stream()

@@ -15,5 +15,10 @@
     <button>
         <a href="/buyers" class="button">Show All Buyers</a>
     </button>
+
+    <br><br>
+
+    <p th:if="${updateSuccess}" style="color:green;">Profile updated successfully!</p>
+    <p th:if="${updateSuccess == false}" style="color:red;">Profile update failed!</p>
 </body>
 </html>

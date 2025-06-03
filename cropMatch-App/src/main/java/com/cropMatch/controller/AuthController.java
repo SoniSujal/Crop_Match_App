@@ -6,6 +6,7 @@ import com.cropMatch.dto.UserUpdateDto;
 import com.cropMatch.exception.BusinessException;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.security.JwtUtil;
+import com.cropMatch.service.AdminService;
 import com.cropMatch.service.LogoutService;
 import com.cropMatch.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -34,6 +35,9 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     private final LogoutService logoutService;
+
+    @Autowired
+    private AdminService adminService;
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
@@ -169,8 +173,50 @@ public class AuthController {
         return "redirect:/welcome/" + role;
     }
 
+    @GetMapping("admin/edit/{username}")
+    public String showEditForm(@PathVariable("username") String username, Model model) {
+        UserDetail user = userService.findByUsername(username);
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found.");
+            return "redirect:/";  // Redirect to the home page if user not found
+        }
+        model.addAttribute("user", user);
+        return "edit_user";
+    }
 
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") UserUpdateDto user1,BindingResult result,Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        try {
+            String email = user1.getUsername();
+            UserDetail user = userService.findByUserEmail(email);
+            userService.updateUserProfile(user1, user.getUsername());
+            model.addAttribute("message", "User updated successfully!");
 
+            redirectAttributes.addFlashAttribute("updateSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error updating user. Please try again.");
+            redirectAttributes.addFlashAttribute("updateSuccess", false);
+        }
+        return "redirect:/admin";
+    }
 
-
+    @GetMapping("admin/delete/{username}")
+    public String deleteUser(@PathVariable("username") String username, Model model,RedirectAttributes redirectAttributes) {
+        try {
+            if (userService.findByUsername(username) == null) {
+                model.addAttribute("errorMessage", "User not found.");
+                return "redirect:/admin";  // Redirect to home page if user is not found
+            }
+            adminService.deleteBYUserName(username);
+            model.addAttribute("message", "User deleted successfully!");
+            redirectAttributes.addFlashAttribute("DeleteSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error deleting user. Please try again.");
+            redirectAttributes.addFlashAttribute("DeleteSuccess", false);
+        }
+        return "redirect:/admin";
+    }
 }

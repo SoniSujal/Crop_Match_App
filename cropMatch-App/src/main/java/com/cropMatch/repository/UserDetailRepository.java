@@ -1,7 +1,9 @@
 package com.cropMatch.repository;
 
 import com.cropMatch.model.UserDetail;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -18,4 +20,10 @@ public interface UserDetailRepository extends JpaRepository<UserDetail, Integer>
 
     @Query("SELECT u FROM UserDetail u JOIN u.userTypes ut WHERE ut.userType.name = :userTypeName")
     List<UserDetail> findAllByUserTypeName(@Param("userTypeName") String userTypeName);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserDetail u SET u.active = false WHERE u.username = :userName")
+    int softDeleteUserByName(@Param("userName") String userName);
+
 }
