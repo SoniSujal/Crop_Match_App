@@ -20,6 +20,7 @@ target/
 *.ipr
 
 .gradle/
+crop-match-frontend/node_modules/
 
 
 ### NetBeans ###

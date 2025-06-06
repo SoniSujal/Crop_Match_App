@@ -38,9 +38,9 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Skip filter for login/register endpoints
+        // Skip filter for auth endpoints
         String path = request.getServletPath();
-        if ("/login".equals(path) || "/register".equals(path)) {
+        if (path.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,6 +60,13 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String extractJwtToken(HttpServletRequest request) {
+        // First check Authorization header (for React app)
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+
+        // Fallback to cookies (for backward compatibility)
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

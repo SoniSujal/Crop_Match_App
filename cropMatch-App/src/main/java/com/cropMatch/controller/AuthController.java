@@ -1,25 +1,29 @@
 package com.cropMatch.controller;
 
 import com.cropMatch.dto.ApiResponse;
+import com.cropMatch.dto.UserRegistrationDTO;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.security.JwtUtil;
 import com.cropMatch.service.logout.LogoutService;
 import com.cropMatch.service.user.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/api/auth")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
     @Autowired
@@ -31,49 +35,53 @@ public class AuthController {
     @Autowired
     private final LogoutService logoutService;
 
-    @GetMapping("/login")
-    public String showLogin(@RequestParam(value = "error", required = false) String error,
-                            Model model) {
-        if (error != null) {
-            model.addAttribute("error", error);
-        }
-        return "login";
-    }
-
     @PostMapping("/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password,
-                        HttpServletResponse response,
-                        Model model) {
-        Optional<UserDetail> userOpt = userService.authenticate(username, password);
-        if (userOpt.isPresent()) {
-            UserDetail user = userOpt.get();
-            String role = user.getUserTypes().iterator().next().getUserType().getName();
+    public ResponseEntity<ApiResponse<Map<String, Object>>> login(@RequestBody Map<String, String> loginRequest) {
+        try {
+            String username = loginRequest.get("username");
+            String password = loginRequest.get("password");
 
-            String token = jwtUtil.generateToken(user.getEmail(), role);
+            Optional<UserDetail> userOpt = userService.authenticate(username, password);
+            if (userOpt.isPresent()) {
+                UserDetail user = userOpt.get();
+                String role = user.getUserTypes().iterator().next().getUserType().getName();
+                String token = jwtUtil.generateToken(user.getEmail(), role);
 
-            Cookie jwtCookie = new Cookie("jwt", token);
-            jwtCookie.setHttpOnly(true);
-            jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(60 * 60);
-            response.addCookie(jwtCookie);
+                Map<String, Object> response = new HashMap<>();
+                response.put("token", token);
+                response.put("role", role.toLowerCase());
+                response.put("username", user.getUsername());
+                response.put("email", user.getEmail());
 
-            return "redirect:/" + role.toLowerCase();
+                return ResponseEntity.ok(ApiResponse.success(response));
+            }
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("Invalid username or password"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Login failed: " + e.getMessage()));
         }
-        model.addAttribute("error", "Invalid username or password");
-        return "login";
     }
 
-    @GetMapping("/{role}")
-    public String showWelcomePage(@PathVariable String role, Principal principal) {
-        if (principal == null) {
-            return "redirect:/login";
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody UserRegistrationDTO user,
+                                                        BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            result.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append(" "));
+            return ResponseEntity.badRequest().body(ApiResponse.error(errors.toString()));
         }
-        return "welcome_" + role.toLowerCase();
+
+        try {
+            userService.register(user);
+            return ResponseEntity.ok(ApiResponse.success("User registered successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
     }
 
     @PostMapping("/logout")
-    @ResponseBody
     public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletRequest request,
                                                        HttpServletResponse response) {
         return logoutService.logout(request, response);

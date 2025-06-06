@@ -1,5 +1,6 @@
 package com.cropMatch.controller.admin;
 
+import com.cropMatch.dto.ApiResponse;
 import com.cropMatch.dto.BuyerDTO;
 import com.cropMatch.dto.FarmerDTO;
 import com.cropMatch.dto.UserUpdateDTO;
@@ -8,19 +9,18 @@ import com.cropMatch.service.admin.AdminService;
 import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@RestController
-@Controller
-@RequestMapping("/admin")
+@RestController
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AdminController {
 
     @Autowired
@@ -29,93 +29,87 @@ public class AdminController {
     @Autowired
     private final UserService userService;
 
-    @GetMapping("/List-Farmers")
-    @ResponseBody
-    public List<FarmerDTO> getAllFarmers() {
-        return adminService.getAllUsersByRole("FARMER").stream()
-                .map(user -> new FarmerDTO(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getMobile(),
-                        user.getPincode(),
-                        user.getCountry()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/List-Buyers")
-    @ResponseBody
-    public List<BuyerDTO> getAllBuyers() {
-        return adminService.getAllUsersByRole("BUYER").stream()
-                .map(user -> new BuyerDTO(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getMobile(),
-                        user.getCountry(),
-                        user.getPincode()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/edit/{username}")
-    public String showEditForm(@PathVariable("username") String username, Model model) {
-        UserDetail user = userService.findByUsername(username);
-        if (user == null) {
-            model.addAttribute("errorMessage", "User not found.");
-            return "redirect:/";  // Redirect to the home page if user not found
-        }
-        model.addAttribute("user", user);
-        return "edit_user";
-    }
-
-    @PostMapping("/update")
-    public String updateUser(
-            @ModelAttribute("user") UserUpdateDTO userDto,
-            BindingResult result,
-            Model model,
-            RedirectAttributes redirectAttributes
-    ) {
+    @GetMapping("/farmers")
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmers() {
         try {
-            String email = userDto.getEmail();
-            UserDetail user = userService.findByUserEmail(email);
-
-            if (user == null) {
-                model.addAttribute("errorMessage", "User not found.");
-                redirectAttributes.addFlashAttribute("updateSuccess", false);
-                return "redirect:/admin";
-            }
-
-            userService.updateUserProfile(userDto, user.getUsername());
-
-            redirectAttributes.addFlashAttribute("updateSuccess", true);
-            return "redirect:/admin";
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream()
+                    .map(user -> new FarmerDTO(
+                            user.getId(),
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getMobile(),
+                            user.getPincode(),
+                            user.getCountry()
+                    ))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(farmers));
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error updating user. Please try again.");
-            redirectAttributes.addFlashAttribute("updateSuccess", false);
-            return "redirect:/admin";
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch farmers: " + e.getMessage()));
         }
     }
 
-    @GetMapping("/delete/{username}")
-    public String deleteUser(@PathVariable("username") String username, Model model, RedirectAttributes redirectAttributes) {
+    @GetMapping("/buyers")
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyers() {
         try {
-            if (userService.findByUsername(username) == null) {
-                model.addAttribute("errorMessage", "User not found.");
-                return "redirect:/admin";  // Redirect to home page if user is not found
-            }
-            int deletUserByName = userService.deletUserByName(username);
-            if(deletUserByName == 0) {
-                model.addAttribute("errorMessage", "Not User Found. Please try again.");
-                redirectAttributes.addFlashAttribute("DeleteSuccess", false);
-            }
-            model.addAttribute("message", "User deleted successfully!");
-            redirectAttributes.addFlashAttribute("DeleteSuccess", true);
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream()
+                    .map(user -> new BuyerDTO(
+                            user.getId(),
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getMobile(),
+                            user.getPincode(),
+                            user.getCountry()
+                    ))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(buyers));
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error deleting user. Please try again.");
-            redirectAttributes.addFlashAttribute("DeleteSuccess", false);
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch buyers: " + e.getMessage()));
         }
-        return "redirect:/admin";
+    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<ApiResponse<UserDetail>> getUser(@PathVariable String username) {
+        try {
+            UserDetail user = userService.findByUsername(username);
+            return ResponseEntity.ok(ApiResponse.success(user));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/user/{username}")
+    public ResponseEntity<ApiResponse<String>> updateUser(@PathVariable String username,
+                                                          @Valid @RequestBody UserUpdateDTO userDto,
+                                                          BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            result.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append(" "));
+            return ResponseEntity.badRequest().body(ApiResponse.error(errors.toString()));
+        }
+
+        try {
+            userService.updateUserProfile(userDto, username);
+            return ResponseEntity.ok(ApiResponse.success("User updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Error updating user: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/user/{username}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable String username) {
+        try {
+            int result = userService.deletUserByName(username);
+            if (result > 0) {
+                return ResponseEntity.ok(ApiResponse.success("User deleted successfully"));
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Error deleting user: " + e.getMessage()));
+        }
     }
 }

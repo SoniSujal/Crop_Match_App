@@ -22,22 +22,27 @@ public class LogoutServiceImpl implements LogoutService{
 
     @Override
     public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletRequest request, HttpServletResponse response) {
-        String jwtToken = extractTokenFromCookie(request);
+        String jwtToken = extractToken(request);
 
         if (jwtToken != null) {
             tokenBlacklist.blacklistToken(jwtToken);
             clearAuthCookies(response);
             new SecurityContextLogoutHandler().logout(request, response,
                     SecurityContextHolder.getContext().getAuthentication());
-
             return ResponseEntity.ok(ApiResponse.success(true));
         }
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResponse.error("No valid token found"));
     }
 
-    private String extractTokenFromCookie(HttpServletRequest request) {
+    private String extractToken(HttpServletRequest request) {
+        // First check Authorization header (for React app)
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+
+        // Fallback to cookies
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

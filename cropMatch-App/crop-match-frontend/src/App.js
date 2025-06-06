@@ -1,0 +1,108 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Layout from './components/common/Layout';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import AdminDashboard from './components/admin/AdminDashboard';
+import FarmersList from './components/admin/FarmersList';
+import BuyersList from './components/admin/BuyersList';
+import EditUser from './components/admin/EditUser';
+import FarmerDashboard from './components/user/FarmerDashboard';
+import BuyerDashboard from './components/user/BuyerDashboard';
+import EditProfile from './components/user/EditProfile';
+import AddCrop from './components/user/AddCrop';
+import './App.css';
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            {/* Protected Routes */}
+            <Route element={<Layout />}>
+              {/* Admin Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/farmers"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <FarmersList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/buyers"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <BuyersList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/edit-user/:username"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <EditUser />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* User Routes */}
+              <Route
+                path="/farmer/dashboard"
+                element={
+                  <ProtectedRoute requiredRole="farmer">
+                    <FarmerDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/buyer/dashboard"
+                element={
+                  <ProtectedRoute requiredRole="buyer">
+                    <BuyerDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditProfile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add/product"
+                element={
+                <ProtectedRoute requiredRole="farmer">
+                  <AddCrop />
+                </ProtectedRoute>
+                }
+              />
+            </Route>
+
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
+  );
+}
+
+export default App;
