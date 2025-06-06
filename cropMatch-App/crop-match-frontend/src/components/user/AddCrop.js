@@ -1,9 +1,11 @@
 // src/components/farmer/AddCrop.js
-import React, { useState } from 'react';
+//import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/constants';
 import { useAuth } from '../../context/AuthContext';
 import cropService from '../../services/cropService';
+import categoryService from '../../services/categoryService';
 import '../../styles/AddCrop.css';
 
 const AddCrop = () => {
@@ -30,6 +32,22 @@ const AddCrop = () => {
     'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX',
     'CRATE', 'BAG'
   ];
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoryService.getActiveCategories();
+        setCategories(response); // array of categories
+      } catch (err) {
+        console.error('Failed to fetch categories', err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,12 +78,23 @@ const AddCrop = () => {
       return;
     }
 
-    const cropBlob = {
-      ...formData,
-//      createdBy: user.id,
-      status: true,
-      createdOn: new Date().toISOString()
-    };
+//    const cropBlob = {
+//      ...formData,
+//      category: {
+//        name: formData.category,
+//      },
+//      status: true,
+//      createdOn: new Date().toISOString()
+//    };
+      const cropBlob = {
+        ...formData,
+        // ✅ Send only string
+        category: formData.category,   // ✅ must be string
+        categoryId: parseInt(categories.find(cat => cat.name === formData.category)?.id || 0), // ✅ use correct ID
+        status: true,
+        createdOn: new Date().toISOString()
+      };
+
 
     const form = new FormData();
     form.append('cropDTO', new Blob([JSON.stringify(cropBlob)], { type: 'application/json' }));
@@ -76,9 +105,6 @@ const AddCrop = () => {
     try {
       setLoading(true);
       await cropService.addCrop(form);
-//      for (let pair of form.entries()) {
-//        console.log(pair[0], pair[1]);
-//      }
       navigate(ROUTES.FARMER_DASHBOARD);
     } catch (err) {
       setError(err.message || 'Failed to save crop');
@@ -106,10 +132,13 @@ const AddCrop = () => {
 
         <label>
           Category:
-          <select name="category" value={formData.category} onChange={handleChange}>
-            <option value="FRUIT">Fruit</option>
-            <option value="PULSES">Pulses</option>
-            <option value="VEGETABLES">Vegetables</option>
+          <select name="category" value={formData.category} onChange={handleChange} required>
+            <option value="">Select a category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.name}>
+                {cat.name.charAt(0).toUpperCase() + cat.name.slice(1).toLowerCase()}
+              </option>
+            ))}
           </select>
         </label>
 

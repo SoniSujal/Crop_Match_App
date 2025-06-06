@@ -23,6 +23,4 @@ public class CategoryServiceImpl implements CategoryService{
     public Optional<Category> getCategoryByName(String name) {
         return categoryRepository.findByName(name);
     }
-
-
 }

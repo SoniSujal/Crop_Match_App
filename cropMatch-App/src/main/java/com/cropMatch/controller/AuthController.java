@@ -1,6 +1,7 @@
 package com.cropMatch.controller;
 
 import com.cropMatch.dto.ApiResponse;
+import com.cropMatch.dto.LoginRequest;
 import com.cropMatch.dto.UserRegistrationDTO;
 import com.cropMatch.model.UserDetail;
 import com.cropMatch.security.JwtUtil;
@@ -36,10 +37,10 @@ public class AuthController {
     private final LogoutService logoutService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> login(@RequestBody Map<String, String> loginRequest) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> login(@RequestBody LoginRequest loginRequest) {
         try {
-            String username = loginRequest.get("username");
-            String password = loginRequest.get("password");
+            String username = loginRequest.getUsername();
+            String password = loginRequest.getPassword();
 
             Optional<UserDetail> userOpt = userService.authenticate(username, password);
             if (userOpt.isPresent()) {

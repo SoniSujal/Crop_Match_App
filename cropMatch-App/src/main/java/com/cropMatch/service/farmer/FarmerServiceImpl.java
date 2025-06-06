@@ -8,6 +8,7 @@ import com.cropMatch.model.CropImage;
 import com.cropMatch.repository.CategoryRepository;
 import com.cropMatch.repository.CropImageRepository;
 import com.cropMatch.repository.CropRepository;
+import com.cropMatch.service.extra.CategoryService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,9 @@ public class FarmerServiceImpl implements FarmerService{
 
     @Autowired
     private CropImageRepository cropImageRepository;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
     @Transactional

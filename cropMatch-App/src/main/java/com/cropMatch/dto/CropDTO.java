@@ -20,8 +20,9 @@ public class CropDTO {
 
     private String description;
 
-//    @NotBlank
-//    private String category;
+    @NotBlank
+    private String category;
+
     @NotNull
     private int categoryId;
 
