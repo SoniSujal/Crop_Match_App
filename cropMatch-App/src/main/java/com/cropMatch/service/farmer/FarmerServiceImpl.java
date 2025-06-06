@@ -1,9 +1,11 @@
 package com.cropMatch.service.farmer;
 
 import com.cropMatch.dto.CropDTO;
-import com.cropMatch.enums.Category;
+
+import com.cropMatch.model.Category;
 import com.cropMatch.model.Crop;
 import com.cropMatch.model.CropImage;
+import com.cropMatch.repository.CategoryRepository;
 import com.cropMatch.repository.CropImageRepository;
 import com.cropMatch.repository.CropRepository;
 import jakarta.transaction.Transactional;
@@ -29,16 +31,23 @@ public class FarmerServiceImpl implements FarmerService{
     private CropRepository cropRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private CropImageRepository cropImageRepository;
 
     @Override
     @Transactional
     public void saveCropWithImages(CropDTO cropDTO, List<MultipartFile> images, Integer farmerId) {
 
+        Category category = categoryRepository.findById(cropDTO.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category Not Found!"));
+
         Crop crop = new Crop();
         crop.setName(cropDTO.getName());
         crop.setDescription(cropDTO.getDescription());
-        crop.setCategory(Category.valueOf(cropDTO.getCategory()));
+//        crop.setCategory(Category.valueOf(cropDTO.getCategory()));
+        crop.setCategory(category);
         crop.setQuantity(cropDTO.getQuantity());
         crop.setPrice(cropDTO.getPrice());
         crop.setUnit(cropDTO.getUnit());

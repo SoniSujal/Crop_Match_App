@@ -12,6 +12,7 @@ import EditUser from './components/admin/EditUser';
 import FarmerDashboard from './components/user/FarmerDashboard';
 import BuyerDashboard from './components/user/BuyerDashboard';
 import EditProfile from './components/user/EditProfile';
+import AddRequest from './components/user/Buyer/AddRequest';
 import AddCrop from './components/user/AddCrop';
 import './App.css';
 
@@ -94,6 +95,14 @@ function App() {
                 </ProtectedRoute>
                 }
               />
+              <Route
+                  path="/buyer/requests/new"
+                      element={
+                      <ProtectedRoute requiredRole="buyer">
+                          <AddRequest />
+                      </ProtectedRoute>
+                      }
+                />
             </Route>
 
             {/* Default redirect */}

@@ -1,5 +1,6 @@
 package com.cropMatch.model;
 
+import com.cropMatch.enums.CropUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,23 +8,19 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Crop {
+@AllArgsConstructor
+public class BuyerRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "crop_id")
-    private int id;
+    private Integer id;
 
     @Column(nullable = false)
-    private String name;
-
-    private String description;
+    private String cropName;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -32,27 +29,19 @@ public class Crop {
     @Column(nullable = false)
     private int quantity;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BigDecimal price;
-
-    @Column(nullable = false)
-    private String unit;
-
-    @Column(nullable = false)
-    private int createdBy;
-
-    @Column(nullable = false)
-    private Boolean status;
+    private CropUnit unit;
 
     @Column(nullable = false)
     private String region;
 
-    @OneToMany(mappedBy = "crop")
-    private List<CropImage> images;
+    @Column(nullable = false)
+    private BigDecimal expectedPrice;
 
-    @Column(name = "created_on", nullable = false)
-    private LocalDateTime createdOn;
+    @Column(nullable = false)
+    private int buyerId;
 
-    @Column(name = "updated_on")
-    private LocalDateTime updatedOn;
+    @Column(nullable = false)
+    private LocalDateTime createdOn = LocalDateTime.now();
 }

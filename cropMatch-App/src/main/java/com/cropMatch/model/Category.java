@@ -5,23 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CropImage {
+public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String imageName;
-    private String imageType;
-    @Lob
-    private byte[] imageData;
+    @Column(nullable = false, unique = true)
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "crop_id")
-    private Crop crop;
+    @Column(nullable = false)
+    private Boolean isActive = true;
 
-
+    @Column(nullable = false)
+    private LocalDateTime createdOn = LocalDateTime.now();
 }
