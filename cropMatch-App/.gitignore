@@ -19,6 +19,10 @@ target/
 *.iml
 *.ipr
 
+.gradle/
+crop-match-frontend/node_modules/
+
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

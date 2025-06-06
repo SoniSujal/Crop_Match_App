@@ -1,0 +1,77 @@
+.dashboard-container {
+  padding: 2rem;
+  background-color: #f7f7f7;
+  font-family: sans-serif;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.stats-grid,
+.actions-grid,
+.tips-grid,
+.feature-list,
+.summary-cards {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.stat-card, .action-card, .feature-item, .tip-card, .summary-card {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.stat-icon,
+.action-icon,
+.feature-icon,
+.tip-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #2196f3;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.stat-link:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.coming-soon {
+  font-size: 0.8rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.farming-tips,
+.dashboard-info {
+  margin-top: 3rem;
+}
+
+.activity-summary {
+  margin-top: 1.5rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.status-active {
+  color: green;
+  font-weight: bold;
+}

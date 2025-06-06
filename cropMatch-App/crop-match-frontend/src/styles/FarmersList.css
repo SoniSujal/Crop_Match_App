@@ -1,0 +1,237 @@
+.page-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background: #fff;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+.page-header p {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem 0;
+  color: #666;
+}
+
+.spinner {
+  margin: 0 auto 1rem;
+  width: 40px;
+  height: 40px;
+  border: 5px solid #eee;
+  border-top: 5px solid #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #842029;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #f5c2c7;
+  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.retry-btn {
+  background-color: #842029;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.retry-btn:hover {
+  background-color: #6c1a22;
+}
+
+.page-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.search-box {
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline-offset: 2px;
+  transition: border-color 0.25s ease;
+}
+
+.search-input:focus {
+  border-color: #1565c0;
+  box-shadow: 0 0 5px #1565c0aa;
+}
+
+.page-info {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.total-count, .filtered-count {
+  margin-left: 0.5rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.data-table thead {
+  background-color: #1565c0;
+  color: white;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f1f5fb;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.username {
+  font-weight: 600;
+  color: #222;
+}
+
+.user-badge {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+
+.farmer-badge {
+  background-color: #2e7d32;
+}
+
+.location-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pincode {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background-color 0.25s ease;
+}
+
+.btn-edit {
+  background-color: #1976d2;
+  color: white;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.btn-delete {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background-color: #b71c1c;
+}
+
+.btn-delete:disabled {
+  background-color: #f8a1a1;
+  cursor: not-allowed;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem 0;
+  color: #777;
+}
+
+.no-data h3 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .page-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box {
+    max-width: 100%;
+  }
+}
