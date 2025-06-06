@@ -13,6 +13,6 @@ public interface FarmerService {
 
     void saveCropWithImages(@Valid CropDTO cropDTO, List<MultipartFile> images, Integer farmerId);
 
-    public String uploadFileWithData(Integer farmerId,List<MultipartFile> file) throws IOException;
+    public String uploadFileWithData(Integer farmerId,List<MultipartFile> file, Integer cropId);
 
 }

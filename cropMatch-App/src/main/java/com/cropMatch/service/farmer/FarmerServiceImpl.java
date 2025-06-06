@@ -50,7 +50,6 @@ public class FarmerServiceImpl implements FarmerService{
         Crop crop = new Crop();
         crop.setName(cropDTO.getName());
         crop.setDescription(cropDTO.getDescription());
-//        crop.setCategory(Category.valueOf(cropDTO.getCategory()));
         crop.setCategory(category);
         crop.setQuantity(cropDTO.getQuantity());
         crop.setPrice(cropDTO.getPrice());
@@ -60,10 +59,9 @@ public class FarmerServiceImpl implements FarmerService{
         crop.setRegion(cropDTO.getRegion());
         crop.setCreatedOn(LocalDateTime.now());
         crop.setUpdatedOn(LocalDateTime.now());
-
-        uploadFileWithData(farmerId,images);
         Crop saved = cropRepository.save(crop);
 
+        uploadFileWithData(farmerId,images, saved.getId());
 
         try {
             for(MultipartFile image : images) {
@@ -80,9 +78,9 @@ public class FarmerServiceImpl implements FarmerService{
     }
 
     @Override
-    public String uploadFileWithData(Integer farmerId,List<MultipartFile> images) {
+    public String uploadFileWithData(Integer farmerId,List<MultipartFile> images, Integer cropId) {
 
-        String folderName = uploadPath + File.separator + "FARMER_ID_" + farmerId;
+        String folderName = uploadPath + File.separator + "FARMER_ID_" + farmerId + File.separator + "CROP_ID_" + cropId;
         File saveFile = new File(folderName);
         if(!saveFile.exists()) {
             saveFile.mkdirs();

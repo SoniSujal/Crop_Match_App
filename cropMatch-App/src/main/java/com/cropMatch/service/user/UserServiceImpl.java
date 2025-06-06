@@ -33,11 +33,13 @@
         @Override
         @Transactional
         public void register(UserRegistrationDTO registrationDto) {
-            if (userDetailRepository.existsByUsername(registrationDto.getUsername())) {
-                throw new BusinessException("Username already exists");
-            }
+            UserDetail userDetail = userDetailRepository.findByEmail(registrationDto.getEmail()).orElse(null);
 
-            if (userDetailRepository.existsByEmail(registrationDto.getEmail())) {
+//            if (userDetailRepository.existsByUsername(registrationDto.getUsername())) {
+//                throw new BusinessException("Username already exists");
+//            }
+
+            if (userDetail != null && !userDetail.getActive()) {
                 throw new BusinessException("Email already exists");
             }
 
