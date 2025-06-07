@@ -25,7 +25,7 @@ public class BuyerRequest {
     private String cropName;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false  )
     private Category category;
 
     @Column(nullable = false)
@@ -47,7 +47,6 @@ public class BuyerRequest {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RequestStatus status = RequestStatus.PENDING;
-
 
     @Column(nullable = false)
     private LocalDateTime createdOn = LocalDateTime.now();

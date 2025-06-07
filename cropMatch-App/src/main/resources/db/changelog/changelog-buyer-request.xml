@@ -46,4 +46,12 @@
                 referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="buyer_request-3" author="sujal">
+        <addColumn tableName="buyer_request">
+            <column name="status" type="VARCHAR(20)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
