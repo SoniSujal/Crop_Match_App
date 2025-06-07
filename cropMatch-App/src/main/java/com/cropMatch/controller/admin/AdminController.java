@@ -1,10 +1,10 @@
 package com.cropMatch.controller.admin;
 
-import com.cropMatch.dto.ApiResponse;
-import com.cropMatch.dto.BuyerDTO;
-import com.cropMatch.dto.FarmerDTO;
-import com.cropMatch.dto.UserUpdateDTO;
-import com.cropMatch.model.UserDetail;
+import com.cropMatch.dto.responseDTO.ApiResponse;
+import com.cropMatch.dto.buyerDTO.BuyerDTO;
+import com.cropMatch.dto.farmerDTO.FarmerDTO;
+import com.cropMatch.dto.common.UserUpdateDTO;
+import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.admin.AdminService;
 import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;

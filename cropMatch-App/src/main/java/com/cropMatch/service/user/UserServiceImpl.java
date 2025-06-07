@@ -1,13 +1,13 @@
     package com.cropMatch.service.user;
 
-    import com.cropMatch.dto.UserRegistrationDTO;
-    import com.cropMatch.dto.UserUpdateDTO;
+    import com.cropMatch.dto.authDTO.RegistrationDTO;
+    import com.cropMatch.dto.common.UserUpdateDTO;
     import com.cropMatch.exception.BusinessException;
-    import com.cropMatch.model.UserDetail;
-    import com.cropMatch.model.UserType;
-    import com.cropMatch.model.UserTypeMapping;
-    import com.cropMatch.repository.UserDetailRepository;
-    import com.cropMatch.repository.UserTypeRepository;
+    import com.cropMatch.model.user.UserDetail;
+    import com.cropMatch.model.user.UserType;
+    import com.cropMatch.model.user.UserTypeMapping;
+    import com.cropMatch.repository.common.UserDetailRepository;
+    import com.cropMatch.repository.user.UserTypeRepository;
     import jakarta.transaction.Transactional;
     import lombok.RequiredArgsConstructor;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@
 
         @Override
         @Transactional
-        public void register(UserRegistrationDTO registrationDto) {
+        public void register(RegistrationDTO registrationDto) {
             UserDetail userDetail = userDetailRepository.findByEmail(registrationDto.getEmail()).orElse(null);
 
 //            if (userDetailRepository.existsByUsername(registrationDto.getUsername())) {

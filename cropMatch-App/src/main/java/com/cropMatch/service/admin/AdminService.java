@@ -1,7 +1,6 @@
 package com.cropMatch.service.admin;
 
-import com.cropMatch.model.UserDetail;
-import org.springframework.stereotype.Repository;
+import com.cropMatch.model.user.UserDetail;
 
 import java.util.List;
 

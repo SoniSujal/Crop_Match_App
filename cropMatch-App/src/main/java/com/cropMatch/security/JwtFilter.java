@@ -1,7 +1,7 @@
 package com.cropMatch.security;
 
-import com.cropMatch.model.UserPrincipal;
-import com.cropMatch.repository.UserDetailRepository;
+import com.cropMatch.model.common.UserPrincipal;
+import com.cropMatch.repository.common.UserDetailRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

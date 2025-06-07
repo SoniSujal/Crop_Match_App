@@ -1,6 +1,6 @@
 package com.cropMatch.service.logout;
 
-import com.cropMatch.dto.ApiResponse;
+import com.cropMatch.dto.responseDTO.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

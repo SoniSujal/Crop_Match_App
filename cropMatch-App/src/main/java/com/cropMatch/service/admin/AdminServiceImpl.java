@@ -1,7 +1,7 @@
 package com.cropMatch.service.admin;
 
-import com.cropMatch.model.UserDetail;
-import com.cropMatch.repository.UserDetailRepository;
+import com.cropMatch.model.user.UserDetail;
+import com.cropMatch.repository.common.UserDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

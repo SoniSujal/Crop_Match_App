@@ -1,8 +1,8 @@
 package com.cropMatch.controller.buyer;
 
-import com.cropMatch.dto.BuyerRequestDTO;
-import com.cropMatch.model.BuyerRequest;
-import com.cropMatch.service.user.buyer.BuyerService;
+import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.model.buyer.BuyerRequest;
+import com.cropMatch.service.buyer.BuyerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
