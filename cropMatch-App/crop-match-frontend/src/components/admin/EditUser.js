@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import adminService from '../../services/adminService';
+import adminService from '../../services/admin/adminService';
 import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '../../utils/constants';
 import '../../styles/EditUser.css';
 

@@ -41,7 +41,7 @@
             <column name="created_on" valueDate="NOW()"/>
             <column name="email" value="fm@gmail.com"/>
             <column name="mobile" value="5252555598"/>
-            <column name="password" value="$2a$10$.xJa2CytjEz7zA0RV7jbv.PFbw1p7BdY3v0UsizFp41NJZj2i3lCa"/>   <!--- 123456789 -->
+            <column name="password" value="$2a$10$.xJa2CytjEz7zA0RV7jbv.PFbw1p7BdY3v0UsizFp41NJZj2i3lCa"/>   <!--- 12345678 -->
             <column name="pincode" value="382481"/>
             <column name="updated_on" valueDate="NOW()"/>
             <column name="username" value="FARMER"/>
@@ -53,21 +53,21 @@
         <insert tableName="user_type_mapping">
             <column name="mapping_id" valueNumeric="1"/>
             <column name="user_id" valueNumeric="1"/>
-            <column name="user_type_id" valueNumeric="1"/> <!-- admin -->
+            <column name="user_type_id" valueNumeric="1"/>
             <column name="created_on" valueDate="NOW()"/>
         </insert>
 
         <insert tableName="user_type_mapping">
             <column name="mapping_id" valueNumeric="2"/>
             <column name="user_id" valueNumeric="2"/>
-            <column name="user_type_id" valueNumeric="2"/> <!-- buyer -->
+            <column name="user_type_id" valueNumeric="2"/>
             <column name="created_on" valueDate="NOW()"/>
         </insert>
 
         <insert tableName="user_type_mapping">
             <column name="mapping_id" valueNumeric="3"/>
             <column name="user_id" valueNumeric="3"/>
-            <column name="user_type_id" valueNumeric="3"/> <!-- farmer -->
+            <column name="user_type_id" valueNumeric="3"/>
             <column name="created_on" valueDate="NOW()"/>
         </insert>
     </changeSet>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import userService from '../../services/userService';
+import userService from '../../services/user/userService';
 import '../../styles/FarmerDashboard.css';
 
 

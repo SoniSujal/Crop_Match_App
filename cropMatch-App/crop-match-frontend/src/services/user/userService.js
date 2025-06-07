@@ -1,4 +1,4 @@
-import api from './api';
+import api from '../auth/api';
 
 const userService = {
   // Get current user profile

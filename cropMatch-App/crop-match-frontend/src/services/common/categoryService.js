@@ -1,5 +1,5 @@
 // src/services/categoryService.js
-import api from './api';
+import api from '../auth/api';
 
 const categoryService = {
   getActiveCategories: async () => {

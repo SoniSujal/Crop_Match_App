@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/constants';
 import { useAuth } from '../../context/AuthContext';
-import cropService from '../../services/cropService';
-import categoryService from '../../services/categoryService';
+import cropService from '../../services/farmer/cropService';
+import categoryService from '../../services/common/categoryService';
 import '../../styles/AddCrop.css';
 
 const AddCrop = () => {

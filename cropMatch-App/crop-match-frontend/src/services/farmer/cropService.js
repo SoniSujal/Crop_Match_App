@@ -1,5 +1,5 @@
 // src/services/cropService.js
-import api from './api';
+import api from '../auth/api';
 
 const cropService = {
   addCrop: async (formData) => {
