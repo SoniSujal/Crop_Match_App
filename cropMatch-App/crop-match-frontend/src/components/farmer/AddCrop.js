@@ -1,5 +1,4 @@
 // src/components/farmer/AddCrop.js
-//import React, { useState } from 'react';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/constants';
@@ -25,7 +24,6 @@ const AddCrop = () => {
   const [images, setImages] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-//  const navigate = useNavigate();
 
   const CROP_UNITS = [
     'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
@@ -78,22 +76,14 @@ const AddCrop = () => {
       return;
     }
 
-//    const cropBlob = {
-//      ...formData,
-//      category: {
-//        name: formData.category,
-//      },
-//      status: true,
-//      createdOn: new Date().toISOString()
-//    };
-      const cropBlob = {
-        ...formData,
-        // ✅ Send only string
-        category: formData.category,   // ✅ must be string
-        categoryId: parseInt(categories.find(cat => cat.name === formData.category)?.id || 0), // ✅ use correct ID
-        status: true,
-        createdOn: new Date().toISOString()
-      };
+  const cropBlob = {
+    ...formData,
+    // ✅ Send only string
+    category: formData.category,   // ✅ must be string
+    categoryId: parseInt(categories.find(cat => cat.name === formData.category)?.id || 0), // ✅ use correct ID
+    status: true,
+    createdOn: new Date().toISOString()
+  };
 
 
     const form = new FormData();
