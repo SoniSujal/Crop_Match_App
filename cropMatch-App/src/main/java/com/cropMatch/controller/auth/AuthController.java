@@ -1,5 +1,6 @@
 package com.cropMatch.controller.auth;
 
+import com.cropMatch.dto.authDTO.AuthResponseDTO;
 import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.dto.authDTO.LoginDTO;
 import com.cropMatch.dto.authDTO.RegistrationDTO;
@@ -37,7 +38,7 @@ public class AuthController {
     private final LogoutService logoutService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ApiResponse<AuthResponseDTO>> login(@RequestBody LoginDTO loginDTO) {
         try {
             String username = loginDTO.getUsername();
             String password = loginDTO.getPassword();
@@ -48,13 +49,14 @@ public class AuthController {
                 String role = user.getUserTypes().iterator().next().getUserType().getName();
                 String token = jwtUtil.generateToken(user.getEmail(), role);
 
-                Map<String, Object> response = new HashMap<>();
-                response.put("token", token);
-                response.put("role", role.toLowerCase());
-                response.put("username", user.getUsername());
-                response.put("email", user.getEmail());
+//                Map<String, Object> response = new HashMap<>();
+//                response.put("token", token);
+//                response.put("role", role.toLowerCase());
+//                response.put("username", user.getUsername());
+//                response.put("email", user.getEmail());
+                AuthResponseDTO dto = new AuthResponseDTO(token, role.toLowerCase(), user.getUsername(), user.getEmail());
 
-                return ResponseEntity.ok(ApiResponse.success(response));
+                return ResponseEntity.ok(ApiResponse.success(dto));
             }
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

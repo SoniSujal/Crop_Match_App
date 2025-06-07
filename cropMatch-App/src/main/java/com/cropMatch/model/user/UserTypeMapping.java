@@ -23,7 +23,7 @@ public class UserTypeMapping {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore  // Add this to break the cycle
+    @JsonIgnore
     private UserDetail user;
 
     @ManyToOne

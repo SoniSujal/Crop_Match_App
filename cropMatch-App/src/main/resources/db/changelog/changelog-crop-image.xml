@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="crop_image-1" author="sujal">
+        <createTable tableName="crop_image">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="image_name" type="VARCHAR(255)"/>
+            <column name="image_type" type="VARCHAR(100)"/>
+            <column name="image_data" type="BLOB"/>
+            <column name="crop_id" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="crop_image-2" author="sujal">
+        <addForeignKeyConstraint
+                baseTableName="crop_image"
+                baseColumnNames="crop_id"
+                constraintName="fk_crop_image_crop"
+                referencedTableName="crop"
+                referencedColumnNames="crop_id"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="user_type_mapping-1" author="sujal">
+        <createTable tableName="user_type_mapping">
+            <column name="mapping_id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_type_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="user_type_mapping-2" author="sujal">
+        <addForeignKeyConstraint
+                baseTableName="user_type_mapping"
+                baseColumnNames="user_id"
+                constraintName="fk_user_mapping_user"
+                referencedTableName="user_detail"
+                referencedColumnNames="user_id"/>
+    </changeSet>
+
+    <changeSet id="user_type_mapping-3" author="sujal">
+        <addForeignKeyConstraint
+                baseTableName="user_type_mapping"
+                baseColumnNames="user_type_id"
+                constraintName="fk_user_mapping_usertype"
+                referencedTableName="user_type"
+                referencedColumnNames="user_type_id"/>
+    </changeSet>
+
+</databaseChangeLog>

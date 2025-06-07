@@ -35,11 +35,11 @@
         public void register(RegistrationDTO registrationDto) {
             UserDetail userDetail = userDetailRepository.findByEmail(registrationDto.getEmail()).orElse(null);
 
-//            if (userDetailRepository.existsByUsername(registrationDto.getUsername())) {
-//                throw new BusinessException("Username already exists");
-//            }
-
             if (userDetail != null && !userDetail.getActive()) {
+                throw new BusinessException("Email Deleted By Admin");
+            }
+
+            if (userDetail != null) {
                 throw new BusinessException("Email already exists");
             }
 

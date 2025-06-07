@@ -22,6 +22,4 @@ public class CropImage {
     @ManyToOne
     @JoinColumn(name = "crop_id")
     private Crop crop;
-
-
 }

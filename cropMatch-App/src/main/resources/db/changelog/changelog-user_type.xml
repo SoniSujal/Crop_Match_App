@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="3" author="sujal">
+        <createTable tableName="user_type">
+            <column name="user_type_id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_type_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="sujal">
+        <insert tableName="user_type">
+            <column name="user_type_name" value="ADMIN"/>
+            <column name="created_on" valueDate="2025-06-07T10:15:00"/>
+        </insert>
+        <insert tableName="user_type">
+            <column name="user_type_name" value="BUYER"/>
+            <column name="created_on" valueDate="2025-06-07T10:20:00"/>
+        </insert>
+        <insert tableName="user_type">
+            <column name="user_type_name" value="FARMER"/>
+            <column name="created_on" valueDate="2025-06-07T10:25:00"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

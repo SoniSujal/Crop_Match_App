@@ -23,7 +23,7 @@ public class UserDetail {
     @Column(name = "user_id")
     private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -51,6 +51,6 @@ public class UserDetail {
     private Boolean active = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore  // Add this to break the cycle
+    @JsonIgnore
     private Set<UserTypeMapping> userTypes = new HashSet<>();
 }

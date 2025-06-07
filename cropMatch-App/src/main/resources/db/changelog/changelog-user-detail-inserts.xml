@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-users-1" author="sujal">
+        <insert tableName="user_detail">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="created_by" valueNumeric="1"/>
+            <column name="country" value="India"/>
+            <column name="created_on" valueDate="NOW()"/>
+            <column name="email" value="admin@gmail.com"/>
+            <column name="mobile" value="5252525252"/>
+            <column name="password" value="$2a$10$tXEKuTuIgoB9yCtaMoiakeiYwSzmYbJjGD6UIvHoF03ImKtD7sEGm"/>   <!-- 00000000 (8 times zero) -->
+            <column name="pincode" value="382481"/>
+            <column name="updated_on" valueDate="NOW()"/>
+            <column name="username" value="ADMIN"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="user_detail">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="created_by" valueNumeric="1"/>
+            <column name="country" value="India"/>
+            <column name="created_on" valueDate="NOW()"/>
+            <column name="email" value="bm@gmail.com"/>
+            <column name="mobile" value="5252525256"/>
+            <column name="password" value="$2a$10$P/yUQZEcIem1nl5cpt5gHusateDHDEZWLj6KY3PkH1M1zpH0JBviK"/>  <!--- 123456789 -->
+            <column name="pincode" value="382482"/>
+            <column name="updated_on" valueDate="NOW()"/>
+            <column name="username" value="BUYER"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="user_detail">
+            <column name="user_id" valueNumeric="3"/>
+            <column name="created_by" valueNumeric="1"/>
+            <column name="country" value="India"/>
+            <column name="created_on" valueDate="NOW()"/>
+            <column name="email" value="fm@gmail.com"/>
+            <column name="mobile" value="5252555598"/>
+            <column name="password" value="$2a$10$.xJa2CytjEz7zA0RV7jbv.PFbw1p7BdY3v0UsizFp41NJZj2i3lCa"/>   <!--- 123456789 -->
+            <column name="pincode" value="382481"/>
+            <column name="updated_on" valueDate="NOW()"/>
+            <column name="username" value="FARMER"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-user-type-mappings-1" author="sujal">
+        <insert tableName="user_type_mapping">
+            <column name="mapping_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="user_type_id" valueNumeric="1"/> <!-- admin -->
+            <column name="created_on" valueDate="NOW()"/>
+        </insert>
+
+        <insert tableName="user_type_mapping">
+            <column name="mapping_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="user_type_id" valueNumeric="2"/> <!-- buyer -->
+            <column name="created_on" valueDate="NOW()"/>
+        </insert>
+
+        <insert tableName="user_type_mapping">
+            <column name="mapping_id" valueNumeric="3"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="user_type_id" valueNumeric="3"/> <!-- farmer -->
+            <column name="created_on" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
