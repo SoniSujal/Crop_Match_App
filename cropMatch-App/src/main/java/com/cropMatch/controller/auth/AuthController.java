@@ -9,6 +9,7 @@ import com.cropMatch.security.JwtUtil;
 import com.cropMatch.service.logout.LogoutService;
 import com.cropMatch.service.user.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +25,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AuthController {
 
-    @Autowired
     private final UserService userService;
 
-    @Autowired
     private final JwtUtil jwtUtil;
 
-    @Autowired
     private final LogoutService logoutService;
 
     @PostMapping("/login")

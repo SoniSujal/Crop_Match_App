@@ -1,6 +1,7 @@
 package com.cropMatch.model.buyer;
 
 import com.cropMatch.enums.CropUnit;
+import com.cropMatch.enums.RequestStatus;
 import com.cropMatch.model.admin.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,11 @@ public class BuyerRequest {
 
     @Column(nullable = false)
     private int buyerId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RequestStatus status = RequestStatus.PENDING;
+
 
     @Column(nullable = false)
     private LocalDateTime createdOn = LocalDateTime.now();

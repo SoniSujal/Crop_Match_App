@@ -14,6 +14,7 @@ import BuyerDashboard from './components/buyer/BuyerDashboard';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
+import AllRequests from './components/buyer/AllRequests';
 import './App.css';
 
 function App() {
@@ -96,13 +97,21 @@ function App() {
                 }
               />
               <Route
-                  path="/buyer/requests/new"
+                  path="/buyer/requests/create"
                       element={
                       <ProtectedRoute requiredRole="buyer">
                           <AddRequest />
                       </ProtectedRoute>
                       }
                 />
+                <Route
+                    path="/buyer/requests"
+                         element={
+                         <ProtectedRoute>
+                         <AllRequests />}
+                         </ProtectedRoute>
+                         }
+                 />
             </Route>
 
             {/* Default redirect */}

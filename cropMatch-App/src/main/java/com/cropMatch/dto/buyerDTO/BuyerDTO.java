@@ -1,5 +1,6 @@
 package com.cropMatch.dto.buyerDTO;
 
+import com.cropMatch.model.user.UserDetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,14 @@ public class BuyerDTO {
     private String mobile;
     private String pincode;
     private String country;
+
+    public BuyerDTO(UserDetail user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.mobile = user.getMobile();
+        this.pincode = user.getPincode();
+        this.country = user.getCountry();
+    }
+
 }

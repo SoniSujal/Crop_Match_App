@@ -17,6 +17,14 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	all {
+		// Exclude Spring Boot’s default logback-classic to avoid conflicts
+		exclude group: 'ch.qos.logback', module: 'logback-classic'
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -35,6 +43,10 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Add SLF4J API + simple binding for logging
+	implementation 'org.slf4j:slf4j-api:2.0.13'
+	implementation 'org.slf4j:slf4j-simple:2.0.13'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

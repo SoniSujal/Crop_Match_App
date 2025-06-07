@@ -1,6 +1,7 @@
 package com.cropMatch.service.buyer;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
 import com.cropMatch.enums.CropUnit;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.admin.Category;
@@ -62,8 +63,8 @@ public class BuyerServiceImpl implements BuyerService {
 
 
     @Override
-    public List<BuyerRequest> getAllRequests() {
-        return requestRepository.findAll();
+    public List<BuyerRequestResponseDTO> getAllRequests() {
+        return requestRepository.findAll().stream().map( BuyerRequestResponseDTO::new).toList();
     }
 
     public record UnitDTO(String name, String displayName) {}

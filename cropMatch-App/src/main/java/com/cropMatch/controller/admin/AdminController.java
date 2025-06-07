@@ -20,27 +20,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
-    @Autowired
     private final AdminService adminService;
 
-    @Autowired
     private final UserService userService;
 
     @GetMapping("/farmers")
     public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmers() {
         try {
-            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream()
-                    .map(user -> new FarmerDTO(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getMobile(),
-                            user.getPincode(),
-                            user.getCountry()
-                    ))
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream().filter(user -> user.getActive())
+                    .map( FarmerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(farmers));
         } catch (Exception e) {
@@ -52,15 +43,8 @@ public class AdminController {
     @GetMapping("/buyers")
     public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyers() {
         try {
-            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream()
-                    .map(user -> new BuyerDTO(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getMobile(),
-                            user.getPincode(),
-                            user.getCountry()
-                    ))
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream().filter(user -> user.getActive())
+                    .map( BuyerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(buyers));
         } catch (Exception e) {

@@ -17,10 +17,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/user")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class UserController {
 
-    @Autowired
     private final UserService userService;
 
     @GetMapping("/profile")

@@ -19,7 +19,7 @@ public class UserUpdateDTO {
     @Pattern(regexp = "\\d{10}",message = "Mobile number must be exactly 10 digits")
     private String mobile;
 
-    @Pattern(regexp = "pincode must be of 6 digits only!")
+    @Pattern(regexp = "\\d{6}",message = "pincode must be of 6 digits only!")
     private String pincode;
 
     @Pattern(regexp = "^[A-Za-z]{1,30}$",message = "Country must be alphabetic and max 30 characters")

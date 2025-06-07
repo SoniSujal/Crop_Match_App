@@ -19,13 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/crops")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class CropController {
 
-    @Autowired
     private final CropService cropService;
 
-    @Autowired
     private final UserService userService;
 
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
