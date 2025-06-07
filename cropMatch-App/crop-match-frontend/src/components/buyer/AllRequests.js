@@ -1,8 +1,8 @@
 // src/components/buyer/AllRequests.js
 
 import React, { useEffect, useState } from 'react';
-import api from '../../../services/api';
-import '../../../styles/AllRequests.css';
+import api from '../../services/auth/api';
+import '../../styles/AllRequests.css';
 
 const AllRequests = () => {
   const [requests, setRequests] = useState([]);
