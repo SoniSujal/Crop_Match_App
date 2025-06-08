@@ -36,7 +36,7 @@
             UserDetail userDetail = userDetailRepository.findByEmail(registrationDto.getEmail()).orElse(null);
 
             if (userDetail != null && !userDetail.getActive()) {
-                throw new BusinessException("Email Deleted By Admin");
+                throw new BusinessException("Account Deleted By Admin");
             }
 
             if (userDetail != null) {

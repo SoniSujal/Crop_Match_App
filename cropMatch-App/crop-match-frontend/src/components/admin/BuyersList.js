@@ -9,15 +9,25 @@ const BuyersList = () => {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(null);
+  const [filter, setFilter] = useState('active');
 
   useEffect(() => {
     fetchBuyers();
-  }, []);
+  }, [filter]);
 
   const fetchBuyers = async () => {
-    try {
-      const buyersData = await adminService.getAllBuyers();
-      setBuyers(buyersData);
+    setLoading(true);
+      try {
+        let buyersData = [];
+        if (filter === 'active') {
+          buyersData = await adminService.getAllBuyers();
+        } else if (filter === 'deleted') {
+          buyersData = await adminService.getDeletedBuyers();
+        } else if (filter === 'all') {
+          buyersData = await adminService.getAllBuyersIncludingDeleted();
+        }
+        setBuyers(buyersData);
+        setError('');
     } catch (error) {
       setError('Failed to load buyers');
       console.error('Fetch buyers error:', error);
@@ -75,6 +85,17 @@ const BuyersList = () => {
       )}
 
       <div className="page-controls">
+        <div className="filter-box">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="active">Active Buyers</option>
+              <option value="deleted">Deleted Buyers</option>
+              <option value="all">All Buyers</option>
+            </select>
+        </div>
         <div className="search-box">
           <input
             type="text"
@@ -92,11 +113,19 @@ const BuyersList = () => {
         </div>
       </div>
 
-      {filteredBuyers.length === 0 ? (
-        <div className="no-data">
-          <h3>No buyers found</h3>
-          <p>{searchTerm ? 'Try adjusting your search criteria' : 'No buyers have registered yet'}</p>
-        </div>
+       {filteredBuyers.length === 0 ? (
+          <div className="no-data">
+            <h3>
+              {searchTerm
+                ? `No matching farmers found for "${searchTerm}"`
+                : filter === 'active'
+                ? 'No active buyers found'
+                : filter === 'deleted'
+                ? 'No deleted buyers found'
+                : 'No buyers found'}
+            </h3>
+            <p>{searchTerm ? 'Try adjusting your search criteria' : 'There is no data for this filter'}</p>
+          </div>
       ) : (
         <div className="table-container">
           <table className="data-table">

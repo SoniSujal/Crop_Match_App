@@ -40,6 +40,35 @@ public class AdminController {
         }
     }
 
+    // All farmers regardless of active status
+    @GetMapping("/farmers/all")
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmersIncludingDeleted() {
+        try {
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER")
+                    .stream().map(FarmerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(farmers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch all farmers: " + e.getMessage()));
+        }
+    }
+
+    // Only deleted (inactive) farmers
+    @GetMapping("/farmers/deleted")
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getDeletedFarmers() {
+        try {
+            List<FarmerDTO> deletedFarmers = adminService.getAllUsersByRole("FARMER")
+                    .stream().filter(user -> !user.getActive())
+                    .map(FarmerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(deletedFarmers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch deleted farmers: " + e.getMessage()));
+        }
+    }
+
     @GetMapping("/buyers")
     public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyers() {
         try {
@@ -50,6 +79,35 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error("Failed to fetch buyers: " + e.getMessage()));
+        }
+    }
+
+    // All farmers regardless of active status
+    @GetMapping("/buyers/all")
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyersIncludingDeleted() {
+        try {
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER")
+                    .stream().map(BuyerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(buyers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch all buyers: " + e.getMessage()));
+        }
+    }
+
+    // Only deleted (inactive) farmers
+    @GetMapping("/buyers/deleted")
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getDeletedBuyers() {
+        try {
+            List<BuyerDTO> deletedBuyers = adminService.getAllUsersByRole("BUYER")
+                    .stream().filter(user -> !user.getActive())
+                    .map(BuyerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(deletedBuyers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch deleted buyers: " + e.getMessage()));
         }
     }
 

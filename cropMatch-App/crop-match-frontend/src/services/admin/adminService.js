@@ -1,7 +1,7 @@
 import api from '../auth/api';
 
 const adminService = {
-  // Get all farmers
+  // Get all active farmers
   getAllFarmers: async () => {
     try {
       const response = await api.get('/admin/farmers');
@@ -16,6 +16,41 @@ const adminService = {
       }
       throw new Error('Failed to fetch farmers');
     }
+  },
+
+  // Get deleted Farmers
+  getDeletedFarmers: async () => {
+    try {
+      const response = await api.get('/admin/farmers/deleted');
+      if (response.data.status === 'SUCCESS') {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch deleted farmers');
+      }
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to fetch deleted farmers');
+    }
+  },
+
+  // Get All Farmers
+  getAllFarmersIncludingDeleted: async () => {
+    try {
+      const response = await api.get('/admin/farmers/all');
+      if (response.data.status === 'SUCCESS') {
+         return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch all farmers');
+      }
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to fetch all farmers');
+    }
+
   },
 
   // Get all buyers
@@ -34,6 +69,40 @@ const adminService = {
       throw new Error('Failed to fetch buyers');
     }
   },
+
+  // Get deleted Farmers
+    getDeletedBuyers: async () => {
+      try {
+        const response = await api.get('/admin/buyers/deleted');
+        if (response.data.status === 'SUCCESS') {
+          return response.data.data;
+        } else {
+          throw new Error(response.data.message || 'Failed to fetch deleted buyers');
+        }
+      } catch (error) {
+        if (error.response?.data?.message) {
+          throw new Error(error.response.data.message);
+        }
+        throw new Error('Failed to fetch deleted buyers');
+      }
+    },
+
+    // Get All Farmers
+    getAllBuyersIncludingDeleted: async () => {
+      try {
+        const response = await api.get('/admin/buyers/all');
+        if (response.data.status === 'SUCCESS') {
+           return response.data.data;
+        } else {
+          throw new Error(response.data.message || 'Failed to fetch all buyers');
+        }
+      } catch (error) {
+        if (error.response?.data?.message) {
+          throw new Error(error.response.data.message);
+        }
+        throw new Error('Failed to fetch all buyers');
+      }
+    },
 
   // Get user by username
   getUser: async (username) => {
