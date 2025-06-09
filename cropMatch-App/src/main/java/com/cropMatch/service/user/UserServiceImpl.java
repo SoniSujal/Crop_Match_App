@@ -2,7 +2,10 @@ package com.cropMatch.service.user;
 
 import com.cropMatch.dto.authDTO.RegistrationDTO;
 import com.cropMatch.dto.common.UserUpdateDTO;
-import com.cropMatch.exception.BusinessException;
+import com.cropMatch.exception.AccountDeletedException;
+import com.cropMatch.exception.EmailAlreadyExistsException;
+import com.cropMatch.exception.EmailNotFoundException;
+import com.cropMatch.exception.InvalidUserTypeException;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.model.user.UserType;
 import com.cropMatch.model.user.UserTypeMapping;
@@ -11,6 +14,7 @@ import com.cropMatch.repository.user.UserTypeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,11 +37,11 @@ public class UserServiceImpl implements UserService{
         UserDetail userDetail = userDetailRepository.findByEmail(registrationDto.getEmail()).orElse(null);
 
         if (userDetail != null && !userDetail.getActive()) {
-            throw new BusinessException("Account Deleted By Admin");
+            throw new AccountDeletedException("Account Deleted By Admin");
         }
 
         if (userDetail != null) {
-            throw new BusinessException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
         String userTypeName = registrationDto.getUserType().toUpperCase();
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService{
         user.setActive(true);
 
         UserType userType = userTypeRepository.findByName(userTypeName)
-                .orElseThrow(() -> new BusinessException("Invalid user type"));
+                .orElseThrow(() -> new InvalidUserTypeException("Invalid user type"));
 
         UserTypeMapping mapping = new UserTypeMapping();
         mapping.setUser(user);
@@ -68,7 +72,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void updateUserProfile(UserUpdateDTO dto, String username) {
 
-        UserDetail user = userDetailRepository.findByUsername(username).orElseThrow(() -> new BusinessException("User not found"));
+        UserDetail user = userDetailRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
@@ -82,13 +86,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public  UserDetail findByUsername(String username){
         return  userDetailRepository.findByUsername(username)
-                .orElseThrow(() -> new BusinessException("User not Found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not Found"));
     }
 
     @Override
     public  UserDetail findByUserEmail(String email){
         return  userDetailRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException("User not Found"));
+                .orElseThrow(() -> new EmailNotFoundException("User not Found"));
     }
 
     @Override
