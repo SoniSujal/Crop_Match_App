@@ -50,7 +50,6 @@ public class AuthController {
                 AuthResponseDTO dto = new AuthResponseDTO(token, role.toLowerCase(), user.getUsername(), user.getEmail());
                 return ResponseEntity.ok(ApiResponse.success(dto));
             }
-
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.error("Invalid username or password"));
         } catch (Exception e) {

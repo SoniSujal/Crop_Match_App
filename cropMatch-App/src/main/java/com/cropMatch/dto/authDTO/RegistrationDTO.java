@@ -28,7 +28,7 @@ public class RegistrationDTO {
     private String email;
 
     @NotBlank
-    private String userType; // "FARMER", "BUYER", or "ADMIN"
+    private String userType;
 
     @NotBlank
     private String pincode;

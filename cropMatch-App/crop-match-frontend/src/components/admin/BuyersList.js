@@ -61,7 +61,7 @@ const BuyersList = () => {
       try {
         await adminService.activateUserByEmail(email);
         alert('Buyer reactivated successfully');
-        fetchBuyers(); // Refresh list
+        fetchBuyers();
       } catch (error) {
         alert('Failed to activate buyer: ' + error.message);
       }

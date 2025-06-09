@@ -61,7 +61,7 @@ const FarmersList = () => {
     try {
       await adminService.activateUserByEmail(email);
       alert('Farmer reactivated successfully');
-      fetchFarmers(); // Refresh list
+      fetchFarmers();
     } catch (error) {
       alert('Failed to activate farmer: ' + error.message);
     }

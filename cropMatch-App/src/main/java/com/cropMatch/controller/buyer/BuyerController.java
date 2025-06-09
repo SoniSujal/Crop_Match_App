@@ -24,7 +24,6 @@ public class BuyerController {
         return "buyers";
     }
 
-
     @PostMapping("/requests/create")
     public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
         BuyerRequest saved = buyerService.createRequest(dto, principal.getName());
@@ -45,5 +44,4 @@ public class BuyerController {
     public ResponseEntity<?> getAllUnits() {
         return ResponseEntity.ok(buyerService.getAllUnits());
     }
-
 }

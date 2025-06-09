@@ -26,5 +26,4 @@ public class BuyerDTO {
         this.pincode = user.getPincode();
         this.country = user.getCountry();
     }
-
 }

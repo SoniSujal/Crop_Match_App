@@ -8,7 +8,6 @@ import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.admin.AdminService;
 import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -27,16 +26,10 @@ public class AdminController {
 
     private final UserService userService;
 
-    @PutMapping("/users/email/{email}/activate")
-    public ResponseEntity<?> activateUserByEmail(@PathVariable String email) {
-        userService.activateByEmail(email);
-        return ResponseEntity.ok("User activated successfully");
-    }
-
     @GetMapping("/farmers")
-    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmers() {
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllActiveFarmers() {
         try {
-            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream().filter(user -> user.getActive())
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream().filter(UserDetail::getActive)
                     .map( FarmerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(farmers));
@@ -46,7 +39,6 @@ public class AdminController {
         }
     }
 
-    // All farmers regardless of active status
     @GetMapping("/farmers/all")
     public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmersIncludingDeleted() {
         try {
@@ -60,7 +52,6 @@ public class AdminController {
         }
     }
 
-    // Only deleted (inactive) farmers
     @GetMapping("/farmers/deleted")
     public ResponseEntity<ApiResponse<List<FarmerDTO>>> getDeletedFarmers() {
         try {
@@ -76,9 +67,9 @@ public class AdminController {
     }
 
     @GetMapping("/buyers")
-    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyers() {
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllActiveBuyers() {
         try {
-            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream().filter(user -> user.getActive())
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream().filter(UserDetail::getActive)
                     .map( BuyerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(buyers));
@@ -88,7 +79,6 @@ public class AdminController {
         }
     }
 
-    // All farmers regardless of active status
     @GetMapping("/buyers/all")
     public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyersIncludingDeleted() {
         try {
@@ -102,7 +92,6 @@ public class AdminController {
         }
     }
 
-    // Only deleted (inactive) farmers
     @GetMapping("/buyers/deleted")
     public ResponseEntity<ApiResponse<List<BuyerDTO>>> getDeletedBuyers() {
         try {
@@ -159,5 +148,11 @@ public class AdminController {
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error("Error deleting user: " + e.getMessage()));
         }
+    }
+
+    @PutMapping("/users/email/{email}/activate")
+    public ResponseEntity<?> activateUserByEmail(@PathVariable String email) {
+        userService.activateByEmail(email);
+        return ResponseEntity.ok("User activated successfully");
     }
 }
