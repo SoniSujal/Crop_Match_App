@@ -12,6 +12,6 @@ public interface BuyerService {
     BuyerRequest createRequest(BuyerRequestDTO dto, String username);
     List<Category> getActiveCategories();
     List<BuyerServiceImpl.UnitDTO> getAllUnits();
-    List<BuyerRequestResponseDTO> getAllRequests();
+    List<BuyerRequestResponseDTO> getAllRequests(String username);
 
 }

@@ -54,7 +54,7 @@ const AddRequest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/buyer/requests', formData);
+      const response = await api.post('/buyer/requests/create', formData);
       setSuccess('Request posted successfully!');
       setTimeout(() => navigate('/buyer/requests'), 1000);
     } catch (err) {

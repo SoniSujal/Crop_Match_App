@@ -24,20 +24,16 @@ public class BuyerController {
         return "buyers";
     }
 
-//    @GetMapping("/requests/new")
-//    public ResponseEntity<?> ShowRequestPage(){
-//        return ResponseEntity.ok(buyerService.getAllRequests());
-//    }
 
-    @PostMapping("/requests")
+    @PostMapping("/requests/create")
     public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
         BuyerRequest saved = buyerService.createRequest(dto, principal.getName());
         return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<?> getAllRequests() {
-        return ResponseEntity.ok(buyerService.getAllRequests());
+    public ResponseEntity<?> getAllRequests(Principal principal) {
+        return ResponseEntity.ok(buyerService.getAllRequests(principal.getName()));
     }
 
 
@@ -50,6 +46,5 @@ public class BuyerController {
     public ResponseEntity<?> getAllUnits() {
         return ResponseEntity.ok(buyerService.getAllUnits());
     }
-
 
 }

@@ -63,8 +63,11 @@ public class BuyerServiceImpl implements BuyerService {
 
 
     @Override
-    public List<BuyerRequestResponseDTO> getAllRequests() {
-        return requestRepository.findAll().stream().map( BuyerRequestResponseDTO::new).toList();
+    public List<BuyerRequestResponseDTO> getAllRequests(String username) {
+        UserDetail buyer = userService.findByUsername(username);
+        return requestRepository.findByBuyerId(buyer.getId()).stream()
+                .map( BuyerRequestResponseDTO::new)
+                .toList();
     }
 
     public record UnitDTO(String name, String displayName) {}
