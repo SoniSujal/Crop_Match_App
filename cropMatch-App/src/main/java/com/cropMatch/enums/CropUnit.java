@@ -1,18 +1,18 @@
 package com.cropMatch.enums;
 
 public enum CropUnit {
-    KILOGRAM("kg"),
-    GRAM("g"),
-    DOZEN("dozen"),
-    PIECE("piece"),
-    LITRE("litre"),
-    MILLILITRE("ml"),
-    QUINTAL("quintal"),
-    TONNE("tonne"),
-    BUNDLE("bundle"),
-    BOX("box"),
-    CRATE("crate"),
-    BAG("bag");
+    KILOGRAM("Kilogram"),
+    GRAM("Gram"),
+    DOZEN("Dozen"),
+    PIECE("Piece"),
+    LITRE("Litre"),
+    MILLILITRE("Millilitre"),
+    QUINTAL("Quintal"),
+    TONNE("Tonne"),
+    BUNDLE("Bundle"),
+    BOX("Box"),
+    CRATE("Crate"),
+    BAG("Bag");
 
     private final String displayName;
 
