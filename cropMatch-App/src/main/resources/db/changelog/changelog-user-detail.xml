@@ -22,7 +22,6 @@
             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="created_by" type="INT"/>
             <column name="pincode" type="VARCHAR(10)"/>
             <column name="country" type="VARCHAR(100)"/>
             <column name="created_on" type="TIMESTAMP"/>

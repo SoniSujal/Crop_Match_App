@@ -26,4 +26,8 @@ public interface UserDetailRepository extends JpaRepository<UserDetail, Integer>
     @Query("UPDATE UserDetail u SET u.active = false WHERE u.username = :userName")
     int softDeleteUserByName(@Param("userName") String userName);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserDetail u SET u.active = true WHERE u.email = :userName")
+    int ActiveUserByName(@Param("userName") String userName);
 }

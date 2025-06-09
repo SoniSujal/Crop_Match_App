@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-@Slf4j
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("api/buyer")
@@ -35,7 +35,6 @@ public class BuyerController {
     public ResponseEntity<?> getAllRequests(Principal principal) {
         return ResponseEntity.ok(buyerService.getAllRequests(principal.getName()));
     }
-
 
     @GetMapping("/categories")
     public ResponseEntity<?> getActiveCategories(){

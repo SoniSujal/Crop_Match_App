@@ -53,6 +53,20 @@ const FarmersList = () => {
     }
   };
 
+  const handleActivate = async (email) => {
+    if (!window.confirm(`Are you sure you want to reactivate farmer "${email}"?`)) {
+      return;
+    }
+
+    try {
+      await adminService.activateUserByEmail(email);
+      alert('Farmer reactivated successfully');
+      fetchFarmers(); // Refresh list
+    } catch (error) {
+      alert('Failed to activate farmer: ' + error.message);
+    }
+  };
+
   const filteredFarmers = farmers.filter(farmer =>
     farmer.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     farmer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,19 +173,30 @@ const FarmersList = () => {
                   </td>
                   <td>
                     <div className="action-buttons">
-                      <Link
-                        to={`/admin/edit-user/${farmer.username}`}
-                        className="btn btn-edit"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(farmer.username)}
-                        className="btn btn-delete"
-                        disabled={deleteLoading === farmer.username}
-                      >
-                        {deleteLoading === farmer.username ? 'Deleting...' : 'Delete'}
-                      </button>
+                      {filter === 'deleted' ? (
+                        <button
+                          className="btn btn-activate"
+                          onClick={() => handleActivate(farmer.email)}
+                        >
+                          Activate
+                        </button>
+                      ) : (
+                        <>
+                          <Link
+                            to={`/admin/edit-user/${farmer.username}`}
+                            className="btn btn-edit"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(farmer.username)}
+                            className="btn btn-delete"
+                            disabled={deleteLoading === farmer.username}
+                          >
+                            {deleteLoading === farmer.username ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

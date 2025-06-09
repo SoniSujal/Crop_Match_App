@@ -14,5 +14,5 @@ public interface UserService {
     Optional<UserDetail> authenticate(String userEmail, String password);
     public  UserDetail findByUserEmail(String email);
     public int deletUserByName(String username);
-
+    public int activateByEmail(String email);
 }

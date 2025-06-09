@@ -27,6 +27,12 @@ public class AdminController {
 
     private final UserService userService;
 
+    @PutMapping("/users/email/{email}/activate")
+    public ResponseEntity<?> activateUserByEmail(@PathVariable String email) {
+        userService.activateByEmail(email);
+        return ResponseEntity.ok("User activated successfully");
+    }
+
     @GetMapping("/farmers")
     public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmers() {
         try {

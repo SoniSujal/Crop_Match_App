@@ -53,6 +53,20 @@ const BuyersList = () => {
     }
   };
 
+    const handleActivate = async (email) => {
+      if (!window.confirm(`Are you sure you want to reactivate buyer "${email}"?`)) {
+        return;
+      }
+
+      try {
+        await adminService.activateUserByEmail(email);
+        alert('Buyer reactivated successfully');
+        fetchBuyers(); // Refresh list
+      } catch (error) {
+        alert('Failed to activate buyer: ' + error.message);
+      }
+    };
+
   const filteredBuyers = buyers.filter(buyer =>
     buyer.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     buyer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,19 +173,30 @@ const BuyersList = () => {
                   </td>
                   <td>
                     <div className="action-buttons">
-                      <Link
-                        to={`/admin/edit-user/${buyer.username}`}
-                        className="btn btn-edit"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(buyer.username)}
-                        className="btn btn-delete"
-                        disabled={deleteLoading === buyer.username}
-                      >
-                        {deleteLoading === buyer.username ? 'Deleting...' : 'Delete'}
-                      </button>
+                      {filter === 'deleted' ? (
+                        <button
+                          className="btn btn-activate"
+                          onClick={() => handleActivate(buyer.email)}
+                        >
+                          Activate
+                        </button>
+                      ) : (
+                        <>
+                          <Link
+                            to={`/admin/edit-user/${buyer.username}`}
+                            className="btn btn-edit"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(buyer.username)}
+                            className="btn btn-delete"
+                            disabled={deleteLoading === buyer.username}
+                          >
+                            {deleteLoading === buyer.username ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

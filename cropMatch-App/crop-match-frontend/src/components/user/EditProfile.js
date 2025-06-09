@@ -208,6 +208,8 @@ const EditProfile = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter email address"
+                readOnly
+                style={{ backgroundColor: '#B8B8B8' }}
               />
               {errors.email && <span className="field-error">{errors.email}</span>}
             </div>

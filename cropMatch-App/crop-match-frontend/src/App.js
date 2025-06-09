@@ -108,7 +108,7 @@ function App() {
                     path="/buyer/requests"
                          element={
                          <ProtectedRoute>
-                         <AllRequests />}
+                         <AllRequests />
                          </ProtectedRoute>
                          }
                  />

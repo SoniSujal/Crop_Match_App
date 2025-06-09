@@ -1,6 +1,12 @@
 import api from '../auth/api';
 
 const adminService = {
+
+   activateUserByEmail: async (email) => {
+     const response = await api.put(`/admin/users/email/${encodeURIComponent(email)}/activate`);
+     return response.data;
+   },
+
   // Get all active farmers
   getAllFarmers: async () => {
     try {
@@ -70,7 +76,7 @@ const adminService = {
     }
   },
 
-  // Get deleted Farmers
+  // Get deleted Buyers
     getDeletedBuyers: async () => {
       try {
         const response = await api.get('/admin/buyers/deleted');
@@ -87,7 +93,7 @@ const adminService = {
       }
     },
 
-    // Get All Farmers
+    // Get All Buyers
     getAllBuyersIncludingDeleted: async () => {
       try {
         const response = await api.get('/admin/buyers/all');

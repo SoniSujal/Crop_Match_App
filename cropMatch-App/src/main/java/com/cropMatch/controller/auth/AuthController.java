@@ -47,13 +47,7 @@ public class AuthController {
                 String role = user.getUserTypes().iterator().next().getUserType().getName();
                 String token = jwtUtil.generateToken(user.getEmail(), role);
 
-//                Map<String, Object> response = new HashMap<>();
-//                response.put("token", token);
-//                response.put("role", role.toLowerCase());
-//                response.put("username", user.getUsername());
-//                response.put("email", user.getEmail());
                 AuthResponseDTO dto = new AuthResponseDTO(token, role.toLowerCase(), user.getUsername(), user.getEmail());
-
                 return ResponseEntity.ok(ApiResponse.success(dto));
             }
 

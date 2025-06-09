@@ -8,7 +8,6 @@
     <changeSet id="insert-users-1" author="sujal">
         <insert tableName="user_detail">
             <column name="user_id" valueNumeric="1"/>
-            <column name="created_by" valueNumeric="1"/>
             <column name="country" value="India"/>
             <column name="created_on" valueDate="NOW()"/>
             <column name="email" value="admin@gmail.com"/>
@@ -22,7 +21,6 @@
 
         <insert tableName="user_detail">
             <column name="user_id" valueNumeric="2"/>
-            <column name="created_by" valueNumeric="1"/>
             <column name="country" value="India"/>
             <column name="created_on" valueDate="NOW()"/>
             <column name="email" value="bm@gmail.com"/>
@@ -36,7 +34,6 @@
 
         <insert tableName="user_detail">
             <column name="user_id" valueNumeric="3"/>
-            <column name="created_by" valueNumeric="1"/>
             <column name="country" value="India"/>
             <column name="created_on" valueDate="NOW()"/>
             <column name="email" value="fm@gmail.com"/>
