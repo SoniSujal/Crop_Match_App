@@ -6,6 +6,7 @@ import com.cropMatch.service.crop.CropService;
 import com.cropMatch.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/crops")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class CropController {
 
     private final CropService cropService;
@@ -28,6 +30,7 @@ public class CropController {
 
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> addCrop(Principal principal, @Valid @RequestPart("cropDTO") CropDTO cropDTO, @RequestPart("images") List<MultipartFile> images) {
+        log.debug(String.valueOf(cropDTO.getExpireMonth()));
         String username = principal.getName();
         Integer farmerId = userService.findByUsername(username).getId();
         cropService.saveCropWithImages(cropDTO, images, farmerId);

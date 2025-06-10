@@ -1,5 +1,8 @@
 package com.cropMatch.model.farmer;
 
+import com.cropMatch.enums.AvailabilityStatus;
+import com.cropMatch.enums.ProducedWay;
+import com.cropMatch.enums.Quality;
 import com.cropMatch.model.admin.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,11 +11,11 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Crop {
 
@@ -36,8 +39,11 @@ public class Crop {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(nullable = false)
-    private String unit;
+    @Column(name = "stock_unit", nullable = false)
+    private String stockUnit;
+
+    @Column(name = "selling_unit", nullable = false)
+    private String sellingUnit;
 
     @Column(nullable = false)
     private int createdBy;
@@ -48,7 +54,7 @@ public class Crop {
     @Column(nullable = false)
     private String region;
 
-    @OneToMany(mappedBy = "crop")
+    @OneToMany(mappedBy = "crop", cascade = CascadeType.ALL)
     private List<CropImage> images;
 
     @Column(name = "created_on", nullable = false)
@@ -56,4 +62,25 @@ public class Crop {
 
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;
+
+    @Column(name = "expire_month", nullable = false)
+    private String expireMonth;
+
+    @Column(name = "crop_type")
+    private String cropType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quality", nullable = false)
+    private Quality quality;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "produced_way", nullable = false)
+    private ProducedWay producedWay;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "availability_status", nullable = false)
+    private AvailabilityStatus availabilityStatus;
+
+    @Column(name = "expected_ready_month")
+    private String expectedReadyMonth;
 }

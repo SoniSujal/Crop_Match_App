@@ -1,5 +1,6 @@
 package com.cropMatch.service.crop;
 
+import com.cropMatch.dto.buyerDTO.RecommedationDTO;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 
 import com.cropMatch.model.admin.Category;
@@ -10,9 +11,11 @@ import com.cropMatch.repository.crop.CropImageRepository;
 import com.cropMatch.repository.crop.CropRepository;
 import com.cropMatch.service.category.CategoryService;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -20,9 +23,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CropServiceImpl implements CropService {
 
     @Value("${file.upload.path}")
@@ -53,12 +59,19 @@ public class CropServiceImpl implements CropService {
         crop.setCategory(category);
         crop.setQuantity(cropDTO.getQuantity());
         crop.setPrice(cropDTO.getPrice());
-        crop.setUnit(cropDTO.getUnit());
+        crop.setStockUnit(cropDTO.getStockUnit());
+        crop.setSellingUnit(cropDTO.getSellingUnit());
         crop.setCreatedBy(farmerId);
         crop.setStatus(true);
         crop.setRegion(cropDTO.getRegion());
         crop.setCreatedOn(LocalDateTime.now());
         crop.setUpdatedOn(LocalDateTime.now());
+        crop.setExpireMonth(String.valueOf(cropDTO.getExpireMonth()));
+        crop.setCropType(cropDTO.getCropType());
+        crop.setQuality(cropDTO.getQuality());
+        crop.setProducedWay(cropDTO.getProducedWay());
+        crop.setAvailabilityStatus(cropDTO.getAvailabilityStatus());
+        crop.setExpectedReadyMonth(cropDTO.getExpectedReadyMonth());
         Crop saved = cropRepository.save(crop);
 
         uploadFileWithData(farmerId,images, saved.getId());
@@ -93,5 +106,35 @@ public class CropServiceImpl implements CropService {
             }
         }
         return folderName;
+    }
+
+    public List<RecommedationDTO> recommedCropsDetailsBaseCategory(List<Integer> categoryIds) {
+        if(CollectionUtils.isEmpty(categoryIds)) {
+            return null;
+        }
+        List<RecommedationDTO> recommedationDTOList = new ArrayList<>();
+        List<List<Crop>> recommedationList = categoryIds.stream()
+                .map(categoryId -> cropRepository.findCropsWithImagesByCategoryId(categoryId)).collect(Collectors.toList());
+        for(List<Crop> cropList : recommedationList) {
+            for(Crop cropDetails : cropList) {
+                RecommedationDTO recommedationDTO = new RecommedationDTO();
+                recommedationDTO.setName(cropDetails.getName());
+                recommedationDTO.setCategoryName(cropDetails.getCategory().getName());
+                recommedationDTO.setQuantity(cropDetails.getQuantity());
+                recommedationDTO.setPrice(cropDetails.getPrice());
+                recommedationDTO.setStockUnit(cropDetails.getStockUnit());
+                recommedationDTO.setSellingUnit(cropDetails.getSellingUnit());
+                recommedationDTO.setRegion(cropDetails.getRegion());
+                recommedationDTO.setExpireMonth(cropDetails.getExpireMonth());
+                recommedationDTO.setCropType(cropDetails.getCropType());
+                recommedationDTO.setQuality(cropDetails.getQuality());
+                recommedationDTO.setProducedWay(cropDetails.getProducedWay());
+                recommedationDTO.setAvailabilityStatus(cropDetails.getAvailabilityStatus());
+                recommedationDTO.setImages(cropDetails.getImages());
+                recommedationDTO.setExpectedReadyMonth(cropDetails.getExpectedReadyMonth());
+                recommedationDTOList.add(recommedationDTO);
+            }
+        }
+        return recommedationDTOList;
     }
 }

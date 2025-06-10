@@ -23,4 +23,9 @@ public class CategoryServiceImpl implements CategoryService{
     public Optional<Category> getCategoryByName(String name) {
         return categoryRepository.findByName(name);
     }
+
+    @Override
+    public Optional<String> getCategoryNameById(Integer id) {
+        return categoryRepository.findById(id).filter(Category::getIsActive).map(Category::getName);
+    }
 }

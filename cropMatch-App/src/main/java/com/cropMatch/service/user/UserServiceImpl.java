@@ -2,6 +2,7 @@ package com.cropMatch.service.user;
 
 import com.cropMatch.dto.authDTO.RegistrationDTO;
 import com.cropMatch.dto.common.UserUpdateDTO;
+import com.cropMatch.enums.UserRoles;
 import com.cropMatch.exception.AccountDeletedException;
 import com.cropMatch.exception.EmailAlreadyExistsException;
 import com.cropMatch.exception.EmailNotFoundException;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService{
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        String userTypeName = registrationDto.getUserType().toUpperCase();
+        UserRoles userTypeName = registrationDto.getUserType();
 
         UserDetail user = new UserDetail();
         user.setUsername(registrationDto.getUsername());
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService{
         user.setCreatedOn(LocalDateTime.now());
         user.setActive(true);
 
-        UserType userType = userTypeRepository.findByName(userTypeName)
+        UserType userType = userTypeRepository.findByName(String.valueOf(userTypeName))
                 .orElseThrow(() -> new InvalidUserTypeException("Invalid user type"));
 
         UserTypeMapping mapping = new UserTypeMapping();
