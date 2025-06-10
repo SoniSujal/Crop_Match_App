@@ -1,6 +1,6 @@
 package com.cropMatch.exception;
 
-import com.cropMatch.dto.ErrorResponses;
+import com.cropMatch.dto.responseDTO.ErrorResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

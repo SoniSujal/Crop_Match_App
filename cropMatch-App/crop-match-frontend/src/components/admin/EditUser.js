@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import adminService from '../../services/adminService';
+import adminService from '../../services/admin/adminService';
 import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '../../utils/constants';
 import '../../styles/EditUser.css';
 
@@ -165,6 +165,8 @@ const EditUser = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter email address"
+                readOnly
+                style={{ backgroundColor: '#B8B8B8' }}
               />
               {errors.email && <span className="field-error">{errors.email}</span>}
             </div>

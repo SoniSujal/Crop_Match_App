@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import adminService from '../../services/adminService';
+import adminService from '../../services/admin/adminService';
 import '../../styles/FarmersList.css';
 
 const FarmersList = () => {
@@ -9,15 +9,25 @@ const FarmersList = () => {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(null);
+  const [filter, setFilter] = useState('active'); // 'active' | 'deleted' | 'all'
 
   useEffect(() => {
     fetchFarmers();
-  }, []);
+  }, [filter]);
 
   const fetchFarmers = async () => {
-    try {
-      const farmersData = await adminService.getAllFarmers();
-      setFarmers(farmersData);
+    setLoading(true);
+      try {
+        let farmersData = [];
+        if (filter === 'active') {
+          farmersData = await adminService.getAllFarmers();
+        } else if (filter === 'deleted') {
+          farmersData = await adminService.getDeletedFarmers();
+        } else if (filter === 'all') {
+          farmersData = await adminService.getAllFarmersIncludingDeleted();
+        }
+        setFarmers(farmersData);
+        setError('');
     } catch (error) {
       setError('Failed to load farmers');
       console.error('Fetch farmers error:', error);
@@ -40,6 +50,20 @@ const FarmersList = () => {
       alert('Failed to delete farmer: ' + error.message);
     } finally {
       setDeleteLoading(null);
+    }
+  };
+
+  const handleActivate = async (email) => {
+    if (!window.confirm(`Are you sure you want to reactivate farmer "${email}"?`)) {
+      return;
+    }
+
+    try {
+      await adminService.activateUserByEmail(email);
+      alert('Farmer reactivated successfully');
+      fetchFarmers();
+    } catch (error) {
+      alert('Failed to activate farmer: ' + error.message);
     }
   };
 
@@ -75,6 +99,17 @@ const FarmersList = () => {
       )}
 
       <div className="page-controls">
+        <div className="filter-box">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="active">Active Farmers</option>
+              <option value="deleted">Deleted Farmers</option>
+              <option value="all">All Farmers</option>
+            </select>
+        </div>
         <div className="search-box">
           <input
             type="text"
@@ -94,8 +129,16 @@ const FarmersList = () => {
 
       {filteredFarmers.length === 0 ? (
         <div className="no-data">
-          <h3>No farmers found</h3>
-          <p>{searchTerm ? 'Try adjusting your search criteria' : 'No farmers have registered yet'}</p>
+          <h3>
+            {searchTerm
+              ? `No matching farmers found for "${searchTerm}"`
+              : filter === 'active'
+              ? 'No active farmers found'
+              : filter === 'deleted'
+              ? 'No deleted farmers found'
+              : 'No farmers found'}
+          </h3>
+          <p>{searchTerm ? 'Try adjusting your search criteria' : 'There is no data for this filter'}</p>
         </div>
       ) : (
         <div className="table-container">
@@ -130,19 +173,30 @@ const FarmersList = () => {
                   </td>
                   <td>
                     <div className="action-buttons">
-                      <Link
-                        to={`/admin/edit-user/${farmer.username}`}
-                        className="btn btn-edit"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(farmer.username)}
-                        className="btn btn-delete"
-                        disabled={deleteLoading === farmer.username}
-                      >
-                        {deleteLoading === farmer.username ? 'Deleting...' : 'Delete'}
-                      </button>
+                      {filter === 'deleted' ? (
+                        <button
+                          className="btn btn-activate"
+                          onClick={() => handleActivate(farmer.email)}
+                        >
+                          Activate
+                        </button>
+                      ) : (
+                        <>
+                          <Link
+                            to={`/admin/edit-user/${farmer.username}`}
+                            className="btn btn-edit"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(farmer.username)}
+                            className="btn btn-delete"
+                            disabled={deleteLoading === farmer.username}
+                          >
+                            {deleteLoading === farmer.username ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -1,7 +1,7 @@
 package com.cropMatch.security;
 
-import com.cropMatch.model.UserPrincipal;
-import com.cropMatch.repository.UserDetailRepository;
+import com.cropMatch.model.common.UserPrincipal;
+import com.cropMatch.repository.common.UserDetailRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -25,13 +25,10 @@ import java.util.Collections;
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
     private final JwtUtil jwtUtil;
 
-    @Autowired
     private final UserDetailRepository userDetailRepository;
 
-    @Autowired
     private final TokenBlacklist tokenBlacklist;
 
     @Override
@@ -53,20 +50,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 authenticateUser(username, request);
             }
         } catch (Exception e) {
-            // Clear context but don't redirect - let the request proceed
             SecurityContextHolder.clearContext();
         }
         filterChain.doFilter(request, response);
     }
 
     private String extractJwtToken(HttpServletRequest request) {
-        // First check Authorization header (for React app)
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
 
-        // Fallback to cookies (for backward compatibility)
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

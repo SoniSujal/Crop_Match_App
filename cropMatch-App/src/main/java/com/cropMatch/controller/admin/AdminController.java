@@ -1,14 +1,13 @@
 package com.cropMatch.controller.admin;
 
-import com.cropMatch.dto.ApiResponse;
-import com.cropMatch.dto.BuyerDTO;
-import com.cropMatch.dto.FarmerDTO;
-import com.cropMatch.dto.UserUpdateDTO;
-import com.cropMatch.model.UserDetail;
+import com.cropMatch.dto.responseDTO.ApiResponse;
+import com.cropMatch.dto.buyerDTO.BuyerDTO;
+import com.cropMatch.dto.farmerDTO.FarmerDTO;
+import com.cropMatch.dto.common.UserUpdateDTO;
+import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.admin.AdminService;
 import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -20,27 +19,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
-    @Autowired
     private final AdminService adminService;
 
-    @Autowired
     private final UserService userService;
 
     @GetMapping("/farmers")
-    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmers() {
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllActiveFarmers() {
         try {
-            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream()
-                    .map(user -> new FarmerDTO(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getMobile(),
-                            user.getPincode(),
-                            user.getCountry()
-                    ))
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream().filter(UserDetail::getActive)
+                    .map( FarmerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(farmers));
         } catch (Exception e) {
@@ -49,23 +39,70 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/buyers")
-    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyers() {
+    @GetMapping("/farmers/all")
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllFarmersIncludingDeleted() {
         try {
-            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream()
-                    .map(user -> new BuyerDTO(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getMobile(),
-                            user.getPincode(),
-                            user.getCountry()
-                    ))
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER")
+                    .stream().map(FarmerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(farmers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch all farmers: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/farmers/deleted")
+    public ResponseEntity<ApiResponse<List<FarmerDTO>>> getDeletedFarmers() {
+        try {
+            List<FarmerDTO> deletedFarmers = adminService.getAllUsersByRole("FARMER")
+                    .stream().filter(user -> !user.getActive())
+                    .map(FarmerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(deletedFarmers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch deleted farmers: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/buyers")
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllActiveBuyers() {
+        try {
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream().filter(UserDetail::getActive)
+                    .map( BuyerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(buyers));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error("Failed to fetch buyers: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/buyers/all")
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllBuyersIncludingDeleted() {
+        try {
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER")
+                    .stream().map(BuyerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(buyers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch all buyers: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/buyers/deleted")
+    public ResponseEntity<ApiResponse<List<BuyerDTO>>> getDeletedBuyers() {
+        try {
+            List<BuyerDTO> deletedBuyers = adminService.getAllUsersByRole("BUYER")
+                    .stream().filter(user -> !user.getActive())
+                    .map(BuyerDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ApiResponse.success(deletedBuyers));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to fetch deleted buyers: " + e.getMessage()));
         }
     }
 
@@ -111,5 +148,11 @@ public class AdminController {
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error("Error deleting user: " + e.getMessage()));
         }
+    }
+
+    @PutMapping("/users/email/{email}/activate")
+    public ResponseEntity<?> activateUserByEmail(@PathVariable String email) {
+        userService.activateByEmail(email);
+        return ResponseEntity.ok("User activated successfully");
     }
 }

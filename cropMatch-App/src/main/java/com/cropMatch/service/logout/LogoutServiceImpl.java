@@ -1,6 +1,6 @@
 package com.cropMatch.service.logout;
 
-import com.cropMatch.dto.ApiResponse;
+import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.security.TokenBlacklist;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

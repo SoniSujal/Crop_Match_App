@@ -9,5 +9,4 @@ public class CropMatchAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CropMatchAppApplication.class, args);
 	}
-
 }

@@ -1,21 +1,20 @@
 package com.cropMatch.controller.buyer;
 
-import com.cropMatch.dto.BuyerRequestDTO;
-import com.cropMatch.model.BuyerRequest;
-import com.cropMatch.service.user.buyer.BuyerService;
+import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.model.buyer.BuyerRequest;
+import com.cropMatch.service.buyer.BuyerService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("api/buyer")
+@CrossOrigin(origins = "*")
 public class BuyerController {
 
     private final BuyerService buyerService;
@@ -25,15 +24,15 @@ public class BuyerController {
         return "buyers";
     }
 
-    @GetMapping("/requests/new")
-    public ResponseEntity<?> ShowRequestPage(){
-        return ResponseEntity.ok(buyerService.getAllRequests());
-    }
-
-    @PostMapping("/requests")
+    @PostMapping("/requests/create")
     public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
         BuyerRequest saved = buyerService.createRequest(dto, principal.getName());
         return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/requests")
+    public ResponseEntity<?> getAllRequests(Principal principal) {
+        return ResponseEntity.ok(buyerService.getAllRequests(principal.getName()));
     }
 
     @GetMapping("/categories")
@@ -45,6 +44,4 @@ public class BuyerController {
     public ResponseEntity<?> getAllUnits() {
         return ResponseEntity.ok(buyerService.getAllUnits());
     }
-
-
 }

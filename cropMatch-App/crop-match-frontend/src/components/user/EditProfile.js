@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import userService from '../../services/userService';
+import userService from '../../services/user/userService';
 import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '../../utils/constants';
 import '../../styles/EditProfile.css';
 
@@ -208,6 +208,8 @@ const EditProfile = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter email address"
+                readOnly
+                style={{ backgroundColor: '#B8B8B8' }}
               />
               {errors.email && <span className="field-error">{errors.email}</span>}
             </div>

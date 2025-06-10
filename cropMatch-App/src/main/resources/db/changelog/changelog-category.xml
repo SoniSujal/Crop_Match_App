@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="sujal">
+        <createTable tableName="category">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="sujal">
+        <insert tableName="category">
+            <column name="name" value="Vegetables"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_on" valueDate="2025-06-07T10:00:00"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Fruits"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_on" valueDate="2025-06-07T10:05:00"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Grains"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="created_on" valueDate="2025-06-07T10:10:00"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

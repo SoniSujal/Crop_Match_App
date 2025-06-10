@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import adminService from '../../services/adminService';
+import adminService from '../../services/admin/adminService';
 import '../../styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
