@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +38,7 @@ public class RegistrationDTO {
 
     @NotBlank
     private String country;
+
+    private List<Integer> preferenceCategoryIds;
+
 }

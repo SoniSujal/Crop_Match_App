@@ -5,7 +5,6 @@ import userService from '../../services/user/userService';
 import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '../../utils/constants';
 import '../../styles/EditProfile.css';
 
-
 const EditProfile = () => {
   const { user, updateUser } = useAuth();
   const navigate = useNavigate();
@@ -24,26 +23,54 @@ const EditProfile = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Preferences related state
+  const [categories, setCategories] = useState([]);
+  const [selectedPrefs, setSelectedPrefs] = useState([]);
+
   useEffect(() => {
     fetchProfile();
+    fetchCategories();
   }, []);
 
+  // Fetch user profile data including preferences
   const fetchProfile = async () => {
     try {
       const profile = await userService.getProfile();
-      const profileData = {
+      setFormData({
         username: profile.username,
         email: profile.email,
         mobile: profile.mobile,
         pincode: profile.pincode,
         country: profile.country
-      };
-      setFormData(profileData);
-      setOriginalData(profileData);
-    } catch (error) {
-      setError('Failed to load profile data: ' + error.message);
+      });
+      setOriginalData({
+        username: profile.username,
+        email: profile.email,
+        mobile: profile.mobile,
+        pincode: profile.pincode,
+        country: profile.country
+      });
+
+      // Load preferences if user is BUYER and preferences exist
+      if (user?.role.toUpperCase() === 'BUYER' && Array.isArray(profile.preferenceCategoryIds)) {
+        setSelectedPrefs(profile.preferenceCategoryIds);
+      }
+    } catch (err) {
+      setError('Failed to load profile data: ' + err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch category list for preferences dropdown
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories'); // Make sure this endpoint exists
+      if (!response.ok) throw new Error('Failed to fetch categories');
+      const data = await response.json();
+      setCategories(data);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
     }
   };
 
@@ -66,20 +93,50 @@ const EditProfile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
 
-    // Clear error for this field and validate
     const error = validateField(name, value);
     setErrors(prev => ({
       ...prev,
       [name]: error
     }));
 
-    // Clear success message when user starts editing
     if (success) setSuccess('');
+  };
+
+  // Handle preferences add
+  const handlePrefAdd = (e) => {
+    const selectedId = parseInt(e.target.value);
+    if (
+      selectedId &&
+      !selectedPrefs.includes(selectedId) &&
+      selectedPrefs.length < 5
+    ) {
+      setSelectedPrefs(prev => [...prev, selectedId]);
+      setErrors(prev => ({ ...prev, preferences: '' }));
+    }else if (selectedPrefs.length >= 5) {
+         setErrors(prev => ({ ...prev, preferences: 'You can select up to 5 preferences only.' }));
+       }
+    e.target.value = '';
+    if (success) setSuccess('');
+  };
+
+  // Handle preferences remove
+  const handlePrefRemove = (id) => {
+    setSelectedPrefs(prev => prev.filter(pref => pref !== id));
+    if (success) setSuccess('');
+  };
+
+  const validatePreferences = () => {
+    if (user?.role.toUpperCase() === 'BUYER') {
+      if (selectedPrefs.length < 1 || selectedPrefs.length > 5) {
+        return 'You must select between 1 and 5 preferences.';
+      }
+    }
+    return '';
   };
 
   const handleSubmit = async (e) => {
@@ -89,12 +146,15 @@ const EditProfile = () => {
     setError('');
     setSuccess('');
 
-    // Validate all fields
     const newErrors = {};
     Object.keys(formData).forEach(key => {
       const error = validateField(key, formData[key]);
       if (error) newErrors[key] = error;
     });
+
+    // Validate preferences
+    const prefError = validatePreferences();
+    if (prefError) newErrors.preferences = prefError;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -103,22 +163,26 @@ const EditProfile = () => {
     }
 
     try {
-      await userService.updateProfile(formData);
+      const updateData = {
+        ...formData,
+        ...(user?.role.toUpperCase() === 'BUYER' ? { preferenceCategoryIds: selectedPrefs } : {})
+      };
+
+      await userService.updateProfile(updateData);
+
       setSuccess('Profile updated successfully!');
       setOriginalData(formData);
 
-      // Update user context
       updateUser({
         username: formData.username,
         email: formData.email
       });
 
-      // Auto-redirect after success
       setTimeout(() => {
         navigate(-1);
       }, 2000);
-    } catch (error) {
-      setError('Failed to update profile: ' + error.message);
+    } catch (err) {
+      setError('Failed to update profile: ' + err.message);
     } finally {
       setSaving(false);
     }
@@ -133,10 +197,16 @@ const EditProfile = () => {
     setErrors({});
     setError('');
     setSuccess('');
+    // Reset prefs too
+    fetchProfile();
   };
 
   const hasChanges = () => {
-    return JSON.stringify(formData) !== JSON.stringify(originalData);
+    // Check if form fields or preferences changed
+    const formChanged = JSON.stringify(formData) !== JSON.stringify(originalData);
+    const prefsChanged = JSON.stringify(selectedPrefs.sort()) !==
+      JSON.stringify((user?.preferenceCategoryIds || []).sort());
+    return formChanged || prefsChanged;
   };
 
   if (loading) {
@@ -157,17 +227,8 @@ const EditProfile = () => {
         <p>Update your profile information</p>
       </div>
 
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="success-message">
-          {success}
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
 
       <div className="form-container">
         <div className="profile-info">
@@ -178,7 +239,7 @@ const EditProfile = () => {
           </div>
           <div className="profile-details">
             <h3>{user?.username}</h3>
-            <p className="user-role">{user?.role}</p>
+            <p className="user-role">{user?.role.toUpperCase()}</p>
           </div>
         </div>
 
@@ -205,9 +266,6 @@ const EditProfile = () => {
                 id="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Enter email address"
                 readOnly
                 style={{ backgroundColor: '#B8B8B8' }}
               />
@@ -258,6 +316,67 @@ const EditProfile = () => {
             />
             {errors.country && <span className="field-error">{errors.country}</span>}
           </div>
+
+          {/* Preferences section only for BUYER */}
+          {user?.role.toUpperCase() === 'BUYER' && (
+            <div className="form-group">
+              <label>Preferences *</label>
+
+              {categories.length === 0 ? (
+                <p>Loading categories...</p>
+              ) : (
+                <select onChange={handlePrefAdd} value="">
+                  <option value="">Add a category</option>
+                  {categories
+                    .filter(cat => !selectedPrefs.includes(cat.id))
+                    .map(cat => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                </select>
+              )}
+
+              <div
+                className="selected-tags"
+                style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}
+              >
+                {selectedPrefs.map(id => {
+                  const cat = categories.find(c => c.id === id);
+                  return (
+                    <span
+                      key={id}
+                      style={{
+                        background: '#eee',
+                        padding: '5px 10px',
+                        borderRadius: '15px',
+                        display: 'inline-flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {cat?.name}
+                      <button
+                        type="button"
+                        onClick={() => handlePrefRemove(id)}
+                        style={{
+                          marginLeft: '8px',
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#999',
+                          fontWeight: 'bold',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+
+              {errors.preferences && <span className="field-error">{errors.preferences}</span>}
+            </div>
+          )}
 
           <div className="form-actions">
             <button

@@ -25,7 +25,7 @@ const AddRequest = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get('/buyer/categories'); // Make sure this backend route exists
+        const response = await api.get('/categories'); // Make sure this backend route exists
         setCategories(response.data);
       } catch (err) {
         console.error('Failed to fetch categories:', err);
