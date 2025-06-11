@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '../../utils/constants';
 import '../../styles/Auth.css';
-
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -18,9 +17,26 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
+  const [selectedPrefs, setSelectedPrefs] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories'); // Replace with your API endpoint
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        const data = await response.json();
+        setCategories(data); // Expecting array of {id, name}
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const validateField = (name, value) => {
     switch (name) {
@@ -56,6 +72,22 @@ const Register = () => {
       ...prev,
       [name]: error
     }));
+
+    // Clear preferences if userType changed and is not BUYER
+    if (name === 'userType' && value !== 'BUYER') {
+      setSelectedPrefs([]);
+      setErrors(prev => ({ ...prev, preferences: '' }));
+    }
+  };
+
+  // Handle checkbox preferences
+  const handlePrefChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setSelectedPrefs(prev => [...prev, value]);
+    } else {
+      setSelectedPrefs(prev => prev.filter(pref => pref !== value));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -71,6 +103,13 @@ const Register = () => {
       if (error) newErrors[key] = error;
     });
 
+    // Validate preferences if userType is BUYER
+    if (formData.userType === 'BUYER') {
+      if (selectedPrefs.length < 1 || selectedPrefs.length > 5) {
+        newErrors.preferences = 'Buyer must select between 1 and 5 preferences.';
+      }
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setLoading(false);
@@ -78,7 +117,12 @@ const Register = () => {
     }
 
     try {
-      await register(formData);
+      // Include preferences if buyer
+      const dataToSend = formData.userType === 'BUYER'
+        ? { ...formData, preferenceCategoryIds: selectedPrefs }
+        : formData;
+
+      await register(dataToSend);
       setSuccess('Registration successful! Please login with your credentials.');
       setTimeout(() => {
         navigate('/login');
@@ -178,6 +222,71 @@ const Register = () => {
             </select>
             {errors.userType && <span className="field-error">{errors.userType}</span>}
           </div>
+
+          {/* Show preferences checkboxes ONLY if Buyer is selected */}
+          {formData.userType === 'BUYER' && (
+            <div className="form-group">
+              <label>Preferences *</label>
+
+              {categories.length === 0 ? (
+                <p>Loading categories...</p>
+              ) : (
+                <select
+                  onChange={(e) => {
+                    const selectedId = parseInt(e.target.value);
+                    if (selectedId && !selectedPrefs.includes(selectedId) && selectedPrefs.length < 5) {
+                      setSelectedPrefs(prev => [...prev, selectedId]);
+                    }
+                    e.target.value = ""; // reset dropdown after selection
+                  }}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {/* Show selected preferences as tags */}
+              <div className="selected-tags" style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {selectedPrefs.map(id => {
+                  const cat = categories.find(c => c.id === id);
+                  return (
+                    <span
+                      key={id}
+                      style={{
+                        background: '#eee',
+                        padding: '5px 10px',
+                        borderRadius: '15px',
+                        display: 'inline-flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {cat?.name}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPrefs(prev => prev.filter(pref => pref !== id))}
+                        style={{
+                          marginLeft: '8px',
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#999',
+                          fontWeight: 'bold',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+
+              {errors.preferences && <span className="field-error">{errors.preferences}</span>}
+            </div>
+          )}
 
           <div className="form-row">
             <div className="form-group">

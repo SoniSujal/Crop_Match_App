@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**","api/buyer/categories","api/buyer/units").permitAll()
+                        .requestMatchers("/api/auth/**","api/buyer/categories","api/categories","api/buyer/units").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/user/**").authenticated()
                         .requestMatchers("api/crops/**").hasAuthority("FARMER")
