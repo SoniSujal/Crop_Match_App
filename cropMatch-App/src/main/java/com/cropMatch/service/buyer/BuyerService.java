@@ -13,5 +13,8 @@ public interface BuyerService {
     List<Category> getActiveCategories();
     List<BuyerServiceImpl.UnitDTO> getAllUnits();
     List<BuyerRequestResponseDTO> getAllRequests(String username);
+    boolean updateBuyerPreferences(String username, List<Integer> categoryIds);
 
+    List<Integer> getBuyerPreferenceCategoryIds(Integer userId);
+    List<Integer> getBuyerPreferences(String name);
 }

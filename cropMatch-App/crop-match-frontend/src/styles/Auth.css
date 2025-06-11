@@ -108,3 +108,12 @@
   gap: 20px;
   flex-wrap: wrap;
 }
+
+
+.selected-tags span:hover {
+  background-color: #ddd;
+}
+
+.selected-tags button:hover {
+  color: #ff0000;
+}

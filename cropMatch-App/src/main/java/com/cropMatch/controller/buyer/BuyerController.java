@@ -3,9 +3,11 @@ package com.cropMatch.controller.buyer;
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
+import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.buyer.BuyerService;
 import com.cropMatch.service.crop.CropService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +54,22 @@ public class BuyerController {
     @PostMapping("/recommendations")
     public ResponseEntity<List<RecommendationDTO>> getRecommendationsByCategories(@RequestBody List<Integer> categoryIds) {
         return ResponseEntity.ok(cropService.recommedCropsDetailsBaseCategory(categoryIds));
+    }
+
+    @GetMapping("/preferences")
+    public ResponseEntity<List<Integer>> getBuyerPreferences(Principal principal) {
+        List<Integer> preferenceIds = buyerService.getBuyerPreferences(principal.getName());
+        return ResponseEntity.ok(preferenceIds);
+    }
+
+
+    @PostMapping("/preferences")
+    public ResponseEntity<?> updatePreferences(@RequestBody List<Integer> categoryIds,Principal principal){
+        boolean updated = buyerService.updateBuyerPreferences(principal.getName(),categoryIds);
+        if (updated){
+            return ResponseEntity.ok("Preference updated successfully!");
+        }else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No New Preferences were added.");
+        }
     }
 }

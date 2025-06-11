@@ -7,18 +7,27 @@ import com.cropMatch.exception.AccountDeletedException;
 import com.cropMatch.exception.EmailAlreadyExistsException;
 import com.cropMatch.exception.EmailNotFoundException;
 import com.cropMatch.exception.InvalidUserTypeException;
+import com.cropMatch.model.admin.Category;
+import com.cropMatch.model.buyer.BuyerPreference;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.model.user.UserType;
 import com.cropMatch.model.user.UserTypeMapping;
+import com.cropMatch.repository.buyer.BuyerPreferencesRepository;
+import com.cropMatch.repository.category.CategoryRepository;
 import com.cropMatch.repository.common.UserDetailRepository;
 import com.cropMatch.repository.user.UserTypeRepository;
+import com.cropMatch.service.buyer.BuyerService;
 import jakarta.transaction.Transactional;
+import liquibase.util.CollectionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +39,10 @@ public class UserServiceImpl implements UserService{
     private final UserTypeRepository userTypeRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final BuyerPreferencesRepository buyerPreferencesRepository;
+
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional
@@ -66,6 +79,25 @@ public class UserServiceImpl implements UserService{
 
         user.getUserTypes().add(mapping);
         userDetailRepository.save(user);
+
+        if (userTypeName.equals("BUYER")) {
+            List<Integer> categoryIds = registrationDto.getPreferenceCategoryIds();
+
+            if (CollectionUtils.isEmpty(categoryIds) || categoryIds.size() < 1 || categoryIds.size() > 5) {
+                throw new RuntimeException("Buyer must select between 1 and 5 preferences.");
+            }
+
+            List<BuyerPreference> preferences = new ArrayList<>();
+            for (Integer catId : categoryIds) {
+                Category category = categoryRepository.findById(catId)
+                        .orElseThrow(() -> new RuntimeException("Category not found with ID: " + catId));
+                preferences.add(new BuyerPreference(user.getId(), category));
+            }
+
+            buyerPreferencesRepository.saveAll(preferences);
+        }
+
+
     }
 
     @Override

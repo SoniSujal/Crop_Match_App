@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="buyer_preferences-1" author="smit">
+        <createTable tableName="buyer_preferences">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="buyer_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="buyer_preferences-2" author="smit">
+        <addForeignKeyConstraint
+                baseTableName="buyer_preferences"
+                baseColumnNames="buyer_id"
+                constraintName="fk_buyer_pref_user"
+                referencedTableName="user_detail"
+                referencedColumnNames="user_id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="buyer_preferences"
+                baseColumnNames="category_id"
+                constraintName="fk_buyer_pref_category"
+                referencedTableName="category"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="buyer_preferences-3" author="smit">
+        <addUniqueConstraint
+                tableName="buyer_preferences"
+                columnNames="buyer_id, category_id"
+                constraintName="uq_buyer_category"/>
+    </changeSet>
+
+</databaseChangeLog>
