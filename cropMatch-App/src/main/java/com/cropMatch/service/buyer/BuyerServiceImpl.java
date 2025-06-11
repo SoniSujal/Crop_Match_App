@@ -82,19 +82,16 @@ public class BuyerServiceImpl implements BuyerService {
         UserDetail buyer = userService.findByUsername(username);
         Integer buyerId = buyer.getId();
 
+        if (newCategoryIds == null || newCategoryIds.isEmpty()) {
+                return false;
+        }
+
         List<BuyerPreference> currentPreferences = buyerPreferencesRepository.findByBuyerId(buyerId);
         Set<Integer> currentCategoryIds = new HashSet<>();
         for (BuyerPreference pref : currentPreferences) {
             currentCategoryIds.add(pref.getCategory().getId());
         }
 
-        if (newCategoryIds == null || newCategoryIds.isEmpty()) {
-            if (!currentPreferences.isEmpty()) {
-                return false;
-            } else {
-                return false;
-            }
-        }
 
         List<BuyerPreference> preferencesToDelete = new ArrayList<>();
         for (BuyerPreference pref : currentPreferences) {
