@@ -79,12 +79,13 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     @Transactional
     public boolean updateBuyerPreferences(String username, List<Integer> newCategoryIds) {
-        UserDetail buyer = userService.findByUsername(username);
-        Integer buyerId = buyer.getId();
 
         if (newCategoryIds == null || newCategoryIds.isEmpty()) {
-                return false;
+            return false;
         }
+
+        UserDetail buyer = userService.findByUsername(username);
+        Integer buyerId = buyer.getId();
 
         List<BuyerPreference> currentPreferences = buyerPreferencesRepository.findByBuyerId(buyerId);
         Set<Integer> currentCategoryIds = new HashSet<>();
