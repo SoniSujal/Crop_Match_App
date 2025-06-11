@@ -51,8 +51,9 @@ public class BuyerController {
         return ResponseEntity.ok(buyerService.getAllUnits());
     }
 
-    @PostMapping("/recommendations")
-    public ResponseEntity<List<RecommendationDTO>> getRecommendationsByCategories(@RequestBody List<Integer> categoryIds) {
+    @GetMapping("/{buyerId}/recommendations")
+    public ResponseEntity<List<RecommendationDTO>> getRecommendationsByCategories(@PathVariable Integer buyerId) {
+        List<Integer> categoryIds = buyerService.getBuyerPreferenceCategoryIds(buyerId);
         return ResponseEntity.ok(cropService.recommedCropsDetailsBaseCategory(categoryIds));
     }
 
