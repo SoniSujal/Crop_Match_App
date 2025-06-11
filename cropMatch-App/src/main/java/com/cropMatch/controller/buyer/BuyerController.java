@@ -63,7 +63,6 @@ public class BuyerController {
         return ResponseEntity.ok(preferenceIds);
     }
 
-
     @PostMapping("/preferences")
     public ResponseEntity<?> updatePreferences(@RequestBody List<Integer> categoryIds,Principal principal){
         boolean updated = buyerService.updateBuyerPreferences(principal.getName(),categoryIds);

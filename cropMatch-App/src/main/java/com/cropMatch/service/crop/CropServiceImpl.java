@@ -3,6 +3,8 @@ package com.cropMatch.service.crop;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 
+import com.cropMatch.exception.CategoryNotFoundException;
+import com.cropMatch.exception.ImageInByterConvertException;
 import com.cropMatch.model.admin.Category;
 import com.cropMatch.model.farmer.Crop;
 import com.cropMatch.model.farmer.CropImage;
@@ -55,42 +57,19 @@ public class CropServiceImpl implements CropService {
     public void saveCropWithImages(CropDTO cropDTO, List<MultipartFile> images, Integer farmerId) {
 
         Category category = categoryRepository.findById(cropDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category Not Found!"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category Not Found!"));
 
-        Crop crop = new Crop();
-        crop.setName(cropDTO.getName());
-        crop.setDescription(cropDTO.getDescription());
-        crop.setCategory(category);
-        crop.setQuantity(cropDTO.getQuantity());
-        crop.setPrice(cropDTO.getPrice());
-        crop.setStockUnit(cropDTO.getStockUnit());
-        crop.setSellingUnit(cropDTO.getSellingUnit());
-        crop.setCreatedBy(farmerId);
-        crop.setStatus(true);
-        crop.setRegion(cropDTO.getRegion());
-        crop.setCreatedOn(LocalDateTime.now());
-        crop.setUpdatedOn(LocalDateTime.now());
-        crop.setExpireMonth(String.valueOf(cropDTO.getExpireMonth()));
-        crop.setCropType(cropDTO.getCropType());
-        crop.setQuality(cropDTO.getQuality());
-        crop.setProducedWay(cropDTO.getProducedWay());
-        crop.setAvailabilityStatus(cropDTO.getAvailabilityStatus());
-        crop.setExpectedReadyMonth(String.valueOf(cropDTO.getExpectedReadyMonth()));
+        Crop crop = new Crop(cropDTO,category);
         Crop cropData = cropRepository.save(crop);
-
         uploadFileWithData(farmerId,images, cropData.getId());
 
         try {
             for(MultipartFile image : images) {
-                CropImage cropImage = new CropImage();
-                cropImage.setCrop(cropData);
-                cropImage.setImageName(image.getOriginalFilename());
-                cropImage.setImageType(image.getContentType());
-                cropImage.setImageData(image.getBytes());
+                CropImage cropImage = new CropImage(cropData, image);
                 cropImageRepository.save(cropImage);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ImageInByterConvertException("Image Not Convert in Byter Formate");
         }
     }
 
@@ -117,30 +96,10 @@ public class CropServiceImpl implements CropService {
         if(CollectionUtils.isEmpty(categoryIds)) {
             return null;
         }
-        List<RecommendationDTO> recommendationDTOList = new ArrayList<>();
-        List<List<Crop>> recommedationList = categoryIds.stream()
-                .map(categoryId -> cropRepository.findCropsWithImagesByCategoryId(categoryId)).toList();
-        for(List<Crop> cropList : recommedationList) {
-            for(Crop cropDetails : cropList) {
-                RecommendationDTO recommendationDTO = new RecommendationDTO();
-                recommendationDTO.setName(cropDetails.getName());
-                recommendationDTO.setCategoryName(cropDetails.getCategory().getName());
-                recommendationDTO.setQuantity(cropDetails.getQuantity());
-                recommendationDTO.setPrice(cropDetails.getPrice());
-                recommendationDTO.setStockUnit(cropDetails.getStockUnit());
-                recommendationDTO.setSellingUnit(cropDetails.getSellingUnit());
-                recommendationDTO.setRegion(cropDetails.getRegion());
-                recommendationDTO.setExpireMonth(cropDetails.getExpireMonth());
-                recommendationDTO.setCropType(cropDetails.getCropType());
-                recommendationDTO.setQuality(cropDetails.getQuality());
-                recommendationDTO.setProducedWay(cropDetails.getProducedWay());
-                recommendationDTO.setAvailabilityStatus(cropDetails.getAvailabilityStatus());
-                recommendationDTO.setImages(cropDetails.getImages());
-                recommendationDTO.setExpectedReadyMonth(cropDetails.getExpectedReadyMonth());
-                recommendationDTO.setSellerName(userService.findByUsernameUsingId(cropDetails.getCreatedBy()));
-                recommendationDTOList.add(recommendationDTO);
-            }
-        }
-        return recommendationDTOList;
+        return categoryIds.stream()
+                .map(categoryId -> cropRepository.findCropsWithImagesByCategoryId(categoryId))
+                .flatMap(List::stream)
+                .map(RecommendationDTO::new)
+                .collect(Collectors.toList());
     }
 }

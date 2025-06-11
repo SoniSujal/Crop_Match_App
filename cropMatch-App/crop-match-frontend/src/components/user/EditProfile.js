@@ -126,9 +126,25 @@ const EditProfile = () => {
 
   // Handle preferences remove
   const handlePrefRemove = (id) => {
-    setSelectedPrefs(prev => prev.filter(pref => pref !== id));
+    const updatedPrefs = selectedPrefs.filter(pref => pref !== id);
+    setSelectedPrefs(updatedPrefs);
+
+    // Real-time validation for empty preferences
+    if (user?.role.toUpperCase() === 'BUYER' && updatedPrefs.length === 0) {
+      setErrors(prev => ({
+        ...prev,
+        preferences: 'You must select at least one preference.'
+      }));
+    } else {
+      setErrors(prev => ({
+        ...prev,
+        preferences: ''
+      }));
+    }
+
     if (success) setSuccess('');
   };
+
 
   const validatePreferences = () => {
     if (user?.role.toUpperCase() === 'BUYER') {

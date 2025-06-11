@@ -11,9 +11,9 @@ import com.cropMatch.repository.buyer.BuyerPreferencesRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
 import com.cropMatch.repository.category.CategoryRepository;
 import com.cropMatch.service.user.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Import for transactional annotation
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,22 +32,13 @@ public class BuyerServiceImpl implements BuyerService {
     private final UserService userService;
 
     @Override
-    public BuyerRequest createRequest(BuyerRequestDTO dto, String username) {
+    public BuyerRequest createRequest(BuyerRequestDTO buyerRequestDTO, String username) {
         UserDetail buyer = userService.findByUsername(username);
 
-        Category category = categoryRepository.findById(dto.getCategoryId())
+        Category category = categoryRepository.findById(buyerRequestDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category Not Found!"));
 
-        BuyerRequest request = new BuyerRequest();
-        request.setCropName(dto.getCropName());
-        request.setQuantity(dto.getQuantity());
-        request.setUnit(CropUnit.valueOf(dto.getUnit()));
-        request.setRegion(dto.getRegion());
-        request.setExpectedPrice(dto.getExpectedPrice());
-        request.setCategory(category);
-        request.setBuyerId(buyer.getId());
-        request.setCreatedOn(LocalDateTime.now());
-
+        BuyerRequest request = new BuyerRequest(buyerRequestDTO, category, buyer.getId());
         return requestRepository.save(request);
     }
 

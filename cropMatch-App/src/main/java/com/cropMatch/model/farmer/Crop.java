@@ -1,6 +1,7 @@
 package com.cropMatch.model.farmer;
 
 import com.cropMatch.converter.YearMonthAttributeConverter;
+import com.cropMatch.dto.farmerDTO.CropDTO;
 import com.cropMatch.enums.AvailabilityStatus;
 import com.cropMatch.enums.ProducedWay;
 import com.cropMatch.enums.Quality;
@@ -88,4 +89,26 @@ public class Crop {
     @Column(name = "expected_ready_month")
 //    @Convert(converter = YearMonthAttributeConverter.class)
     private String expectedReadyMonth;
+
+    public Crop(CropDTO cropDTO,Category category) {
+        this.name = cropDTO.getName();
+        this.description = cropDTO.getDescription();
+        this.category = category;
+        this.quantity = cropDTO.getQuantity();
+        this.price = cropDTO.getPrice();
+        this.stockUnit = cropDTO.getStockUnit();
+        this.sellingUnit = cropDTO.getSellingUnit();
+        this.createdBy = cropDTO.getCategoryId();
+        this.status = true;
+        this.region = cropDTO.getRegion();
+        this.createdOn = LocalDateTime.now();
+        this.updatedOn = LocalDateTime.now();
+        this.expireMonth = String.valueOf(cropDTO.getExpireMonth());
+        this.cropType = cropDTO.getCropType();
+        this.quality = cropDTO.getQuality();
+        this.producedWay = cropDTO.getProducedWay();
+        this.availabilityStatus = cropDTO.getAvailabilityStatus();
+        this.expectedReadyMonth = String.valueOf(cropDTO.getExpectedReadyMonth());
+    }
+
 }
