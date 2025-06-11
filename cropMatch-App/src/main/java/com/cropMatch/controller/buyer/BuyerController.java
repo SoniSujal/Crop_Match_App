@@ -1,15 +1,17 @@
 package com.cropMatch.controller.buyer;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.service.buyer.BuyerService;
+import com.cropMatch.service.crop.CropService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -18,6 +20,8 @@ import java.security.Principal;
 public class BuyerController {
 
     private final BuyerService buyerService;
+
+    private final CropService cropService;
 
     @GetMapping
     public String showBuyersPage() {
@@ -43,5 +47,10 @@ public class BuyerController {
     @GetMapping("/units")
     public ResponseEntity<?> getAllUnits() {
         return ResponseEntity.ok(buyerService.getAllUnits());
+    }
+
+    @PostMapping("/recommendations")
+    public ResponseEntity<List<RecommendationDTO>> getRecommendationsByCategories(@RequestBody List<Integer> categoryIds) {
+        return ResponseEntity.ok(cropService.recommedCropsDetailsBaseCategory(categoryIds));
     }
 }

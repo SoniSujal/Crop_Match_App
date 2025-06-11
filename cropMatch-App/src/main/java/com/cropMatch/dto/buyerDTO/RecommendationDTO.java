@@ -6,20 +6,26 @@ import com.cropMatch.enums.Quality;
 import com.cropMatch.model.farmer.CropImage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
 
-@Data
-public class RecommedationDTO {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RecommendationDTO {
 
     @NotBlank
     private String name;
 
     @NotNull
     private String categoryName;
+
+    @NotNull
+    private String sellerName;
 
     @NotNull
     private int quantity;

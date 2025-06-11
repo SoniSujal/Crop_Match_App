@@ -14,7 +14,6 @@ import com.cropMatch.repository.common.UserDetailRepository;
 import com.cropMatch.repository.user.UserTypeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -88,6 +87,12 @@ public class UserServiceImpl implements UserService{
     public  UserDetail findByUsername(String username){
         return  userDetailRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not Found"));
+    }
+
+    @Override
+    public String findByUsernameUsingId(Integer id){
+        return userDetailRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not Found")).getUsername();
     }
 
     @Override

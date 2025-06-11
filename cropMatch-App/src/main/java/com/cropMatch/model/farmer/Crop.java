@@ -1,13 +1,13 @@
 package com.cropMatch.model.farmer;
 
+import com.cropMatch.converter.YearMonthAttributeConverter;
 import com.cropMatch.enums.AvailabilityStatus;
 import com.cropMatch.enums.ProducedWay;
 import com.cropMatch.enums.Quality;
 import com.cropMatch.model.admin.Category;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +15,9 @@ import java.time.YearMonth;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class Crop {
 
@@ -55,6 +57,7 @@ public class Crop {
     private String region;
 
     @OneToMany(mappedBy = "crop", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<CropImage> images;
 
     @Column(name = "created_on", nullable = false)
@@ -64,6 +67,7 @@ public class Crop {
     private LocalDateTime updatedOn;
 
     @Column(name = "expire_month", nullable = false)
+//    @Convert(converter = YearMonthAttributeConverter.class)
     private String expireMonth;
 
     @Column(name = "crop_type")
@@ -82,5 +86,6 @@ public class Crop {
     private AvailabilityStatus availabilityStatus;
 
     @Column(name = "expected_ready_month")
+//    @Convert(converter = YearMonthAttributeConverter.class)
     private String expectedReadyMonth;
 }

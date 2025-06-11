@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface CropRepository extends JpaRepository<Crop, Integer> {
 
-    @Query("SELECT c FROM Crop c JOIN FETCH c.images WHERE c.category.id = :categoryId")
+    @Query("SELECT c FROM Crop c JOIN FETCH c.images WHERE c.category.id = :categoryId AND c.status = true")
     List<Crop> findCropsWithImagesByCategoryId(@Param("categoryId") int categoryId);
 
 }
