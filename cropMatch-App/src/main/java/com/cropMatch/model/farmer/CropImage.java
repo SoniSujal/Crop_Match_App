@@ -22,15 +22,18 @@ public class CropImage {
     @Lob
     private byte[] imageData;
 
+    private String imagePath;
+
     @ManyToOne
     @JoinColumn(name = "crop_id")
     @JsonBackReference
     private Crop crop;
 
-    public CropImage(Crop crop, MultipartFile image) throws IOException {
+    public CropImage(Crop crop, MultipartFile image,String imagePath) throws IOException {
         this.imageName = image.getOriginalFilename();
         this.imageType = image.getContentType();
         this.imageData = image.getBytes();
+        this.imagePath = imagePath;
         this.crop = crop;
     }
 }

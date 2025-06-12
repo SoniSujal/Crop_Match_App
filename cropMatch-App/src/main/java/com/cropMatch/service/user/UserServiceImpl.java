@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void updateUserProfile(UserUpdateDTO dto, String username) {
 
-        UserDetail user = userDetailRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserDetail user = userDetailRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());

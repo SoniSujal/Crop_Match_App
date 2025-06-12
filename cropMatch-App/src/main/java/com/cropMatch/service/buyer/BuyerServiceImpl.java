@@ -33,7 +33,7 @@ public class BuyerServiceImpl implements BuyerService {
 
     @Override
     public BuyerRequest createRequest(BuyerRequestDTO buyerRequestDTO, String username) {
-        UserDetail buyer = userService.findByUsername(username);
+        UserDetail buyer = userService.findByUserEmail(username);
 
         Category category = categoryRepository.findById(buyerRequestDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category Not Found!"));
@@ -75,7 +75,7 @@ public class BuyerServiceImpl implements BuyerService {
             return false;
         }
 
-        UserDetail buyer = userService.findByUsername(username);
+        UserDetail buyer = userService.findByUserEmail(username);
         Integer buyerId = buyer.getId();
 
         List<BuyerPreference> currentPreferences = buyerPreferencesRepository.findByBuyerId(buyerId);
@@ -122,7 +122,7 @@ public class BuyerServiceImpl implements BuyerService {
 
     @Override
     public List<Integer> getBuyerPreferences(String username) {
-        UserDetail buyer = userService.findByUsername(username);
+        UserDetail buyer = userService.findByUserEmail(username);
         return buyerPreferencesRepository.findByBuyerId(buyer.getId()).stream()
                 .map(pref -> pref.getCategory().getId())
                 .collect(Collectors.toList());
@@ -130,7 +130,7 @@ public class BuyerServiceImpl implements BuyerService {
 
     @Override
     public List<BuyerRequestResponseDTO> getAllRequests(String username) {
-        UserDetail buyer = userService.findByUsername(username);
+        UserDetail buyer = userService.findByUserEmail(username);
         return requestRepository.findByBuyerId(buyer.getId()).stream()
                 .map( BuyerRequestResponseDTO::new)
                 .toList();

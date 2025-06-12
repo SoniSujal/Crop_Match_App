@@ -12,6 +12,8 @@ import EditUser from './components/admin/EditUser';
 import FarmerDashboard from './components/farmer/FarmerDashboard';
 import BuyerRequestDashboard from './components/farmer/BuyerRequestDashboard';
 import BuyerDashboard from './components/buyer/BuyerDashboard';
+import RecommendationList from './components/buyer/RecommendationList';
+import CropDetail from './components/buyer/CropDetail';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
@@ -121,6 +123,22 @@ function App() {
                          </ProtectedRoute>
                          }
                  />
+                <Route
+                    path="/buyer/recommendations"
+                          element={
+                          <ProtectedRoute>
+                          <RecommendationList />
+                          </ProtectedRoute>
+                          }
+                />
+                <Route
+                    path="/buyer/recommendation/:cropId"
+                         element={
+                         <ProtectedRoute>
+                         <CropDetail />
+                         </ProtectedRoute>
+                         }
+                />
             </Route>
 
             {/* Default redirect */}

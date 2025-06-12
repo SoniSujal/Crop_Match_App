@@ -35,7 +35,7 @@ public class UserController {
             }
 
             String username = principal.getName();
-            UserDetail user = userService.findByUsername(username);
+            UserDetail user = userService.findByUserEmail(username);
 
             Map<String, Object> data = new HashMap<>();
             data.put("username", user.getUsername());

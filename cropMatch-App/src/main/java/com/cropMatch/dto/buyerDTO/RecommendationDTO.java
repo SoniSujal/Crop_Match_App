@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,11 +22,13 @@ import java.util.List;
 @AllArgsConstructor
 public class RecommendationDTO {
 
-    @Autowired
-    private UserService userService;
+    @NotBlank
+    private Integer crop_id;
 
     @NotBlank
     private String name;
+
+    private String Desc;
 
     @NotNull
     private String categoryName;
@@ -64,10 +67,12 @@ public class RecommendationDTO {
 
     private String expectedReadyMonth;
 
-    private List<CropImage> images;
+    private List<String> imagePaths;
 
-    public RecommendationDTO(Crop cropDetails) {
+    public RecommendationDTO(Crop cropDetails,UserService userService) {
+        this.crop_id = cropDetails.getId();
         this.name = cropDetails.getName();
+        this.Desc = cropDetails.getDescription();
         this.categoryName = cropDetails.getCategory().getName();
         this.sellerName = userService.findByUsernameUsingId(cropDetails.getCreatedBy());
         this.quantity = cropDetails.getQuantity();
@@ -81,6 +86,8 @@ public class RecommendationDTO {
         this.producedWay = cropDetails.getProducedWay();
         this.availabilityStatus = cropDetails.getAvailabilityStatus();
         this.expectedReadyMonth = cropDetails.getExpectedReadyMonth();
-        this.images = cropDetails.getImages();
+        this.imagePaths = cropDetails.getImages().stream()
+                .map(CropImage::getImagePath)
+                .collect(Collectors.toList());
     }
 }

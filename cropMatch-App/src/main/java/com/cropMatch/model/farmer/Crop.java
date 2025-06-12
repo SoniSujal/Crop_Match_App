@@ -110,5 +110,4 @@ public class Crop {
         this.availabilityStatus = cropDTO.getAvailabilityStatus();
         this.expectedReadyMonth = String.valueOf(cropDTO.getExpectedReadyMonth());
     }
-
 }
