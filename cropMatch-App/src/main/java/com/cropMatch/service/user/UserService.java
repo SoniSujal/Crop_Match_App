@@ -15,4 +15,5 @@ public interface UserService {
     public  UserDetail findByUserEmail(String email);
     public int deletUserByName(String username);
     public int activateByEmail(String email);
+    public String findByUsernameUsingId(Integer id);
 }

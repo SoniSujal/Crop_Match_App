@@ -1,5 +1,6 @@
 package com.cropMatch.model.buyer;
 
+import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
 import com.cropMatch.enums.CropUnit;
 import com.cropMatch.enums.RequestStatus;
 import com.cropMatch.model.admin.Category;
@@ -50,4 +51,15 @@ public class BuyerRequest {
 
     @Column(nullable = false)
     private LocalDateTime createdOn = LocalDateTime.now();
+
+    public BuyerRequest(BuyerRequestDTO buyerRequestDTO, Category category, Integer buyerId) {
+        this.cropName = buyerRequestDTO.getCropName();
+        this.category = category;
+        this.quantity = buyerRequestDTO.getQuantity();
+        this.unit = CropUnit.valueOf(buyerRequestDTO.getUnit());
+        this.region = buyerRequestDTO.getRegion();
+        this.expectedPrice = buyerRequestDTO.getExpectedPrice();
+        this.buyerId = buyerId;
+        this.createdOn = LocalDateTime.now();
+    }
 }

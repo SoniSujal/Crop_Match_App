@@ -51,4 +51,29 @@
                 referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="crop-3" author="sujal">
+        <renameColumn tableName="crop" oldColumnName="unit" newColumnName="stock_unit" columnDataType="VARCHAR(50)"/>
+
+        <addColumn tableName="crop">
+            <column name="selling_unit" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expire_month" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="crop_type" type="VARCHAR(255)"/>
+            <column name="quality" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="produced_way" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="availability_status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expected_ready_month" type="VARCHAR(7)"/>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>

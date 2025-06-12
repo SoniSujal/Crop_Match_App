@@ -6,6 +6,7 @@ import com.cropMatch.service.crop.CropService;
 import com.cropMatch.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/crops")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class CropController {
 
     private final CropService cropService;

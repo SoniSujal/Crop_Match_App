@@ -10,5 +10,6 @@ public interface CategoryService {
 
     List<Category> getActiveCategories();
     Optional<Category> getCategoryByName(String name);
+    public Optional<String> getCategoryNameById(Integer id);
 
 }

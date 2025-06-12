@@ -1,9 +1,11 @@
 package com.cropMatch.controller.buyer;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.buyer.BuyerService;
+import com.cropMatch.service.crop.CropService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import java.util.List;
 public class BuyerController {
 
     private final BuyerService buyerService;
+
+    private final CropService cropService;
 
     @GetMapping
     public String showBuyersPage() {
@@ -47,12 +51,17 @@ public class BuyerController {
         return ResponseEntity.ok(buyerService.getAllUnits());
     }
 
+    @GetMapping("/{buyerId}/recommendations")
+    public ResponseEntity<List<RecommendationDTO>> getRecommendationsByCategories(@PathVariable Integer buyerId) {
+        List<Integer> categoryIds = buyerService.getBuyerPreferenceCategoryIds(buyerId);
+        return ResponseEntity.ok(cropService.recommedCropsDetailsBaseCategory(categoryIds));
+    }
+
     @GetMapping("/preferences")
     public ResponseEntity<List<Integer>> getBuyerPreferences(Principal principal) {
         List<Integer> preferenceIds = buyerService.getBuyerPreferences(principal.getName());
         return ResponseEntity.ok(preferenceIds);
     }
-
 
     @PostMapping("/preferences")
     public ResponseEntity<?> updatePreferences(@RequestBody List<Integer> categoryIds,Principal principal){
@@ -63,5 +72,4 @@ public class BuyerController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No New Preferences were added.");
         }
     }
-
 }

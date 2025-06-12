@@ -10,6 +10,7 @@ import FarmersList from './components/admin/FarmersList';
 import BuyersList from './components/admin/BuyersList';
 import EditUser from './components/admin/EditUser';
 import FarmerDashboard from './components/farmer/FarmerDashboard';
+import BuyerRequestDashboard from './components/farmer/BuyerRequestDashboard';
 import BuyerDashboard from './components/buyer/BuyerDashboard';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
@@ -109,6 +110,14 @@ function App() {
                          element={
                          <ProtectedRoute>
                          <AllRequests />
+                         </ProtectedRoute>
+                         }
+                 />
+                <Route
+                    path="/buyer-requests"
+                         element={
+                         <ProtectedRoute>
+                         <BuyerRequestDashboard />
                          </ProtectedRoute>
                          }
                  />

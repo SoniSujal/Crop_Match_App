@@ -1,12 +1,15 @@
 package com.cropMatch.model.farmer;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CropImage {
@@ -21,5 +24,13 @@ public class CropImage {
 
     @ManyToOne
     @JoinColumn(name = "crop_id")
+    @JsonBackReference
     private Crop crop;
+
+    public CropImage(Crop crop, MultipartFile image) throws IOException {
+        this.imageName = image.getOriginalFilename();
+        this.imageType = image.getContentType();
+        this.imageData = image.getBytes();
+        this.crop = crop;
+    }
 }

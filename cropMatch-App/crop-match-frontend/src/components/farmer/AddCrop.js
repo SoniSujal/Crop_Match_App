@@ -1,4 +1,3 @@
-// src/components/farmer/AddCrop.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/constants';
@@ -14,54 +13,75 @@ const AddCrop = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: 'FRUIT',
+    category: '',
     quantity: '',
     price: '',
-    unit: 'KILOGRAM',
-    region: ''
+    stockUnit: 'KILOGRAM',
+    sellingUnit: 'KILOGRAM',
+    region: '',
+    cropType: '',
+    quality: 'GOOD',
+    producedWay: 'ORGANIC',
+    availabilityStatus: 'AVAILABLE_NOW',
+    expectedReadyMonth: '',
+    expireMonth: ''
   });
 
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const CROP_UNITS = [
+  const UNITS = [
     'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
-    'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX',
-    'CRATE', 'BAG'
+    'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX', 'CRATE', 'BAG'
   ];
 
-  const [categories, setCategories] = useState([]);
+  const QUALITIES = ['LOW', 'GOOD', 'BEST'];
+  const PRODUCED_WAYS = ['ORGANIC', 'CHEMICAL', 'MIXED'];
+  const AVAILABILITY = ['AVAILABLE_NOW', 'GROWING_READY_IN_FUTURE'];
+
+  const getCurrentMonth = () => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      return `${year}-${month}`;
+    };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await categoryService.getActiveCategories();
-        setCategories(response); // array of categories
+        setCategories(response);
       } catch (err) {
         console.error('Failed to fetch categories', err);
       }
     };
-
     fetchCategories();
   }, []);
 
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+      const { name, value } = e.target;
+
+      // For month fields, validate that the selected month is not in the past
+      if ((name === 'expectedReadyMonth' || name === 'expireMonth') && value) {
+        const currentMonth = getCurrentMonth();
+        if (value < currentMonth) {
+          setError(`Please select a month that is ${name === 'expectedReadyMonth' ? 'in the future' : 'not in the past'}`);
+          return;
+        }
+      }
+      setFormData({ ...formData, [name]: value });
+      setError('');
+    };
 
   const handleImageChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-
-    const validImages = selectedFiles.filter(file =>
-      allowedTypes.includes(file.type)
-    );
+    const validImages = selectedFiles.filter(file => allowedTypes.includes(file.type));
 
     if (validImages.length !== selectedFiles.length) {
       alert('Only JPG, JPEG, and PNG files are allowed.');
-      e.target.value = ''; // clear invalid selection
       return;
     }
 
@@ -76,21 +96,30 @@ const AddCrop = () => {
       return;
     }
 
-  const cropBlob = {
-    ...formData,
-    // ✅ Send only string
-    category: formData.category,   // ✅ must be string
-    categoryId: parseInt(categories.find(cat => cat.name === formData.category)?.id || 0), // ✅ use correct ID
-    status: true,
-    createdOn: new Date().toISOString()
-  };
+    const currentMonth = getCurrentMonth();
+    if (formData.availabilityStatus === 'GROWING_READY_IN_FUTURE' &&
+        formData.expectedReadyMonth < currentMonth) {
+      setError('Expected ready month must be in the future');
+      return;
+    }
 
+    if (formData.expireMonth < currentMonth) {
+      setError('Expire month must be in the future');
+      return;
+    }
+
+    const categoryId = parseInt(categories.find(cat => cat.name === formData.category)?.id || 0);
+
+    const cropBlob = {
+      ...formData,
+      categoryId,
+      quantity: parseInt(formData.quantity),
+      price: parseFloat(formData.price),
+    };
 
     const form = new FormData();
     form.append('cropDTO', new Blob([JSON.stringify(cropBlob)], { type: 'application/json' }));
-    images.forEach((image) => {
-      form.append('images', image);
-    });
+    images.forEach(img => form.append('images', img));
 
     try {
       setLoading(true);
@@ -110,8 +139,7 @@ const AddCrop = () => {
       {error && <p className="form-error">{error}</p>}
 
       <form onSubmit={handleSubmit} className="add-crop-form">
-        <label>
-          Name:
+        <label>Name:
           <input name="name" value={formData.name} onChange={handleChange} required />
         </label>
 
@@ -120,11 +148,10 @@ const AddCrop = () => {
           <input name="description" value={formData.description} onChange={handleChange} />
         </label>
 
-        <label>
-          Category:
+        <label>Category:
           <select name="category" value={formData.category} onChange={handleChange} required>
-            <option value="">Select a category</option>
-            {categories.map((cat) => (
+            <option value="">Select category</option>
+            {categories.map(cat => (
               <option key={cat.id} value={cat.name}>
                 {cat.name.charAt(0).toUpperCase() + cat.name.slice(1).toLowerCase()}
               </option>
@@ -132,39 +159,81 @@ const AddCrop = () => {
           </select>
         </label>
 
-        <label>
-          Quantity:
+        <label>Quantity:
           <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
         </label>
 
-        <label>
-          Price:
+        <label>Price:
           <input type="number" name="price" value={formData.price} onChange={handleChange} required />
         </label>
 
-        <label>
-          Unit:
-          <select name="unit" value={formData.unit} onChange={handleChange}>
-            {CROP_UNITS.map((unit) => (
-              <option key={unit} value={unit}>{unit.charAt(0) + unit.slice(1).toLowerCase()}</option>
+        <label>Stock Unit:
+          <select name="stockUnit" value={formData.stockUnit} onChange={handleChange} required>
+            {UNITS.map(unit => (
+              <option key={unit} value={unit}>{unit}</option>
             ))}
           </select>
         </label>
 
-        <label>
-          Region:
+        <label>Selling Unit:
+          <select name="sellingUnit" value={formData.sellingUnit} onChange={handleChange} required>
+            {UNITS.map(unit => (
+              <option key={unit} value={unit}>{unit}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>Region:
           <input name="region" value={formData.region} onChange={handleChange} required />
         </label>
 
-        <label>
-          Images:
-          <input
-            type="file"
-            name="images"
-            accept="image/jpeg, image/jpg, image/png"
-            onChange={handleImageChange}
-            multiple
-          />
+        <label>Crop Type:
+          <input name="cropType" value={formData.cropType} onChange={handleChange} />
+        </label>
+
+        <label>Quality:
+          <select name="quality" value={formData.quality} onChange={handleChange} required>
+            {QUALITIES.map(q => (
+              <option key={q} value={q}>{q}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>Produced Way:
+          <select name="producedWay" value={formData.producedWay} onChange={handleChange} required>
+            {PRODUCED_WAYS.map(p => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>Availability Status:
+          <select name="availabilityStatus" value={formData.availabilityStatus} onChange={handleChange} required>
+            {AVAILABILITY.map(a => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </select>
+        </label>
+
+        {formData.availabilityStatus === 'GROWING_READY_IN_FUTURE' && (
+          <label>Expected Ready Month:
+            <input
+              type="month"
+              name="expectedReadyMonth"
+              value={formData.expectedReadyMonth}
+              onChange={handleChange}
+               min={getCurrentMonth()}
+              required
+            />
+          </label>
+        )}
+
+        <label>Expire Month:
+          <input type="month" name="expireMonth" value={formData.expireMonth} onChange={handleChange}  min={getCurrentMonth()} required />
+        </label>
+
+        <label>Images:
+          <input type="file" name="images" accept="image/jpeg,image/jpg,image/png" onChange={handleImageChange} multiple />
         </label>
 
         <button type="submit" disabled={loading}>

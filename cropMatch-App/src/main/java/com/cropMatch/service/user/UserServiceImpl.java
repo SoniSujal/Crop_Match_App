@@ -2,6 +2,7 @@ package com.cropMatch.service.user;
 
 import com.cropMatch.dto.authDTO.RegistrationDTO;
 import com.cropMatch.dto.common.UserUpdateDTO;
+import com.cropMatch.enums.UserRoles;
 import com.cropMatch.exception.AccountDeletedException;
 import com.cropMatch.exception.EmailAlreadyExistsException;
 import com.cropMatch.exception.EmailNotFoundException;
@@ -19,7 +20,6 @@ import com.cropMatch.service.buyer.BuyerService;
 import jakarta.transaction.Transactional;
 import liquibase.util.CollectionUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService{
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        String userTypeName = registrationDto.getUserType().toUpperCase();
+        UserRoles userTypeName = registrationDto.getUserType();
 
         UserDetail user = new UserDetail();
         user.setUsername(registrationDto.getUsername());
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService{
         user.setCreatedOn(LocalDateTime.now());
         user.setActive(true);
 
-        UserType userType = userTypeRepository.findByName(userTypeName)
+        UserType userType = userTypeRepository.findByName(String.valueOf(userTypeName))
                 .orElseThrow(() -> new InvalidUserTypeException("Invalid user type"));
 
         UserTypeMapping mapping = new UserTypeMapping();
@@ -119,6 +119,12 @@ public class UserServiceImpl implements UserService{
     public  UserDetail findByUsername(String username){
         return  userDetailRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not Found"));
+    }
+
+    @Override
+    public String findByUsernameUsingId(Integer id){
+        return userDetailRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not Found")).getUsername();
     }
 
     @Override

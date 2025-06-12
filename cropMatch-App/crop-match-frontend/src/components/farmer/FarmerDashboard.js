@@ -91,12 +91,13 @@ const FarmerDashboard = () => {
           </div>
         </Link>
 
+        <Link to="/buyer-requests" className="stat-link">
           <div className="action-card">
-            <div className="action-icon">📦</div>
-            <h3>Manage Inventory</h3>
-            <p>Track your products and stock levels</p>
-            <span className="coming-soon">Coming Soon</span>
+            <div className="action-icon">📩</div>
+            <h3>Manage Buyer Requests</h3>
+            <p>View and respond to buyer offers for your products</p>
           </div>
+        </Link>
 
           <div className="action-card">
             <div className="action-icon">💰</div>
