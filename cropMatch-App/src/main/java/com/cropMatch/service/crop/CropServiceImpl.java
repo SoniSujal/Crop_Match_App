@@ -3,8 +3,9 @@ package com.cropMatch.service.crop;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 
-import com.cropMatch.dto.responseDTO.PagedResponse;
+import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.exception.CategoryNotFoundException;
+import com.cropMatch.exception.CropNotFoundException;
 import com.cropMatch.exception.ImageInByterConvertException;
 import com.cropMatch.model.admin.Category;
 import com.cropMatch.model.farmer.Crop;
@@ -18,12 +19,8 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -31,10 +28,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,7 +61,7 @@ public class CropServiceImpl implements CropService {
         Category category = categoryRepository.findById(cropDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category Not Found!"));
 
-        Crop crop = new Crop(cropDTO, category);
+        Crop crop = new Crop(cropDTO, category,farmerId);
         Crop cropData = cropRepository.save(crop);
 
         String folderName = uploadPath + File.separator + "FARMER_ID_" + farmerId + File.separator + "CROP_ID_" + cropData.getId();
@@ -95,36 +90,68 @@ public class CropServiceImpl implements CropService {
 
 
     @Override
-    public PagedResponse<RecommendationDTO> recommedCropsDetailsBaseCategory(List<Integer> categoryIds, int pageNo, int pageSize, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+    public Page<Crop> recommedCropsDetailsBaseCategory(List<Integer> categoryIds, int pageNo, int pageSize,  String sortBy, String sortDir) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
 
-        // Fetch all matching + non-matching crops without Pageable (fetch all)
-        List<Crop> matching = categoryIds.isEmpty() ? Collections.emptyList() : cropRepository.findByCategoryIdIn(categoryIds, sort);
-        List<Crop> nonMatching = categoryIds.isEmpty() ? cropRepository.findAll(sort) : cropRepository.findByCategoryIdNotIn(categoryIds, sort);
+        Page<Crop> cropPage = cropRepository.findAllSortedByCategoryPreferenceNative(categoryIds, Pageable.unpaged());
 
-        // Merge them: matching first
-        List<Crop> combined = new ArrayList<>();
-        combined.addAll(matching);
-        combined.addAll(nonMatching);
-
-        // Manual pagination
-        int total = combined.size();
-        int start = Math.min(pageNo * pageSize, total);
-        int end = Math.min(start + pageSize, total);
-        List<Crop> pagedList = (start > total) ? new ArrayList<>() : combined.subList(start, end);
-
-        List<RecommendationDTO> content = pagedList.stream()
-                .map(crop -> new RecommendationDTO(crop, userService))
+        List<Integer> cropIds = cropPage.getContent().stream()
+                .map(Crop::getId)
                 .collect(Collectors.toList());
 
-        return new PagedResponse<>(
-                content,
-                pageNo,
-                pageSize,
-                total,
-                (int) Math.ceil((double) total / pageSize),
-                end >= total,
-                pageNo == 0
-        );
+        List<Crop> cropsWithImages = cropIds.isEmpty()
+                ? Collections.emptyList()
+                : cropRepository.findAllWithImagesByIds(cropIds);
+
+        Map<Integer, Crop> cropMap = cropsWithImages.stream()
+                .collect(Collectors.toMap(Crop::getId, Function.identity()));
+
+        // Step 3: Preserve category priority, then apply dynamic sorting
+        List<Crop> sortedList = cropPage.stream()
+                .map(crop -> cropMap.getOrDefault(crop.getId(), crop))
+                .sorted(Comparator
+                        .comparing((Crop c) -> categoryIds.contains(c.getCategory().getId()) ? 0 : 1)
+                        .thenComparing(getComparator(sortBy, sortDir)))
+                .collect(Collectors.toList());
+
+        // Step 4: Manual pagination
+        int total = sortedList.size();
+        int start = Math.min(pageNo * pageSize, total);
+        int end = Math.min(start + pageSize, total);
+        List<Crop> pagedList = sortedList.subList(start, end);
+
+        return new PageImpl<>(pagedList, pageable, total);
+    }
+
+    private Comparator<Crop> getComparator(String sortBy, String sortDir) {
+        Comparator<Crop> comparator;
+
+        switch (sortBy) {
+            case "price" -> comparator = Comparator.comparing(Crop::getPrice);
+            case "createdOn" -> comparator = Comparator.comparing(Crop::getCreatedOn);
+            case "name" -> comparator = Comparator.comparing(Crop::getName, String.CASE_INSENSITIVE_ORDER);
+            case "stockQuantity" -> comparator = Comparator.comparing(Crop::getStockQuantity);
+            default -> comparator = Comparator.comparing(Crop::getCreatedOn); // fallback
+        }
+
+        return sortDir.equalsIgnoreCase("desc") ? comparator.reversed() : comparator;
+    }
+
+    @Override
+    public Page<RecommendationDTO> getRecommendedCropsDTO(List<Integer> categoryIds, int pageNo, int pageSize, String sortBy, String sortDir) {
+        Page<Crop> cropsPage = recommedCropsDetailsBaseCategory(categoryIds, pageNo, pageSize, sortBy, sortDir);
+        Page<RecommendationDTO> map = cropsPage.map(crop -> new RecommendationDTO(crop, userService));
+        RecommendationDTO recommendationDTO = map.getContent().get(0);
+        System.out.println("***************************************");
+        System.out.println(recommendationDTO);
+        return map;
+    }
+
+    @Override
+    public ApiResponse<RecommendationDTO> getCropById(Integer cropId) {
+        Crop crop = cropRepository.findById(cropId)
+                .orElseThrow(() -> new CropNotFoundException("Crop Not Found"));
+        RecommendationDTO recommendationDTO = new RecommendationDTO(crop,userService);
+        return ApiResponse.success(recommendationDTO);
     }
 }

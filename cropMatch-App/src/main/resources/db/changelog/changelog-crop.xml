@@ -75,5 +75,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="crop-4" author="sujal">
+        <renameColumn tableName="crop" oldColumnName="quantity" newColumnName="stock_quantity" columnDataType="INT"/>
+        <addColumn tableName="crop">
+            <column name="selling_quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

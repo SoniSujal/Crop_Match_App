@@ -1,0 +1,163 @@
+.recommendation-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.crop-title {
+  font-size: 1.78rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.carousel-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.carousel-image {
+  height: 400px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.desc {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  text-align: justify;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.3rem;
+}
+
+.section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.section li {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  color: #444;
+}
+
+.buy-now-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.buy-now-button {
+  background-color: #28a745;
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.75rem 2.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.buy-now-button:hover {
+  background-color: #218838;
+}
+
+.loading-text {
+  text-align: center;
+  margin-top: 5rem;
+  font-size: 1.2rem;
+}
+
+.slick-prev, .slick-next {
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: semi-transparent background */
+  border-radius: 50%;
+}
+
+.slick-prev:before, .slick-next:before {
+  color: white; /* darker for visibility */
+  font-size: 30px;
+}
+
+.carousel-container .slick-dots li button:before {
+  color: #aaa;
+}
+
+.slick-prev {
+  left: 10px;
+}
+
+.slick-next {
+  right: 10px;
+}
+
+.product-brief {
+  margin-bottom: 1.5rem;
+}
+
+.product-name {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.product-price {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.3rem;
+}
+
+.product-mrp {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+/* Carousel dots style */
+.custom-dots {
+  bottom: -30px;
+}
+
+.custom-dots li {
+  margin: 0 5px;
+}
+
+.custom-dots li button {
+  padding: 0;
+}
+
+.custom-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.custom-dots li.slick-active .custom-dot {
+  background-color: #28a745; /* active dot = green */
+}

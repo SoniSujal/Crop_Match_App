@@ -13,7 +13,7 @@ import FarmerDashboard from './components/farmer/FarmerDashboard';
 import BuyerRequestDashboard from './components/farmer/BuyerRequestDashboard';
 import BuyerDashboard from './components/buyer/BuyerDashboard';
 import RecommendationList from './components/buyer/RecommendationList';
-import CropDetail from './components/buyer/CropDetail';
+import RecommendationDetail from './components/buyer/RecommendationDetail';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
@@ -135,7 +135,7 @@ function App() {
                     path="/buyer/recommendation/:cropId"
                          element={
                          <ProtectedRoute>
-                         <CropDetail />
+                         <RecommendationDetail />
                          </ProtectedRoute>
                          }
                 />

@@ -14,12 +14,19 @@ import java.util.List;
 @Repository
 public interface CropRepository extends JpaRepository<Crop, Integer> {
 
-    @Query("SELECT DISTINCT c FROM Crop c LEFT JOIN FETCH c.images WHERE c.category.id IN :categoryIds AND c.status = true")
-    List<Crop> findByCategoryIdIn(@Param("categoryIds") List<Integer> categoryIds, Sort sort);
+    @Query(
+            value = """
+            SELECT DISTINCT c.* FROM crop c
+            WHERE c.status = true
+            ORDER BY
+                CASE WHEN c.category_id IN (:categoryIds) THEN 0 ELSE 1 END,
+                c.created_on DESC
+            """,
+            countQuery = "SELECT COUNT(*) FROM crops WHERE status = true",
+            nativeQuery = true
+    )
+    Page<Crop> findAllSortedByCategoryPreferenceNative(@Param("categoryIds") List<Integer> categoryIds, Pageable pageable);
 
-    @Query("SELECT DISTINCT c FROM Crop c LEFT JOIN FETCH c.images WHERE c.category.id NOT IN :categoryIds AND c.status = true")
-    List<Crop> findByCategoryIdNotIn(@Param("categoryIds") List<Integer> categoryIds, Sort sort);
-
-    // Optional: fallback for when there are no preferences
-    List<Crop> findAll(Sort sort);
+    @Query("SELECT DISTINCT c FROM Crop c LEFT JOIN FETCH c.images WHERE c.id IN :ids")
+    List<Crop> findAllWithImagesByIds(@Param("ids") List<Integer> ids);
 }

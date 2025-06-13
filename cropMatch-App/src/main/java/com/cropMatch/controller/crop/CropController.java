@@ -31,7 +31,11 @@ public class CropController {
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> addCrop(Principal principal, @Valid @RequestPart("cropDTO") CropDTO cropDTO, @RequestPart("images") List<MultipartFile> images) {
         String username = principal.getName();
+        System.out.println("**********************************");
+        System.out.println(username);
         Integer farmerId = userService.findByUserEmail(username).getId();
+        System.out.println("*********************************");
+        System.out.println(farmerId);
         cropService.saveCropWithImages(cropDTO, images, farmerId);
         return new ResponseEntity<>(ApiResponse.success("Crop Added Successfully"), HttpStatus.OK);
     }

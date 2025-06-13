@@ -34,4 +34,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="crop_image_4" author="sujal">
+        <dropColumn tableName="crop_image" columnName="image_data" />
+    </changeSet>
+
 </databaseChangeLog>

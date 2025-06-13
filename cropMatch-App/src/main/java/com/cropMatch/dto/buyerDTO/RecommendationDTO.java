@@ -9,10 +9,8 @@ import com.cropMatch.service.user.UserService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +18,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class RecommendationDTO {
 
     @NotBlank
@@ -37,7 +36,10 @@ public class RecommendationDTO {
     private String sellerName;
 
     @NotNull
-    private int quantity;
+    private int stockQuantity;
+
+    @NotNull
+    private int sellingQuantity;
 
     @NotNull
     private BigDecimal price;
@@ -75,7 +77,8 @@ public class RecommendationDTO {
         this.Desc = cropDetails.getDescription();
         this.categoryName = cropDetails.getCategory().getName();
         this.sellerName = userService.findByUsernameUsingId(cropDetails.getCreatedBy());
-        this.quantity = cropDetails.getQuantity();
+        this.stockQuantity = cropDetails.getStockQuantity();
+        this.sellingQuantity = cropDetails.getSellingQuantity();
         this.price = cropDetails.getPrice();
         this.stockUnit = cropDetails.getStockUnit();
         this.sellingUnit = cropDetails.getSellingUnit();

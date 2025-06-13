@@ -1,95 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import CropTile from './CropTile';
+import cropService from '../../services/farmer/cropService';
 import '../../styles/RecommendationList.css';
-import api from '../../services/auth/api';
 
 const RecommendationList = () => {
   const { user } = useAuth();
   const [recommendations, setRecommendations] = useState([]);
   const [pagination, setPagination] = useState({ pageNo: 0, totalPages: 0 });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('id');
-  const [cropTypeFilter, setCropTypeFilter] = useState('');
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    sortBy: 'createdOn',
+    sortDir: 'desc',
+    producedWayFilter: ''
+  });
 
   const fetchRecommendations = async (page = 0) => {
     try {
-      const response = await api.get(`/buyer/${user.email}/recommendations`, {
-        params: {
-          pageNo: page,
-          pageSize: 5,
-          sortBy: sortBy,
-          sortDir: 'asc',
-        },
+      const params = {
+        pageNo: page,
+        pageSize: 5,
+        sortBy: filters.sortBy,
+        sortDir: filters.sortDir
+      };
+      const res = await cropService.getRecommendations(user.email, params);
+      let content = res.data.content;
+
+      // local filters
+      content = content.filter(c => {
+        const matchesSearch =
+          c.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+          c.region.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        const matchesProduced = filters.producedWayFilter
+          ? c.producedWay === filters.producedWayFilter
+          : true;
+        return matchesSearch && matchesProduced;
       });
 
-      const filtered = response.data.content.filter((crop) => {
-        const matchSearch = crop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            crop.region.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchType = cropTypeFilter ? crop.cropType === cropTypeFilter : true;
-        return matchSearch && matchType;
-      });
-
-      setRecommendations(filtered);
-      setPagination({
-        pageNo: response.data.pageNo,
-        totalPages: response.data.totalPages,
-      });
+      setRecommendations(content);
+      setPagination({ pageNo: res.data.pageable.pageNumber, totalPages: res.data.totalPages });
     } catch (error) {
-      console.error('Error fetching recommendations:', error);
+      console.error(error);
     }
   };
 
   useEffect(() => {
-    if (user?.email) fetchRecommendations();
-  }, [user, searchTerm, sortBy, cropTypeFilter]);
-
-  const handleNext = () => {
-    if (pagination.pageNo + 1 < pagination.totalPages) {
-      fetchRecommendations(pagination.pageNo + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (pagination.pageNo > 0) {
-      fetchRecommendations(pagination.pageNo - 1);
-    }
-  };
+    if (user?.email) fetchRecommendations(pagination.pageNo);
+  }, [user, filters]);
 
   return (
     <div className="recommendation-wrapper">
       <h2>Recommended Crops</h2>
-
       <div className="filter-bar">
-        <input
-          type="text"
-          placeholder="🔍 Search by crop or region"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select onChange={(e) => setSortBy(e.target.value)}>
-          <option value="id">Sort By: Default</option>
+        <input placeholder="🔍 Search crop or region" value={filters.searchTerm}
+          onChange={e => setFilters(f => ({ ...f, searchTerm: e.target.value }))} />
+        <select value={filters.sortBy} onChange={e => setFilters(f => ({ ...f, sortBy: e.target.value }))}>
+          <option value="createdOn">Recent</option>
           <option value="price">Price</option>
-          <option value="region">Region</option>
-          <option value="expectedReadyMonth">Ready Month</option>
+          <option value="name">Name</option>
+          <option value="stockQuantity">Stock Qty</option>
         </select>
-        <select onChange={(e) => setCropTypeFilter(e.target.value)}>
+        <select value={filters.sortDir} onChange={e => setFilters(f => ({ ...f, sortDir: e.target.value }))}>
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+        <select value={filters.producedWayFilter} onChange={e => setFilters(f => ({ ...f, producedWayFilter: e.target.value }))}>
           <option value="">All Types</option>
           <option value="ORGANIC">Organic</option>
           <option value="CHEMICAL">Chemical</option>
+          <option value="MIXED">Mixed</option>
         </select>
       </div>
-
       <div className="tile-list fade-in">
-        {recommendations.map((crop, index) => (
-          <CropTile key={index} crop={crop} cropId={crop.id || index} />
-        ))}
+        {recommendations.length ? recommendations.map(c =>
+          <CropTile key={c.crop_id} crop={c} />) : <p>No crops found matching filters.</p>}
       </div>
-
       <div className="pagination-buttons">
-        <button onClick={handlePrev} disabled={pagination.pageNo === 0}>← Previous</button>
+        <button onClick={() => fetchRecommendations(pagination.pageNo - 1)} disabled={pagination.pageNo === 0}>← Previous</button>
         <span>Page {pagination.pageNo + 1} of {pagination.totalPages}</span>
-        <button onClick={handleNext} disabled={pagination.pageNo + 1 >= pagination.totalPages}>Next →</button>
+        <button onClick={() => fetchRecommendations(pagination.pageNo + 1)} disabled={pagination.pageNo + 1 >= pagination.totalPages}>Next →</button>
       </div>
     </div>
   );

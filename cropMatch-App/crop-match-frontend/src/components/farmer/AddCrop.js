@@ -14,9 +14,10 @@ const AddCrop = () => {
     name: '',
     description: '',
     category: '',
-    quantity: '',
+    stockQuantity: '',
     price: '',
     stockUnit: 'KILOGRAM',
+    sellingQuantity: '',
     sellingUnit: 'KILOGRAM',
     region: '',
     cropType: '',
@@ -91,7 +92,8 @@ const AddCrop = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!user?.email) {
+    if (!user?.email && user?.role=="farmer") {
+      console.log(user?.role)
       setError('User not authenticated');
       return;
     }
@@ -159,12 +161,8 @@ const AddCrop = () => {
           </select>
         </label>
 
-        <label>Quantity:
-          <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
-        </label>
-
-        <label>Price:
-          <input type="number" name="price" value={formData.price} onChange={handleChange} required />
+        <label>Stock Quantity:
+          <input type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} required />
         </label>
 
         <label>Stock Unit:
@@ -173,6 +171,14 @@ const AddCrop = () => {
               <option key={unit} value={unit}>{unit}</option>
             ))}
           </select>
+        </label>
+
+        <label>Price:
+          <input type="number" name="price" value={formData.price} onChange={handleChange} required />
+        </label>
+
+        <label>Selling Quantity:
+           <input type="number" name="sellingQuantity" value={formData.sellingQuantity} onChange={handleChange} required />
         </label>
 
         <label>Selling Unit:

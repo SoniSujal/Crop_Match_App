@@ -1,6 +1,5 @@
 package com.cropMatch.model.farmer;
 
-import com.cropMatch.converter.YearMonthAttributeConverter;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 import com.cropMatch.enums.AvailabilityStatus;
 import com.cropMatch.enums.ProducedWay;
@@ -12,7 +11,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.List;
 
 @Entity
@@ -36,14 +34,17 @@ public class Crop {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(nullable = false)
-    private int quantity;
+    @Column(name = "stock_quantity", nullable = false)
+    private int stockQuantity;
+
+    @Column(name = "stock_unit", nullable = false)
+    private String stockUnit;
 
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "stock_unit", nullable = false)
-    private String stockUnit;
+    @Column(name = "selling_quantity", nullable = false)
+    private int sellingQuantity;
 
     @Column(name = "selling_unit", nullable = false)
     private String sellingUnit;
@@ -90,15 +91,16 @@ public class Crop {
 //    @Convert(converter = YearMonthAttributeConverter.class)
     private String expectedReadyMonth;
 
-    public Crop(CropDTO cropDTO,Category category) {
+    public Crop(CropDTO cropDTO,Category category, Integer farmerId) {
         this.name = cropDTO.getName();
         this.description = cropDTO.getDescription();
         this.category = category;
-        this.quantity = cropDTO.getQuantity();
+        this.stockQuantity = cropDTO.getStockQuantity();
+        this.sellingQuantity = cropDTO.getSellingQuantity();
         this.price = cropDTO.getPrice();
         this.stockUnit = cropDTO.getStockUnit();
         this.sellingUnit = cropDTO.getSellingUnit();
-        this.createdBy = cropDTO.getCategoryId();
+        this.createdBy = farmerId;
         this.status = true;
         this.region = cropDTO.getRegion();
         this.createdOn = LocalDateTime.now();

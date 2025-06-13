@@ -37,6 +37,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/user/**").authenticated()
                         .requestMatchers("api/crops/**").hasAuthority("FARMER")
+                        .requestMatchers(
+                                "/images/**" // 👈 ADD THIS LINE
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
