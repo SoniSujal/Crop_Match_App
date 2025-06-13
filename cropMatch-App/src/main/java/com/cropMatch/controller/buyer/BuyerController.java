@@ -57,6 +57,12 @@ public class BuyerController {
         return ResponseEntity.ok(cropService.recommedCropsDetailsBaseCategory(categoryIds));
     }
 
+    @GetMapping("/{email}/recommendations/top")
+    public ResponseEntity<List<RecommendationDTO>> getTopRecommendations(@PathVariable String email) {
+        List<RecommendationDTO> topRecords = cropService.getTopRecommendations(email);
+        return ResponseEntity.ok(topRecords);
+    }
+
     @GetMapping("/preferences")
     public ResponseEntity<List<Integer>> getBuyerPreferences(Principal principal) {
         List<Integer> preferenceIds = buyerService.getBuyerPreferences(principal.getName());

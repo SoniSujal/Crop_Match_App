@@ -4,6 +4,7 @@ import com.cropMatch.dto.authDTO.RegistrationDTO;
 import com.cropMatch.dto.common.UserUpdateDTO;
 import com.cropMatch.model.user.UserDetail;
 
+import java.security.Principal;
 import java.util.Optional;
 
 public interface UserService {
@@ -16,4 +17,6 @@ public interface UserService {
     public int deletUserByName(String username);
     public int activateByEmail(String email);
     public String findByUsernameUsingId(Integer id);
+
+    void updateUserProfiles(UserUpdateDTO dto, Principal principal);
 }

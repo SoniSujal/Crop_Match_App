@@ -90,7 +90,7 @@ public class Crop {
 //    @Convert(converter = YearMonthAttributeConverter.class)
     private String expectedReadyMonth;
 
-    public Crop(CropDTO cropDTO,Category category) {
+    public Crop(CropDTO cropDTO,Category category,Integer farmerId) {
         this.name = cropDTO.getName();
         this.description = cropDTO.getDescription();
         this.category = category;
@@ -98,7 +98,7 @@ public class Crop {
         this.price = cropDTO.getPrice();
         this.stockUnit = cropDTO.getStockUnit();
         this.sellingUnit = cropDTO.getSellingUnit();
-        this.createdBy = cropDTO.getCategoryId();
+        this.createdBy = farmerId;
         this.status = true;
         this.region = cropDTO.getRegion();
         this.createdOn = LocalDateTime.now();

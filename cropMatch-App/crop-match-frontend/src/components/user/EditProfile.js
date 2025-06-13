@@ -14,7 +14,8 @@ const EditProfile = () => {
     email: '',
     mobile: '',
     pincode: '',
-    country: ''
+    country: '',
+    region: ''
   });
   const [originalData, setOriginalData] = useState({});
   const [errors, setErrors] = useState({});
@@ -41,14 +42,16 @@ const EditProfile = () => {
         email: profile.email,
         mobile: profile.mobile,
         pincode: profile.pincode,
-        country: profile.country
+        country: profile.country,
+        region: profile.region
       });
       setOriginalData({
         username: profile.username,
         email: profile.email,
         mobile: profile.mobile,
         pincode: profile.pincode,
-        country: profile.country
+        country: profile.country,
+        region: profile.region
       });
 
       // Load preferences if user is BUYER and preferences exist
@@ -331,6 +334,20 @@ const EditProfile = () => {
               placeholder="Enter country"
             />
             {errors.country && <span className="field-error">{errors.country}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="region">Region *</label>
+            <input
+              type="text"
+              id="region"
+              name="region"
+              value={formData.region}
+              onChange={handleChange}
+              required
+              placeholder="Enter region"
+            />
+            {errors.region && <span className="field-error">{errors.region}</span>}
           </div>
 
           {/* Preferences section only for BUYER */}

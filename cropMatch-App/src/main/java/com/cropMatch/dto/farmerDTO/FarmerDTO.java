@@ -17,6 +17,7 @@ public class FarmerDTO {
     private String mobile;
     private String pincode;
     private String country;
+    private String region;
 
     public FarmerDTO(UserDetail user) {
         this.id = user.getId();
@@ -25,6 +26,7 @@ public class FarmerDTO {
         this.mobile = user.getMobile();
         this.pincode = user.getPincode();
         this.country = user.getCountry();
+        this.region = user.getRegion();
     }
 
 }

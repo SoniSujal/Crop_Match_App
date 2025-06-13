@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +42,10 @@ public class RegistrationDTO {
 
     @NotBlank
     private String country;
+
+    @NotBlank
+    @Pattern(regexp = "^[A-Za-z\\s]{1,50}$", message = "Region must be alphabetic and max 50 characters")
+    private String region;
 
     private List<Integer> preferenceCategoryIds;
 

@@ -27,6 +27,7 @@ export const VALIDATION_PATTERNS = {
   MOBILE: /^\d{10}$/,
   PINCODE: /^\d{6}$/,
   COUNTRY: /^[A-Za-z\s]{1,30}$/,
+  REGION: /^[A-Za-z\s]{1,50}$/,
   PASSWORD_MIN_LENGTH: 8
 };
 

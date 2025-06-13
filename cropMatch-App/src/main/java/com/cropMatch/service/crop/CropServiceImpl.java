@@ -8,6 +8,8 @@ import com.cropMatch.exception.ImageInByterConvertException;
 import com.cropMatch.model.admin.Category;
 import com.cropMatch.model.farmer.Crop;
 import com.cropMatch.model.farmer.CropImage;
+import com.cropMatch.model.user.UserDetail;
+import com.cropMatch.repository.buyer.BuyerPreferencesRepository;
 import com.cropMatch.repository.category.CategoryRepository;
 import com.cropMatch.repository.crop.CropImageRepository;
 import com.cropMatch.repository.crop.CropRepository;
@@ -52,6 +54,9 @@ public class CropServiceImpl implements CropService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BuyerPreferencesRepository buyerPreferencesRepository;
+
     @Override
     @Transactional
     public void saveCropWithImages(CropDTO cropDTO, List<MultipartFile> images, Integer farmerId) {
@@ -59,7 +64,7 @@ public class CropServiceImpl implements CropService {
         Category category = categoryRepository.findById(cropDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category Not Found!"));
 
-        Crop crop = new Crop(cropDTO,category);
+        Crop crop = new Crop(cropDTO,category,farmerId);
         Crop cropData = cropRepository.save(crop);
         uploadFileWithData(farmerId,images, cropData.getId());
 
@@ -99,7 +104,23 @@ public class CropServiceImpl implements CropService {
         return categoryIds.stream()
                 .map(categoryId -> cropRepository.findCropsWithImagesByCategoryId(categoryId))
                 .flatMap(List::stream)
-                .map(RecommendationDTO::new)
+                .map(crop -> new RecommendationDTO(crop,userService))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<RecommendationDTO> getTopRecommendations(String email){
+        UserDetail buyer = userService.findByUserEmail(email);
+        List<Integer> categoryIds = buyerPreferencesRepository.findByBuyerId(buyer.getId())
+                .stream()
+                .map(pref -> pref.getCategory().getId())
+                .toList();
+
+        List<Crop> crops = cropRepository.findTopRecommendations(categoryIds,buyer.getRegion());
+
+        return crops.stream()
+                .map(crop -> new RecommendationDTO(crop, userService))
+                .toList();
+    }
+
 }

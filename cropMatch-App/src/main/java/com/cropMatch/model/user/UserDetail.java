@@ -41,6 +41,9 @@ public class UserDetail {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "region")
+    private String region;
+
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 

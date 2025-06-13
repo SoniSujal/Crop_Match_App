@@ -27,5 +27,8 @@ public class UserUpdateDTO {
     @Pattern(regexp = "^[A-Za-z]{1,30}$",message = "Country must be alphabetic and max 30 characters")
     private String country;
 
+    @Pattern(regexp = "^[A-Za-z\\s]{1,50}$", message = "Region must be alphabetic and max 50 characters")
+    private String region;
+
     private List<Integer> preferenceCategoryIds;
 }

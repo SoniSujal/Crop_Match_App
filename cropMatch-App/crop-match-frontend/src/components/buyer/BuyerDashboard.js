@@ -11,12 +11,27 @@ const BuyerDashboard = () => {
     activeRequests: 0,
     completedDeals: 0
   });
+
+  const [topRecommendations, setTopRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchDashboardStats();
+    fetchTopRecommendations();
   }, []);
+
+  const fetchTopRecommendations = async () => {
+    try {
+      const response = await fetch(`/api/buyer/${user.email}/recommendations/top`);
+      const data = await response.json();
+      console.log("*************************");
+          console.log("Top Recommendations:", data);
+      setTopRecommendations(data); // update your state
+    } catch (err) {
+      console.error("Failed to fetch recommendations", err);
+    }
+  };
 
   const fetchDashboardStats = async () => {
     try {
@@ -129,6 +144,38 @@ const BuyerDashboard = () => {
           </Link>
         </div>
       </div>
+
+     <div className="recommendations-grid">
+       {topRecommendations.length > 0 ? (
+         topRecommendations.map(rec => (
+           <Link
+             key={rec.id}
+             to={`/buyer/recommendation/${encodeURIComponent(rec.name)}`}
+             className="recommendation-card action-card"
+           >
+             <div className="recommendation-image-wrapper">
+               <img
+                 src={rec.imageUrl || '/images/tomato_!.jpg'}  // fallback image if none
+                 alt={rec.name}
+                 className="recommendation-image"
+               />
+             </div>
+             <h3>{rec.name}</h3>
+             <p>{rec.sellerName}</p>
+           </Link>
+         ))
+       ) : (
+         <p>No recommendations available at the moment.</p>
+       )}
+
+
+       <div className="recommendations-footer">
+         <Link to="/buyer/recommendations" className="view-more-link">
+           <div className="circle-arrow">→</div>
+           <span>View More</span>
+         </Link>
+       </div>
+     </div>
 
       <div className="recent-activity">
         <h2>Recent Activity</h2>

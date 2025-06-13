@@ -14,4 +14,6 @@ public interface CropService {
     public String uploadFileWithData(Integer farmerId,List<MultipartFile> file, Integer cropId);
     public List<RecommendationDTO> recommedCropsDetailsBaseCategory(List<Integer> categoryIds);
 
+    List<RecommendationDTO> getTopRecommendations(String email);
+
 }

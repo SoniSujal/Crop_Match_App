@@ -13,7 +13,8 @@ const EditUser = () => {
     email: '',
     mobile: '',
     pincode: '',
-    country: ''
+    country: '',
+    region: ''
   });
   const [originalData, setOriginalData] = useState({});
   const [errors, setErrors] = useState({});
@@ -33,7 +34,8 @@ const EditUser = () => {
         email: userData.email,
         mobile: userData.mobile,
         pincode: userData.pincode,
-        country: userData.country
+        country: userData.country,
+        region: userData.region
       };
       setFormData(userInfo);
       setOriginalData(userInfo);
@@ -56,6 +58,8 @@ const EditUser = () => {
         return !VALIDATION_PATTERNS.PINCODE.test(value) ? ERROR_MESSAGES.INVALID_PINCODE : '';
       case 'country':
         return !VALIDATION_PATTERNS.COUNTRY.test(value) ? ERROR_MESSAGES.INVALID_COUNTRY : '';
+      case 'region':
+        return !VALIDATION_PATTERNS.REGION.test(value) ? 'Region must be alphabetic and max 50 characters' : '';
       default:
         return '';
     }
@@ -214,6 +218,20 @@ const EditUser = () => {
               placeholder="Enter country"
             />
             {errors.country && <span className="field-error">{errors.country}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="region">Region *</label>
+            <input
+              type="text"
+              id="region"
+              name="region"
+              value={formData.region}
+              onChange={handleChange}
+              required
+              placeholder="Enter region"
+            />
+            {errors.region && <span className="field-error">{errors.region}</span>}
           </div>
 
           <div className="form-actions">

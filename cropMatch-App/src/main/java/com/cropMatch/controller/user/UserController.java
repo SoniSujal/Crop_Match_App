@@ -35,7 +35,7 @@ public class UserController {
             }
 
             String username = principal.getName();
-            UserDetail user = userService.findByUsername(username);
+            UserDetail user = userService.findByUserEmail(username);
 
             Map<String, Object> data = new HashMap<>();
             data.put("username", user.getUsername());
@@ -43,6 +43,7 @@ public class UserController {
             data.put("mobile", user.getMobile());
             data.put("pincode", user.getPincode());
             data.put("country", user.getCountry());
+            data.put("region",user.getRegion());
 
             String role = user.getUserTypes().stream()
                     .findFirst()
@@ -79,9 +80,12 @@ public class UserController {
         try {
             String username = principal.getName();
             userService.updateUserProfile(dto, username);
+//            userService.updateUserProfiles(dto, principal);
 
             if (dto.getPreferenceCategoryIds() != null && !dto.getPreferenceCategoryIds().isEmpty()) {
                 buyerService.updateBuyerPreferences(username, dto.getPreferenceCategoryIds());
+//                UserDetail updatedUser = userService.findByUserEmail(dto.getEmail());
+//                buyerService.updateBuyerPreferences(updatedUser.getId(),dto.getPreferenceCategoryIds());
             }
 
             return ResponseEntity.ok(ApiResponse.success("Profile updated successfully"));

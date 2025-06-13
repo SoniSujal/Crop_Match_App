@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class UserServiceImpl implements UserService{
         user.setEmail(registrationDto.getEmail());
         user.setPincode(registrationDto.getPincode());
         user.setCountry(registrationDto.getCountry());
+        user.setRegion(registrationDto.getRegion());
         user.setCreatedOn(LocalDateTime.now());
         user.setActive(true);
 
@@ -102,15 +104,40 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateUserProfile(UserUpdateDTO dto, String username) {
+    public void updateUserProfile(UserUpdateDTO dto, String identifier) {
 
-        UserDetail user = userDetailRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserDetail user = userDetailRepository.findByEmail(identifier)
+                .or(()->userDetailRepository.findByUsername(identifier))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setMobile(dto.getMobile());
         user.setPincode(dto.getPincode());
         user.setCountry(dto.getCountry());
+        user.setRegion(dto.getRegion());
+
+        userDetailRepository.save(user);
+    }
+
+
+//  X  Remove This
+    @Override
+    @Transactional
+    public void updateUserProfiles(UserUpdateDTO dto, Principal principal) {
+
+        String currentUserName = principal.getName();
+        UserDetail user = userDetailRepository.findByEmail(currentUserName).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Integer userId = user.getId();
+
+
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setMobile(dto.getMobile());
+        user.setPincode(dto.getPincode());
+        user.setCountry(dto.getCountry());
+        user.setRegion(dto.getRegion());
 
         userDetailRepository.save(user);
     }

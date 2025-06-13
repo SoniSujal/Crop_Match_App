@@ -16,6 +16,7 @@ import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
 import AllRequests from './components/buyer/AllRequests';
+import RecommendationDetail from './components/buyer/RecommendationDetail';
 import './App.css';
 
 function App() {
@@ -120,6 +121,12 @@ function App() {
                          <BuyerRequestDashboard />
                          </ProtectedRoute>
                          }
+                 />
+                 <Route
+                    path="/buyer/recommendation/:cropName"
+                     element={
+                     <RecommendationDetail />
+                     }
                  />
             </Route>
 

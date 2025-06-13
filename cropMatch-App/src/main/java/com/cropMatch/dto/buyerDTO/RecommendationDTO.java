@@ -21,8 +21,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RecommendationDTO {
 
-    @Autowired
-    private UserService userService;
+    @NotNull
+    private Integer id;
 
     @NotBlank
     private String name;
@@ -66,7 +66,8 @@ public class RecommendationDTO {
 
     private List<CropImage> images;
 
-    public RecommendationDTO(Crop cropDetails) {
+    public RecommendationDTO(Crop cropDetails,UserService userService) {
+        this.id = cropDetails.getId();
         this.name = cropDetails.getName();
         this.categoryName = cropDetails.getCategory().getName();
         this.sellerName = userService.findByUsernameUsingId(cropDetails.getCreatedBy());
