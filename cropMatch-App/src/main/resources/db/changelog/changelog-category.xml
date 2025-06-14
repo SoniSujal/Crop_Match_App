@@ -40,4 +40,31 @@
         </insert>
     </changeSet>
 
+    <changeSet id="3" author="sujal">
+        <insert tableName="category">
+            <column name="name" value="Dairy"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_on" valueDate="2025-06-14T09:00:00"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Pulses"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_on" valueDate="2025-06-14T09:05:00"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Spices"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_on" valueDate="2025-06-14T09:10:00"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Herbs"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="created_on" valueDate="2025-06-14T09:15:00"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Nuts"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_on" valueDate="2025-06-14T09:20:00"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

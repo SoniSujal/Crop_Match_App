@@ -36,15 +36,15 @@ const FarmersList = () => {
     }
   };
 
-  const handleDelete = async (username) => {
-    if (!window.confirm(`Are you sure you want to delete farmer "${username}"? This action cannot be undone.`)) {
+  const handleDelete = async (email) => {
+    if (!window.confirm(`Are you sure you want to delete farmer "${email}"? This action cannot be undone.`)) {
       return;
     }
 
-    setDeleteLoading(username);
+    setDeleteLoading(email);
     try {
-      await adminService.deleteUser(username);
-      setFarmers(farmers.filter(farmer => farmer.username !== username));
+      await adminService.deleteUser(email);
+      setFarmers(farmers.filter(farmer => farmer.email !== email));
       alert('Farmer deleted successfully');
     } catch (error) {
       alert('Failed to delete farmer: ' + error.message);
@@ -183,17 +183,17 @@ const FarmersList = () => {
                       ) : (
                         <>
                           <Link
-                            to={`/admin/edit-user/${farmer.username}`}
+                            to={`/admin/edit-user/${farmer.email}`}
                             className="btn btn-edit"
                           >
                             Edit
                           </Link>
                           <button
-                            onClick={() => handleDelete(farmer.username)}
+                            onClick={() => handleDelete(farmer.email)}
                             className="btn btn-delete"
-                            disabled={deleteLoading === farmer.username}
+                            disabled={deleteLoading === farmer.email}
                           >
-                            {deleteLoading === farmer.username ? 'Deleting...' : 'Delete'}
+                            {deleteLoading === farmer.email ? 'Deleting...' : 'Delete'}
                           </button>
                         </>
                       )}

@@ -136,8 +136,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int deletUserByName(String username) {
-        return userDetailRepository.softDeleteUserByName(username);
+    public int deletUserByEmail(String email) {
+        return userDetailRepository.softDeleteUserByEmail(email);
     }
 
 

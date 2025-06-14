@@ -109,7 +109,7 @@ public class AdminController {
     @GetMapping("/user/{username}")
     public ResponseEntity<ApiResponse<UserDetail>> getUser(@PathVariable String username) {
         try {
-            UserDetail user = userService.findByUsername(username);
+            UserDetail user = userService.findByUserEmail(username);
             return ResponseEntity.ok(ApiResponse.success(user));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -138,7 +138,7 @@ public class AdminController {
     @DeleteMapping("/user/{username}")
     public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable String username) {
         try {
-            int result = userService.deletUserByName(username);
+            int result = userService.deletUserByEmail(username);
             if (result > 0) {
                 return ResponseEntity.ok(ApiResponse.success("User deleted successfully"));
             } else {
