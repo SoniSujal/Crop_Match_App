@@ -21,5 +21,4 @@ public class ErrorResponses {
     private String message;
 
     private Map<String,String> errors;
-
 }

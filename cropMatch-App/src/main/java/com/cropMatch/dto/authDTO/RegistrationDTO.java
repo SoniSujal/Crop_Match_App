@@ -43,5 +43,4 @@ public class RegistrationDTO {
     private String country;
 
     private List<Integer> preferenceCategoryIds;
-
 }

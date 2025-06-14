@@ -67,4 +67,11 @@
             <column name="created_on" valueDate="2025-06-14T09:20:00"/>
         </insert>
     </changeSet>
+
+    <changeSet id="4" author="sujal">
+        <addColumn tableName="category">
+            <column name="updated_on" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

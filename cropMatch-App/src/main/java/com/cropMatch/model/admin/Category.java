@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Category {
 
     @Id
@@ -23,6 +27,11 @@ public class Category {
     @Column(nullable = false)
     private Boolean isActive = true;
 
-    @Column(nullable = false)
-    private LocalDateTime createdOn = LocalDateTime.now();
+    @CreatedDate
+    @Column(name = "created_on", updatable = false)
+    private LocalDateTime createdOn;
+
+    @LastModifiedDate
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 }

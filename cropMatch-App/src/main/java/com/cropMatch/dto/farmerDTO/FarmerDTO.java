@@ -26,5 +26,4 @@ public class FarmerDTO {
         this.pincode = user.getPincode();
         this.country = user.getCountry();
     }
-
 }

@@ -18,6 +18,7 @@ import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
 import AllRequests from './components/buyer/AllRequests';
+import AdminCategoryManager from './components/admin/AdminCategoryManager';
 import './App.css';
 
 function App() {
@@ -110,7 +111,7 @@ function App() {
                 <Route
                     path="/buyer/requests"
                          element={
-                         <ProtectedRoute>
+                         <ProtectedRoute requiredRole="buyer">
                          <AllRequests />
                          </ProtectedRoute>
                          }
@@ -118,7 +119,7 @@ function App() {
                 <Route
                     path="/buyer-requests"
                          element={
-                         <ProtectedRoute>
+                         <ProtectedRoute requiredRole="buyer">
                          <BuyerRequestDashboard />
                          </ProtectedRoute>
                          }
@@ -126,7 +127,7 @@ function App() {
                 <Route
                     path="/buyer/recommendations"
                           element={
-                          <ProtectedRoute>
+                          <ProtectedRoute requiredRole="buyer">
                           <RecommendationList />
                           </ProtectedRoute>
                           }
@@ -134,10 +135,18 @@ function App() {
                 <Route
                     path="/buyer/recommendation/:cropId"
                          element={
-                         <ProtectedRoute>
+                         <ProtectedRoute requiredRole="buyer">
                          <RecommendationDetail />
                          </ProtectedRoute>
                          }
+                />
+                <Route
+                    path="/admin/categories"
+                        element={
+                        <ProtectedRoute requiredRole="admin">
+                        <AdminCategoryManager />
+                        </ProtectedRoute>
+                        }
                 />
             </Route>
 

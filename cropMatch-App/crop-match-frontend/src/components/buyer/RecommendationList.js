@@ -8,12 +8,17 @@ const RecommendationList = () => {
   const { user } = useAuth();
   const [recommendations, setRecommendations] = useState([]);
   const [pagination, setPagination] = useState({ pageNo: 0, totalPages: 0 });
+  const [error, setError] = useState('');
   const [filters, setFilters] = useState({
     searchTerm: '',
     sortBy: 'createdOn',
     sortDir: 'desc',
     producedWayFilter: ''
   });
+
+  if (!user?.email || user?.role!="buyer") {
+        setError('User not authenticated');
+  }
 
   const fetchRecommendations = async (page = 0) => {
     try {

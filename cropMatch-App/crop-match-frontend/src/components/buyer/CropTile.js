@@ -16,7 +16,7 @@ const CropTile = ({ crop }) => {
           </span>
         </div>
         <div className="tile-details">
-          <span className="price">₹{crop.price} / {crop.sellingUnit}</span>
+          <span className="price">₹{crop.price} / {crop.sellingQuantity} {crop.sellingUnit}</span>
           <span className="variety">Variety: {crop.cropType || 'N/A'}</span>
           <span className="expire">Expires: {crop.expireMonth || 'N/A'}</span>
         </div>
