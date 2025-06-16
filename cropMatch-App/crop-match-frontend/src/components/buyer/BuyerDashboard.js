@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import cropService from '../../services/farmer/cropService';
+import api from '../../services/auth/api';
 import '../../styles/BuyerDashboard.css';
 
 
@@ -11,12 +13,25 @@ const BuyerDashboard = () => {
     activeRequests: 0,
     completedDeals: 0
   });
+
+  const [topRecommendations, setTopRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchDashboardStats();
+    fetchTopRecommendations();
   }, []);
+
+const fetchTopRecommendations = async () => {
+  try {
+    const response = await cropService.getTopRecommendations(user.email);
+    console.log("Top Recommendations:", response);
+    setTopRecommendations(response.data?.data || []);
+  } catch (err) {
+    console.error("Failed to fetch recommendations", err);
+  }
+};
 
   const fetchDashboardStats = async () => {
     try {
@@ -125,6 +140,47 @@ const BuyerDashboard = () => {
         </div>
       </div>
 
+        <div className="top-recommendations">
+        <h2>Top Recommendations For You</h2>
+     <div className="recommendations-grid">
+       {topRecommendations.length > 0 ? (
+         topRecommendations.map(rec => (
+           <Link
+             key={rec.id}
+             to={`/buyer/recommendation/${encodeURIComponent(rec.cropId)}`}
+             className="recommendation-card action-card"
+           >
+             <div className="recommendation-image-wrapper">
+               {rec.imagePaths?.length > 0 ? (
+                 <img
+                   src={`http://localhost:8080${rec.imagePaths[0]}`}
+                   alt={rec.name}
+                   className="recommendation-image"
+                 />
+               ) : (
+                 <div className="no-image-placeholder">No image available</div>
+               )}
+             </div>
+             <h3>{rec.name}</h3>
+             <p>{rec.sellerName}</p>
+           </Link>
+         ))
+       ) : (
+         <p>No recommendations available at the moment.</p>
+       )}
+
+
+       <div className="recommendations-footer">
+         <Link to="/buyer/recommendations" className="view-more-link">
+           <div className="circle-arrow">→</div>
+           <span>View More</span>
+         </Link>
+       </div>
+     </div>
+     </div>
+
+<br/><br/>
+
       <div className="recent-activity">
         <h2>Recent Activity</h2>
         <div className="activity-list">
@@ -159,7 +215,7 @@ const BuyerDashboard = () => {
           </div>
         </div>
       </div>
-
+<br/>
       <div className="dashboard-summary">
         <h2>Market Overview</h2>
         <div className="summary-cards">

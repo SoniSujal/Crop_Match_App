@@ -30,6 +30,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-region-to-user_detail" author="smit">
+        <addColumn tableName="user_detail">
+            <column name="region" type="VARCHAR(50)" remarks="User's region">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="user_detail-2" author="sujal">
         <comment>Fix default behavior of created_on and updated_on</comment>
         <sql>

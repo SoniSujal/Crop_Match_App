@@ -7,12 +7,12 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const RecommendationDetail = () => {
-  const { index } = useParams();  // index in the URL path
-  const location = useLocation();
-  const navigate = useNavigate();
+  // actual cropId passed via state
+   const { index } = useParams();  // index in the URL path
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  const { cropId } = useParams();// actual cropId passed via state
-
+    const { cropId } = useParams();
   const [recommendation, setRecommendation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

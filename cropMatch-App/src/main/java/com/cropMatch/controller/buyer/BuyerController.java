@@ -80,6 +80,12 @@ public class BuyerController {
         return ResponseEntity.ok(cropService.getCropById(cropId));
     }
 
+    @GetMapping("/{email}/recommendation/top")
+    public ResponseEntity<ApiResponse<List<RecommendationDTO>>> getTopRecommendations(@PathVariable String email) {
+        List<RecommendationDTO> topRecords = cropService.getTopRecommendations(email);
+        return ResponseEntity.ok(ApiResponse.success(topRecords));
+    }
+
     @GetMapping("/preferences")
     public ResponseEntity<List<Integer>> getBuyerPreferences(Principal principal) {
         List<Integer> preferenceIds = buyerService.getBuyerPreferences(principal.getName());

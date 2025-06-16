@@ -42,6 +42,7 @@ public class UserController {
             data.put("mobile", user.getMobile());
             data.put("pincode", user.getPincode());
             data.put("country", user.getCountry());
+            data.put("region",user.getRegion());
 
             String role = user.getUserTypes().stream()
                     .findFirst()

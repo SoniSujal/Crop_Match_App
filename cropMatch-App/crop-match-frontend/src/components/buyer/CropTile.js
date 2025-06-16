@@ -12,7 +12,7 @@ const CropTile = ({ crop }) => {
         <div className="tile-header">
           <h3 className="crop-name">{crop.name}</h3>
           <span className={`category category-${crop.categoryName.toLowerCase().replace(/\s+/g, '-')}`}>
-            {crop.categoryName
+            {crop.categoryName}
           </span>
         </div>
         <div className="tile-details">

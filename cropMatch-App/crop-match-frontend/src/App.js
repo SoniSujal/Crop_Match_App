@@ -6,8 +6,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import AdminDashboard from './components/admin/AdminDashboard';
-import FarmersList from './components/admin/FarmersList';
-import BuyersList from './components/admin/BuyersList';
+import UsersList from './components/admin/UsersList';
 import EditUser from './components/admin/EditUser';
 import FarmerDashboard from './components/farmer/FarmerDashboard';
 import BuyerRequestDashboard from './components/farmer/BuyerRequestDashboard';
@@ -43,21 +42,13 @@ function App() {
                 }
               />
               <Route
-                path="/admin/farmers"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <FarmersList />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/buyers"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <BuyersList />
-                  </ProtectedRoute>
-                }
-              />
+                  path="/admin/users"
+                   element={
+                   <ProtectedRoute requiredRole="admin">
+                      <UsersList />
+                      </ProtectedRoute>
+                      }
+                   />
               <Route
                 path="/admin/edit-user/:username"
                 element={

@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class UserServiceImpl implements UserService{
         user.setEmail(registrationDto.getEmail());
         user.setPincode(registrationDto.getPincode());
         user.setCountry(registrationDto.getCountry());
+        user.setRegion(registrationDto.getRegion());
         user.setCreatedOn(LocalDateTime.now());
         user.setActive(true);
 
@@ -112,6 +114,7 @@ public class UserServiceImpl implements UserService{
         user.setMobile(dto.getMobile());
         user.setPincode(dto.getPincode());
         user.setCountry(dto.getCountry());
+        user.setRegion(dto.getRegion());
 
         userDetailRepository.save(user);
     }

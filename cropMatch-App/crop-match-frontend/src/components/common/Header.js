@@ -1,16 +1,23 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import '../../styles/Header.css';
 
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { FaRegUserCircle} from 'react-icons/fa';
+import { MdOutlineLogout } from "react-icons/md";
+import { LuUserPen } from "react-icons/lu";
+import '../../styles/Header.css';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef();
 
   const handleLogout = async () => {
     try {
       await logout();
+      setDropdownOpen(false);
       navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -24,6 +31,25 @@ const Header = () => {
     return '/';
   };
 
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [location]);
+
   return (
     <header className="header">
       <div className="header-container">
@@ -36,23 +62,49 @@ const Header = () => {
         <nav className="header-nav">
           {user?.role === 'admin' && (
             <>
-              <Link to="/admin/dashboard" className="nav-link">Dashboard</Link>
-              <Link to="/admin/farmers" className="nav-link">Farmers</Link>
-              <Link to="/admin/buyers" className="nav-link">Buyers</Link>
+              <Link
+                to="/admin/dashboard"
+                className={`nav-link ${location.pathname === '/admin/dashboard' ? 'active' : ''}`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/admin/users?type=farmer"
+                className={`nav-link ${location.pathname === '/admin/farmers' ? 'active' : ''}`}
+              >
+                Farmers
+              </Link>
+              <Link
+                to="/admin/users?type=buyer"
+                className={`nav-link ${location.pathname === '/admin/buyers' ? 'active' : ''}`}
+              >
+                Buyers
+              </Link>
             </>
           )}
         </nav>
 
         <div className="header-right">
-          <div className="user-info">
-            <span className="user-name">Welcome, {user?.username}</span>
-            <span className="user-role">({user?.role})</span>
+          <div className="user-info-clean">
+            <span className="welcome-text">
+              👋 Welcome, <strong>{user?.username}</strong>
+            </span>
+            <span className={`role-tag ${user?.role}`}>{user?.role}</span>
           </div>
-          <div className="user-actions">
-            <Link to="/profile/edit" className="profile-link">Profile</Link>
-            <button onClick={handleLogout} className="logout-btn">
-              Logout
-            </button>
+
+          <div className="user-dropdown" ref={dropdownRef}>
+            <FaRegUserCircle className="user-icon" onClick={toggleDropdown} size={28} />
+
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <Link to="/profile/edit" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                  <LuUserPen className="dropdown-icon"  size={20}/> Edit Profile
+                </Link>
+                <button onClick={handleLogout} className="dropdown-item">
+                  <MdOutlineLogout className="dropdown-icon" size={20}/> Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

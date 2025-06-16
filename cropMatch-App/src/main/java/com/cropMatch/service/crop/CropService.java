@@ -17,4 +17,7 @@ public interface  CropService {
     public Page<Crop> recommedCropsDetailsBaseCategory(List<Integer> categoryIds, int pageNo, int pageSize, String sortBy, String sortDir);
     public Page<RecommendationDTO> getRecommendedCropsDTO(List<Integer> categoryIds, int pageNo, int pageSize, String sortBy, String sortDir);
 
+    List<RecommendationDTO> getTopRecommendations(String email);
+//    public List<RecommendationDTO> recommedTopThreeCropsBaseCategory( List<Integer> categoryIds, String region);
+
 }

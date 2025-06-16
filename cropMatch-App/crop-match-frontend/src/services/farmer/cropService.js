@@ -33,6 +33,10 @@ const cropService = {
        return api.get(`/buyer/recommendations/${cropId}`); // This hits backend: api/buyer/recommendations/{cropId}
        console.log(cropId);
    },
+
+   getTopRecommendations: (email) => {
+     return api.get(`/buyer/${email}/recommendation/top`);
+   }
 };
 
 export default cropService;

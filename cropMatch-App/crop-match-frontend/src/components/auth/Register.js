@@ -12,7 +12,8 @@ const Register = () => {
     mobile: '',
     userType: '',
     pincode: '',
-    country: ''
+    country: '',
+    region: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -316,6 +317,21 @@ const Register = () => {
               />
               {errors.country && <span className="field-error">{errors.country}</span>}
             </div>
+          </div>
+
+
+          <div className="form-group">
+            <label htmlFor="region">Region *</label>
+            <input
+              type="text"
+              id="region"
+              name="region"
+              value={formData.region}
+              onChange={handleChange}
+              required
+              placeholder="Enter region"
+            />
+            {errors.region && <span className="field-error">{errors.region}</span>}
           </div>
 
           <button

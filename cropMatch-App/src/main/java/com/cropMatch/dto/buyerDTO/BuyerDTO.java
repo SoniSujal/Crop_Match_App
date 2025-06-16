@@ -17,6 +17,7 @@ public class BuyerDTO {
     private String mobile;
     private String pincode;
     private String country;
+    private String region;
 
     public BuyerDTO(UserDetail user) {
         this.id = user.getId();
@@ -25,5 +26,6 @@ public class BuyerDTO {
         this.mobile = user.getMobile();
         this.pincode = user.getPincode();
         this.country = user.getCountry();
+        this.region = user.getRegion();
     }
 }

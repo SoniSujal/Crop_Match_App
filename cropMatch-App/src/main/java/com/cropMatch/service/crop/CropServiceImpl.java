@@ -10,6 +10,8 @@ import com.cropMatch.exception.ImageInByterConvertException;
 import com.cropMatch.model.admin.Category;
 import com.cropMatch.model.farmer.Crop;
 import com.cropMatch.model.farmer.CropImage;
+import com.cropMatch.model.user.UserDetail;
+import com.cropMatch.repository.buyer.BuyerPreferencesRepository;
 import com.cropMatch.repository.category.CategoryRepository;
 import com.cropMatch.repository.crop.CropImageRepository;
 import com.cropMatch.repository.crop.CropRepository;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -53,6 +56,9 @@ public class CropServiceImpl implements CropService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BuyerPreferencesRepository buyerPreferencesRepository;
 
     @Override
     @Transactional
@@ -151,4 +157,29 @@ public class CropServiceImpl implements CropService {
         RecommendationDTO recommendationDTO = new RecommendationDTO(crop,userService);
         return ApiResponse.success(recommendationDTO);
     }
+
+    @Override
+    public List<RecommendationDTO> getTopRecommendations(String email){
+        UserDetail buyer = userService.findByUserEmail(email);
+        System.out.println("*****************************");
+        System.out.println(buyer);
+        List<Integer> categoryIds = buyerPreferencesRepository.findByBuyerId(buyer.getId())
+                .stream()
+                .map(pref -> pref.getCategory().getId())
+                .toList();
+        log.debug("****************************");
+        log.debug(categoryIds.toString());
+        List<Crop> crops = cropRepository.findTopRecommendations(categoryIds,buyer.getRegion());
+        log.debug("***************************");
+        log.debug(crops.toString());
+
+        List<RecommendationDTO> list = crops.stream()
+                .map(crop -> new RecommendationDTO(crop, userService))
+                .toList();
+        log.debug(list.toString());
+        return list;
+    }
+
+
+
 }
