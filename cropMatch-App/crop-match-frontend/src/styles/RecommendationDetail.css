@@ -105,7 +105,6 @@
   color: #aaa;
 }
 
-
 .slick-prev {
   left: 10px;
 }
@@ -113,8 +112,6 @@
 .slick-next {
   right: 10px;
 }
-
-
 
 .product-brief {
   margin-bottom: 1.5rem;
@@ -138,4 +135,29 @@
   font-size: 0.95rem;
   color: #666;
   margin-bottom: 1.5rem;
+}
+
+/* Carousel dots style */
+.custom-dots {
+  bottom: -30px;
+}
+
+.custom-dots li {
+  margin: 0 5px;
+}
+
+.custom-dots li button {
+  padding: 0;
+}
+
+.custom-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.custom-dots li.slick-active .custom-dot {
+  background-color: #28a745; /* active dot = green */
 }

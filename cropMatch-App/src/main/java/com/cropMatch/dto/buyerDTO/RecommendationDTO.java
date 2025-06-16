@@ -9,23 +9,25 @@ import com.cropMatch.service.user.UserService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.time.YearMonth;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class RecommendationDTO {
 
-    @NotNull
-    private Integer id;
+    @NotBlank
+    private Integer cropId;
 
     @NotBlank
     private String name;
+
+    private String Desc;
 
     @NotNull
     private String categoryName;
@@ -34,7 +36,10 @@ public class RecommendationDTO {
     private String sellerName;
 
     @NotNull
-    private int quantity;
+    private int stockQuantity;
+
+    @NotNull
+    private int sellingQuantity;
 
     @NotNull
     private BigDecimal price;
@@ -64,14 +69,16 @@ public class RecommendationDTO {
 
     private String expectedReadyMonth;
 
-    private List<CropImage> images;
+    private List<String> imagePaths;
 
     public RecommendationDTO(Crop cropDetails,UserService userService) {
-        this.id = cropDetails.getId();
+        this.cropId = cropDetails.getId();
         this.name = cropDetails.getName();
+        this.Desc = cropDetails.getDescription();
         this.categoryName = cropDetails.getCategory().getName();
         this.sellerName = userService.findByUsernameUsingId(cropDetails.getCreatedBy());
-        this.quantity = cropDetails.getQuantity();
+        this.stockQuantity = cropDetails.getStockQuantity();
+        this.sellingQuantity = cropDetails.getSellingQuantity();
         this.price = cropDetails.getPrice();
         this.stockUnit = cropDetails.getStockUnit();
         this.sellingUnit = cropDetails.getSellingUnit();
@@ -82,6 +89,8 @@ public class RecommendationDTO {
         this.producedWay = cropDetails.getProducedWay();
         this.availabilityStatus = cropDetails.getAvailabilityStatus();
         this.expectedReadyMonth = cropDetails.getExpectedReadyMonth();
-        this.images = cropDetails.getImages();
+        this.imagePaths = cropDetails.getImages().stream()
+                .map(CropImage::getImagePath)
+                .collect(Collectors.toList());
     }
 }

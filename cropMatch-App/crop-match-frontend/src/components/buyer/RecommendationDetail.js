@@ -1,81 +1,95 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
+import cropService from '../../services/farmer/cropService';
 import '../../styles/RecommendationDetail.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const RecommendationDetail = () => {
-  const { cropName } = useParams();
+  // actual cropId passed via state
+   const { index } = useParams();  // index in the URL path
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const { cropId } = useParams();
   const [recommendation, setRecommendation] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const mockData = {
-      name: 'Tomato',
-      Desc: 'Fresh organic tomatoes, hand-picked and grown with love.',
-      categoryName: 'Vegetables',
-      sellerName: 'FarmerJohn',
-      sellingQuantity: 2,
-      quantity: 100,
-      price: 25.5,
-      stockUnit: 'KILOGRAM',
-      sellingUnit: 'kg',
-      region: 'Punjab',
-      expireMonth: 'August 2025',
-      cropType: 'Organic',
-      quality: 'A',
-      producedWay: 'Natural',
-      availabilityStatus: 'Available',
-      expectedReadyMonth: 'July 2025',
-      imagePaths: ['/images/tomato_!.jpg', '/images/tomato_2.webp']
+    if (!cropId) {
+      setError('Crop ID not found.');
+      setLoading(false);
+      return;
+    }
+
+    const fetchRecommendationDetail = async () => {
+      try {
+        const res = await cropService.getCropById(cropId);
+        if (res.data.status === 'SUCCESS') {
+          setRecommendation(res.data.data);
+        } else {
+          setError(res.data.message || 'Failed to load crop details.');
+        }
+      } catch (err) {
+        setError('Error fetching crop details.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setTimeout(() => {
-      setRecommendation(mockData);
-      setLoading(false);
-    }, 500);
-  }, [cropName]);
+    fetchRecommendationDetail();
+  }, [cropId]);
 
-  if (loading) return <p className="loading-text">Loading crop details...</p>;
+  const handleBuyNow = () => {
+    navigate(`/buyer/orders/create?cropId=${cropId}`);
+  };
 
   const sliderSettings = {
-    dots: true,
-    arrows:true,
-    infinite: true,
+    dots: recommendation?.imagePaths?.length > 1,  // Show dots only if >1 image
+    arrows: recommendation?.imagePaths?.length > 1, // Show arrows only if >1
+    infinite: recommendation?.imagePaths?.length > 1, // Infinite only if >1
     speed: 500,
     slidesToShow: 1,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    customPaging: (i) => (
+      <div className="custom-dot"></div>
+    ),
+    dotsClass: 'slick-dots custom-dots',
   };
+
+  if (loading) return <p className="loading-text">Loading crop details...</p>;
+  if (error) return <p className="error-text">{error}</p>;
 
   return (
     <div className="recommendation-detail-container">
-
       <div className="carousel-container">
         <Slider {...sliderSettings}>
-          {recommendation.imagePaths.map((img, index) => (
-            <div key={index}>
-              <img className="carousel-image" src={img} alt={`Crop ${index}`} />
-            </div>
-          ))}
+          {recommendation?.imagePaths?.length > 0 ? (
+            recommendation.imagePaths.map((img, idx) => (
+              <div key={idx}>
+                <img className="carousel-image" src={`http://localhost:8080${img}`} alt={`Crop ${idx}`} />
+              </div>
+            ))
+          ) : (
+            <div>No images available</div>
+          )}
         </Slider>
       </div>
 
       <div className="product-brief">
         <h2 className="product-name">
-          {recommendation.name} - {recommendation.sellingQuantity} {recommendation.stockUnit}
+          {recommendation.name} - {recommendation.sellingQuantity} {recommendation.sellingUnit}
         </h2>
-
         <div className="product-price">
-          ₹{recommendation.price} / {recommendation.sellingUnit}
+          ₹{recommendation.price}
         </div>
-
-        <div className="product-mrp">
-          MRP (Incl. of all taxes)
-        </div>
+        <div className="product-mrp">MRP (Incl. of all taxes)</div>
       </div>
 
-      <p className="desc">{recommendation.Desc}</p>
+      <p className="desc">{recommendation.desc || 'No description available.'}</p>
 
       <div className="section">
         <h3>Product Information</h3>
@@ -100,11 +114,11 @@ const RecommendationDetail = () => {
 
       <div className="section">
         <h3>Seller</h3>
-        <p><strong><span role="img" aria-label="seller">👤</span>Seller Name:</strong> {recommendation.sellerName}</p>
+        <p><strong>👤 Seller Name:</strong> {recommendation.sellerName}</p>
       </div>
 
       <div className="buy-now-container">
-        <button className="buy-now-button">Buy Now</button>
+        <button className="buy-now-button" onClick={handleBuyNow}>Buy Now</button>
       </div>
     </div>
   );

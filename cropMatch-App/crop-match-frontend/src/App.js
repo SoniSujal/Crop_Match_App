@@ -11,11 +11,13 @@ import EditUser from './components/admin/EditUser';
 import FarmerDashboard from './components/farmer/FarmerDashboard';
 import BuyerRequestDashboard from './components/farmer/BuyerRequestDashboard';
 import BuyerDashboard from './components/buyer/BuyerDashboard';
+import RecommendationList from './components/buyer/RecommendationList';
+import RecommendationDetail from './components/buyer/RecommendationDetail';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
 import AllRequests from './components/buyer/AllRequests';
-import RecommendationDetail from './components/buyer/RecommendationDetail';
+import AdminCategoryManager from './components/admin/AdminCategoryManager';
 import './App.css';
 
 function App() {
@@ -113,12 +115,30 @@ function App() {
                          </ProtectedRoute>
                          }
                  />
-                 <Route
-                    path="/buyer/recommendation/:cropName"
-                     element={
-                     <RecommendationDetail />
-                     }
-                 />
+                <Route
+                    path="/buyer/recommendations"
+                          element={
+                          <ProtectedRoute requiredRole="buyer">
+                          <RecommendationList />
+                          </ProtectedRoute>
+                          }
+                />
+                <Route
+                    path="/buyer/recommendation/:cropId"
+                         element={
+                         <ProtectedRoute requiredRole="buyer">
+                         <RecommendationDetail />
+                         </ProtectedRoute>
+                         }
+                />
+                <Route
+                    path="/admin/categories"
+                        element={
+                        <ProtectedRoute requiredRole="admin">
+                        <AdminCategoryManager />
+                        </ProtectedRoute>
+                        }
+                />
             </Route>
 
             {/* Default redirect */}

@@ -26,4 +26,16 @@
                 referencedColumnNames="crop_id"/>
     </changeSet>
 
+    <changeSet id="crop_image_3" author="sujal">
+        <addColumn tableName="crop_image">
+            <column name="image_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="crop_image_4" author="sujal">
+        <dropColumn tableName="crop_image" columnName="image_data" />
+    </changeSet>
+
 </databaseChangeLog>

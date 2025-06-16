@@ -28,5 +28,4 @@ public class BuyerPreference {
         this.buyerId = buyerId;
         this.category = category;
     }
-
 }

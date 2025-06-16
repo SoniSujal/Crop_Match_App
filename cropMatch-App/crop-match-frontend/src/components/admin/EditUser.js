@@ -102,7 +102,7 @@ const EditUser = () => {
     try {
       await adminService.updateUser(username, formData);
       alert('User updated successfully!');
-      navigate('/admin/farmers');
+      navigate('/admin/users');
     } catch (error) {
       setError('Failed to update user: ' + error.message);
     } finally {

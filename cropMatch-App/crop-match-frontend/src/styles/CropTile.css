@@ -1,0 +1,174 @@
+.crop-tile {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffffff, #f1faff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 18px;
+  display: flex;
+  flex-direction: row; /* make image + content side by side */
+  gap: 20px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.tile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+
+.crop-tile:hover {
+  transform: scale(1.01);
+}
+
+.crop-image {
+  flex: 0 0 160px;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.crop-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.tile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.crop-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2d3748;
+}
+
+.category {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px #ddd;
+}
+
+/* Category Colors */
+.category-vegetables {
+  background-color: #e0f7e9;
+  color: #1b5e20;
+  box-shadow: inset 0 0 0 1px #c8e6c9;
+}
+
+.category-fruits {
+  background-color: #fff3e0;
+  color: #e65100;
+  box-shadow: inset 0 0 0 1px #ffcc80;
+}
+
+.category-grains {
+  background-color: #f9fbe7;
+  color: #827717;
+  box-shadow: inset 0 0 0 1px #dce775;
+}
+
+.category-spices {
+  background-color: #fce4ec;
+  color: #ad1457;
+  box-shadow: inset 0 0 0 1px #f8bbd0;
+}
+
+.category-pulses {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  box-shadow: inset 0 0 0 1px #90caf9;
+}
+
+/* Default fallback */
+.category-others {
+  background-color: #eeeeee;
+  color: #444;
+}
+
+
+.tile-details {
+  font-size: 0.95rem;
+  color: #34495e;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.price {
+  color: #388e3c;
+  font-weight: 700;
+}
+
+.tile-footer {
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  color: #777;
+}
+
+.badge {
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  margin-right: 5px;
+  background-color: #e0f2f1;
+  color: #004d40;
+}
+
+.quality-tag.high {
+  background-color: #d0f0c0;
+  color: #1b5e20;
+}
+.quality-tag.medium {
+  background-color: #fff8e1;
+  color: #f9a825;
+}
+.quality-tag.low {
+  background-color: #ffe4e1;
+  color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .crop-tile {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .crop-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .tile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .tile-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}

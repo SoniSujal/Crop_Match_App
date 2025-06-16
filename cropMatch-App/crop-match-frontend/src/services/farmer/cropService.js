@@ -23,7 +23,20 @@ const cropService = {
     }
   },
 
-  // You can add more crop-related services here
+ // Fetch recommendations list for a user with params (pagination, filters)
+   getRecommendations: (userEmail, params) => {
+       return api.get(`/buyer/${userEmail}/recommendations`, { params });
+     },
+
+   // Fetch crop details by crop_id
+   getCropById: (cropId) => {
+       return api.get(`/buyer/recommendations/${cropId}`); // This hits backend: api/buyer/recommendations/{cropId}
+       console.log(cropId);
+   },
+
+   getTopRecommendations: (email) => {
+     return api.get(`/buyer/${email}/recommendation/top`);
+   }
 };
 
 export default cropService;

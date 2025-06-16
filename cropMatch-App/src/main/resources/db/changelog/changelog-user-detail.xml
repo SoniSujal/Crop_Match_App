@@ -38,4 +38,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="user_detail-2" author="sujal">
+        <comment>Fix default behavior of created_on and updated_on</comment>
+        <sql>
+            ALTER TABLE user_detail
+            MODIFY COLUMN created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            MODIFY COLUMN updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -52,15 +52,15 @@ const UsersList = () => {
     }
   };
 
-  const handleDelete = async (username) => {
-    if (!window.confirm(`Are you sure you want to delete ${userType} "${username}"? This action cannot be undone.`)) {
+  const handleDelete = async (email) => {
+    if (!window.confirm(`Are you sure you want to delete ${userType} "${email}"? This action cannot be undone.`)) {
       return;
     }
 
-    setDeleteLoading(username);
+    setDeleteLoading(email);
     try {
-      await adminService.deleteUser(username);
-      setUsers(users.filter(user => user.username !== username));
+      await adminService.deleteUser(email);
+      setUsers(users.filter(user => user.email !== email));
       alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} deleted successfully`);
     } catch (error) {
       alert(`Failed to delete ${userType}: ` + error.message);
@@ -217,17 +217,17 @@ const UsersList = () => {
                       ) : (
                         <>
                           <Link
-                            to={`/admin/edit-user/${user.username}`}
+                            to={`/admin/edit-user/${user.email}`}
                             className="btn btn-edit"
                           >
                             Edit
                           </Link>
                           <button
-                            onClick={() => handleDelete(user.username)}
+                            onClick={() => handleDelete(user.email)}
                             className="btn btn-delete"
-                            disabled={deleteLoading === user.username}
+                            disabled={deleteLoading === user.email}
                           >
-                            {deleteLoading === user.username ? 'Deleting...' : 'Delete'}
+                            {deleteLoading === user.email ? 'Deleting...' : 'Delete'}
                           </button>
                         </>
                       )}

@@ -29,13 +29,16 @@ public class CropDTO {
     private int categoryId;
 
     @NotNull
-    private int quantity;
+    private int stockQuantity;
 
     @NotNull
     private BigDecimal price;
 
     @NotBlank
     private String stockUnit; // e.g., KG, TON
+
+    @NotNull
+    private int sellingQuantity;
 
     @NotBlank
     private String sellingUnit; // e.g., CRATE, BOX

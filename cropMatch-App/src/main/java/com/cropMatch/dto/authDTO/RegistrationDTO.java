@@ -48,5 +48,4 @@ public class RegistrationDTO {
     private String region;
 
     private List<Integer> preferenceCategoryIds;
-
 }

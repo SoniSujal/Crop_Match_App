@@ -107,7 +107,6 @@ public class UserServiceImpl implements UserService{
     public void updateUserProfile(UserUpdateDTO dto, String identifier) {
 
         UserDetail user = userDetailRepository.findByEmail(identifier)
-                .or(()->userDetailRepository.findByUsername(identifier))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         user.setUsername(dto.getUsername());
@@ -139,8 +138,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int deletUserByName(String username) {
-        return userDetailRepository.softDeleteUserByName(username);
+    public int deletUserByEmail(String email) {
+        return userDetailRepository.softDeleteUserByEmail(email);
     }
 
 

@@ -28,5 +28,4 @@ public class FarmerDTO {
         this.country = user.getCountry();
         this.region = user.getRegion();
     }
-
 }
