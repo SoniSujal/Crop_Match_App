@@ -68,7 +68,7 @@ const AdminDashboard = () => {
           <div className="stat-content">
             <h3>{stats.totalFarmers}</h3>
             <p>Total Farmers</p>
-            <Link to="/admin/farmers" className="stat-link">View All Farmers →</Link>
+           <Link to="/admin/users?type=farmer" className="stat-link">View All Farmers →</Link>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
           <div className="stat-content">
             <h3>{stats.totalBuyers}</h3>
             <p>Total Buyers</p>
-            <Link to="/admin/buyers" className="stat-link">View All Buyers →</Link>
+            <Link to="/admin/users?type=buyer" className="stat-link">View All Buyers →</Link>
           </div>
         </div>
 
@@ -94,17 +94,11 @@ const AdminDashboard = () => {
       <div className="quick-actions">
         <h2>Quick Actions</h2>
         <div className="actions-grid">
-          <Link to="/admin/farmers" className="action-card">
-            <div className="action-icon">👨‍🌾</div>
-            <h3>Manage Farmers</h3>
-            <p>View, edit, and manage farmer accounts</p>
-          </Link>
-
-          <Link to="/admin/buyers" className="action-card">
-            <div className="action-icon">🛒</div>
-            <h3>Manage Buyers</h3>
-            <p>View, edit, and manage buyer accounts</p>
-          </Link>
+                  <Link to="/admin/users" className="action-card">
+                    <div className="action-icon">👥</div>
+                    <h3>Manage Users</h3>
+                    <p>View, edit, and manage all user accounts</p>
+                  </Link>
 
           <Link to="/profile/edit" className="action-card">
             <div className="action-icon">⚙️</div>

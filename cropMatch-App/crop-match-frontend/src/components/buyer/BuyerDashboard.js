@@ -145,6 +145,8 @@ const BuyerDashboard = () => {
         </div>
       </div>
 
+        <div className="top-recommendations">
+        <h2>Top Recommendations For You</h2>
      <div className="recommendations-grid">
        {topRecommendations.length > 0 ? (
          topRecommendations.map(rec => (
@@ -176,6 +178,9 @@ const BuyerDashboard = () => {
          </Link>
        </div>
      </div>
+     </div>
+
+<br/><br/>
 
       <div className="recent-activity">
         <h2>Recent Activity</h2>
@@ -211,7 +216,7 @@ const BuyerDashboard = () => {
           </div>
         </div>
       </div>
-
+<br/>
       <div className="dashboard-summary">
         <h2>Market Overview</h2>
         <div className="summary-cards">
