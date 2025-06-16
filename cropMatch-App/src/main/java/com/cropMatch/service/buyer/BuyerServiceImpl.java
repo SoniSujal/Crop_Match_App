@@ -75,7 +75,6 @@ public class BuyerServiceImpl implements BuyerService {
             return false;
         }
 
-//        UserDetail buyer = userService.findByUsername(username);
         UserDetail buyer = userService.findByUserEmail(username);
         Integer buyerId = buyer.getId();
 

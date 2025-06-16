@@ -37,7 +37,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/user/**").authenticated()
                         .requestMatchers("/api/crops/**").hasAuthority("FARMER")
-                        .requestMatchers("/api/buyer/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

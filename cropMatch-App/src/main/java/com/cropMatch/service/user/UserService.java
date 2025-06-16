@@ -18,5 +18,4 @@ public interface UserService {
     public int activateByEmail(String email);
     public String findByUsernameUsingId(Integer id);
 
-    void updateUserProfiles(UserUpdateDTO dto, Principal principal);
 }

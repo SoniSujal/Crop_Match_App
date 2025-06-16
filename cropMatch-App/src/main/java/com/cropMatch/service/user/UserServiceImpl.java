@@ -120,28 +120,6 @@ public class UserServiceImpl implements UserService{
         userDetailRepository.save(user);
     }
 
-
-//  X  Remove This
-    @Override
-    @Transactional
-    public void updateUserProfiles(UserUpdateDTO dto, Principal principal) {
-
-        String currentUserName = principal.getName();
-        UserDetail user = userDetailRepository.findByEmail(currentUserName).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        Integer userId = user.getId();
-
-
-        user.setUsername(dto.getUsername());
-        user.setEmail(dto.getEmail());
-        user.setMobile(dto.getMobile());
-        user.setPincode(dto.getPincode());
-        user.setCountry(dto.getCountry());
-        user.setRegion(dto.getRegion());
-
-        userDetailRepository.save(user);
-    }
-
     @Override
     public  UserDetail findByUsername(String username){
         return  userDetailRepository.findByUsername(username)

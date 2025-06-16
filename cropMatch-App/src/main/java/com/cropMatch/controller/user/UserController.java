@@ -80,12 +80,9 @@ public class UserController {
         try {
             String username = principal.getName();
             userService.updateUserProfile(dto, username);
-//            userService.updateUserProfiles(dto, principal);
 
             if (dto.getPreferenceCategoryIds() != null && !dto.getPreferenceCategoryIds().isEmpty()) {
                 buyerService.updateBuyerPreferences(username, dto.getPreferenceCategoryIds());
-//                UserDetail updatedUser = userService.findByUserEmail(dto.getEmail());
-//                buyerService.updateBuyerPreferences(updatedUser.getId(),dto.getPreferenceCategoryIds());
             }
 
             return ResponseEntity.ok(ApiResponse.success("Profile updated successfully"));
