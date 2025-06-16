@@ -78,7 +78,7 @@ const RecommendationList = () => {
       </div>
       <div className="tile-list fade-in">
         {recommendations.length ? recommendations.map(c =>
-          <CropTile key={c.crop_id} crop={c} />) : <p>No crops found matching filters.</p>}
+          <CropTile key={c.cropId} crop={c} />) : <p>No crops found matching filters.</p>}
       </div>
       <div className="pagination-buttons">
         <button onClick={() => fetchRecommendations(pagination.pageNo - 1)} disabled={pagination.pageNo === 0}>← Previous</button>

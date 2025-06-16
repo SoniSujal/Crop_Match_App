@@ -3,7 +3,6 @@ package com.cropMatch.service.crop;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 import com.cropMatch.dto.responseDTO.ApiResponse;
-import com.cropMatch.dto.responseDTO.PagedResponse;
 import com.cropMatch.model.farmer.Crop;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;

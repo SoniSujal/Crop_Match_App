@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserDetailRepository extends JpaRepository<UserDetail, Integer> {
-//    @Query("SELECT u FROM UserDetail u WHERE u.email = :userName")
+
     Optional<UserDetail> findByUsername(String username);
     Optional<UserDetail> findByEmail(String email);
     boolean existsByUsername(String username);

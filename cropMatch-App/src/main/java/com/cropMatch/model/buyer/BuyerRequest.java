@@ -5,15 +5,14 @@ import com.cropMatch.enums.CropUnit;
 import com.cropMatch.enums.RequestStatus;
 import com.cropMatch.model.admin.Category;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class BuyerRequest {

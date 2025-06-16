@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class RecommendationDTO {
 
     @NotBlank
-    private Integer crop_id;
+    private Integer cropId;
 
     @NotBlank
     private String name;
@@ -72,7 +71,7 @@ public class RecommendationDTO {
     private List<String> imagePaths;
 
     public RecommendationDTO(Crop cropDetails,UserService userService) {
-        this.crop_id = cropDetails.getId();
+        this.cropId = cropDetails.getId();
         this.name = cropDetails.getName();
         this.Desc = cropDetails.getDescription();
         this.categoryName = cropDetails.getCategory().getName();

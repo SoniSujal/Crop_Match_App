@@ -3,9 +3,7 @@ package com.cropMatch.controller.buyer;
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.responseDTO.ApiResponse;
-import com.cropMatch.dto.responseDTO.   PagedResponse;
 import com.cropMatch.model.buyer.BuyerRequest;
-import com.cropMatch.model.farmer.Crop;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.common.UserDetailRepository;
 import com.cropMatch.service.buyer.BuyerService;
@@ -14,14 +12,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
