@@ -141,9 +141,6 @@ public class CropServiceImpl implements CropService {
     public Page<RecommendationDTO> getRecommendedCropsDTO(List<Integer> categoryIds, int pageNo, int pageSize, String sortBy, String sortDir) {
         Page<Crop> cropsPage = recommedCropsDetailsBaseCategory(categoryIds, pageNo, pageSize, sortBy, sortDir);
         Page<RecommendationDTO> map = cropsPage.map(crop -> new RecommendationDTO(crop, userService));
-        RecommendationDTO recommendationDTO = map.getContent().get(0);
-        System.out.println("***************************************");
-        System.out.println(recommendationDTO);
         return map;
     }
 
