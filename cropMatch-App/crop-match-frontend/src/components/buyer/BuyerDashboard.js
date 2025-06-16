@@ -20,11 +20,6 @@ const BuyerDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      // Simulate API call - replace with actual service calls
-      // const orders = await buyerService.getOrders();
-      // const requests = await buyerService.getActiveRequests();
-      // const deals = await buyerService.getCompletedDeals();
-
       // Mock data for now
       setTimeout(() => {
         setStats({

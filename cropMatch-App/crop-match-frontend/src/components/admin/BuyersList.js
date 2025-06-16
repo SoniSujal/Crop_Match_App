@@ -36,15 +36,15 @@ const BuyersList = () => {
     }
   };
 
-  const handleDelete = async (username) => {
-    if (!window.confirm(`Are you sure you want to delete buyer "${username}"? This action cannot be undone.`)) {
+  const handleDelete = async (email) => {
+    if (!window.confirm(`Are you sure you want to delete buyer "${email}"? This action cannot be undone.`)) {
       return;
     }
 
-    setDeleteLoading(username);
+    setDeleteLoading(email);
     try {
-      await adminService.deleteUser(username);
-      setBuyers(buyers.filter(buyer => buyer.username !== username));
+      await adminService.deleteUser(email);
+      setBuyers(buyers.filter(buyer => buyer.email !== email));
       alert('Buyer deleted successfully');
     } catch (error) {
       alert('Failed to delete buyer: ' + error.message);
@@ -183,17 +183,17 @@ const BuyersList = () => {
                       ) : (
                         <>
                           <Link
-                            to={`/admin/edit-user/${buyer.username}`}
+                            to={`/admin/edit-user/${buyer.email}`}
                             className="btn btn-edit"
                           >
                             Edit
                           </Link>
                           <button
-                            onClick={() => handleDelete(buyer.username)}
+                            onClick={() => handleDelete(buyer.email)}
                             className="btn btn-delete"
-                            disabled={deleteLoading === buyer.username}
+                            disabled={deleteLoading === buyer.email}
                           >
-                            {deleteLoading === buyer.username ? 'Deleting...' : 'Delete'}
+                            {deleteLoading === buyer.email ? 'Deleting...' : 'Delete'}
                           </button>
                         </>
                       )}

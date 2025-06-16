@@ -6,7 +6,6 @@ import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.buyer.BuyerService;
 import com.cropMatch.service.user.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -35,7 +34,7 @@ public class UserController {
             }
 
             String username = principal.getName();
-            UserDetail user = userService.findByUsername(username);
+            UserDetail user = userService.findByUserEmail(username);
 
             Map<String, Object> data = new HashMap<>();
             data.put("username", user.getUsername());

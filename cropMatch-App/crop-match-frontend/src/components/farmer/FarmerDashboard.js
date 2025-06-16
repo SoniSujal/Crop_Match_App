@@ -30,8 +30,8 @@ const FarmerDashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <div className="loading">
-          <div className="spinner"></div>
+        <div className="loading" role="status" aria-live="polite" aria-busy={loading}>
+          <div className="spinner" aria-hidden="true"></div>
           <p>Loading dashboard...</p>
         </div>
       </div>

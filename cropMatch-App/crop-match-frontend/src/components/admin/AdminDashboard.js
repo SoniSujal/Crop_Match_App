@@ -53,7 +53,7 @@ const AdminDashboard = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>Admin Dashboard</h1>
-        <p>Welcome back, {user?.username}! Here's what's happening with your platform.</p>
+        <p>Welcome back, <strong style={{ color: '#0d47a1' }}>{user?.username}</strong>! Here's a quick summary of your platform activity.</p>
       </div>
 
       {error && (
@@ -104,6 +104,12 @@ const AdminDashboard = () => {
             <div className="action-icon">🛒</div>
             <h3>Manage Buyers</h3>
             <p>View, edit, and manage buyer accounts</p>
+          </Link>
+
+          <Link to="/admin/categories" className="action-card">
+            <div className="action-icon">📂</div>
+            <h3>Manage Categories</h3>
+            <p>View, edit, and manage categories</p>
           </Link>
 
           <Link to="/profile/edit" className="action-card">

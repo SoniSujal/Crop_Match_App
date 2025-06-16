@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogoutServiceImpl implements LogoutService{
 
-    @Autowired
     private final TokenBlacklist tokenBlacklist;
 
     @Override

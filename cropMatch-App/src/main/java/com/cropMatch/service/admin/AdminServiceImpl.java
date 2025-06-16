@@ -17,5 +17,4 @@ public class AdminServiceImpl implements AdminService{
     public List<UserDetail> getAllUsersByRole(String role) {
         return userDetailRepository.findAllByUserTypeName(role);
     }
-
 }

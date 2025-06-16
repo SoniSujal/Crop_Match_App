@@ -20,15 +20,15 @@
     <changeSet id="4" author="sujal">
         <insert tableName="user_type">
             <column name="user_type_name" value="ADMIN"/>
-            <column name="created_on" valueDate="2025-06-07T10:15:00"/>
+            <column name="created_on" valueDate="NOW()"/>
         </insert>
         <insert tableName="user_type">
             <column name="user_type_name" value="BUYER"/>
-            <column name="created_on" valueDate="2025-06-07T10:20:00"/>
+            <column name="created_on" valueDate="NOW()"/>
         </insert>
         <insert tableName="user_type">
             <column name="user_type_name" value="FARMER"/>
-            <column name="created_on" valueDate="2025-06-07T10:25:00"/>
+            <column name="created_on" valueDate="NOW()"/>
         </insert>
     </changeSet>
 

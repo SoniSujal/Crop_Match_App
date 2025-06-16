@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserDetailRepository extends JpaRepository<UserDetail, Integer> {
+
     Optional<UserDetail> findByUsername(String username);
     Optional<UserDetail> findByEmail(String email);
     boolean existsByUsername(String username);
@@ -23,8 +24,8 @@ public interface UserDetailRepository extends JpaRepository<UserDetail, Integer>
 
     @Modifying
     @Transactional
-    @Query("UPDATE UserDetail u SET u.active = false WHERE u.username = :userName")
-    int softDeleteUserByName(@Param("userName") String userName);
+    @Query("UPDATE UserDetail u SET u.active = false WHERE u.email = :userName")
+    int softDeleteUserByEmail(@Param("userName") String email);
 
     @Modifying
     @Transactional
