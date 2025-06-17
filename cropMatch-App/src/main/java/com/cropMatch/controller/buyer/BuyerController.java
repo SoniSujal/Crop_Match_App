@@ -36,17 +36,6 @@ public class BuyerController {
         return "buyers";
     }
 
-    @PostMapping("/requests/create")
-    public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
-        BuyerRequest saved = buyerService.createRequest(dto, principal.getName());
-        return ResponseEntity.ok(saved);
-    }
-
-    @GetMapping("/requests")
-    public ResponseEntity<?> getAllRequests(Principal principal) {
-        return ResponseEntity.ok(buyerService.getAllRequests(principal.getName()));
-    }
-
     @GetMapping("/categories")
     public ResponseEntity<?> getActiveCategories(){
         return ResponseEntity.ok(buyerService.getActiveCategories());

@@ -6,16 +6,17 @@ import com.cropMatch.enums.CropUnit;
 import com.cropMatch.model.buyer.BuyerPreference;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.admin.Category;
+import com.cropMatch.model.farmer.AvailableCrops;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.buyer.BuyerPreferencesRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
 import com.cropMatch.repository.category.CategoryRepository;
+import com.cropMatch.service.BuyerRequest.BuyerRequestService;
 import com.cropMatch.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,20 +27,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BuyerServiceImpl implements BuyerService {
 
-    private final BuyerRequestRepository requestRepository;
+    private final BuyerRequestRepository buyerRequestRepository;
     private final CategoryRepository categoryRepository;
     private final BuyerPreferencesRepository buyerPreferencesRepository;
     private final UserService userService;
+    private final BuyerRequestService buyerRequestService;
 
     @Override
     public BuyerRequest createRequest(BuyerRequestDTO buyerRequestDTO, String username) {
         UserDetail buyer = userService.findByUserEmail(username);
+        AvailableCrops matchedCrop = buyerRequestService.resolveClosestCropName(buyerRequestDTO.getCropName(), buyerRequestDTO.getCategoryId());
+
+        if (matchedCrop == null) {
+            throw new IllegalArgumentException("Crop name not recognized. Please select a valid crop.");
+        }
+
+        buyerRequestDTO.setMatchedCropName(matchedCrop.getCropName());
 
         Category category = categoryRepository.findById(buyerRequestDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category Not Found!"));
 
         BuyerRequest request = new BuyerRequest(buyerRequestDTO, category, buyer.getId());
-        return requestRepository.save(request);
+        request.setIsMatched(buyerRequestDTO.getMatchedCropName() != null);
+        return buyerRequestRepository.save(request);
     }
 
     @Override
@@ -131,7 +141,7 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     public List<BuyerRequestResponseDTO> getAllRequests(String username) {
         UserDetail buyer = userService.findByUserEmail(username);
-        return requestRepository.findByBuyerId(buyer.getId()).stream()
+        return buyerRequestRepository.findByBuyerId(buyer.getId()).stream()
                 .map( BuyerRequestResponseDTO::new)
                 .toList();
     }

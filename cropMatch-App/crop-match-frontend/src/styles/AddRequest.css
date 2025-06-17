@@ -75,3 +75,16 @@ button[type='submit']:hover {
   margin-bottom: 12px;
   text-align: center;
 }
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+form input, form select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+}
+
