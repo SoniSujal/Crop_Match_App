@@ -80,4 +80,5 @@ public interface CropRepository extends JpaRepository<Crop, Integer> {
             @Param("categoryIds") List<Integer> categoryIds,
             @Param("buyerRegion") String buyerRegion
     );
+
 }

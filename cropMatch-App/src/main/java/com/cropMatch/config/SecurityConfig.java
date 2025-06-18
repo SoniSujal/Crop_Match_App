@@ -36,6 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**","/images/**","/api/buyer/categories","/api/categories","/api/buyer/units").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/crops/**").hasAuthority("FARMER")
+                        .requestMatchers("/api/buyer-requests/match/**").permitAll()
+                        .requestMatchers("/api/buyer-requests").hasAuthority("FARMER")
                         .requestMatchers("/api/buyer/**").hasAuthority("BUYER")
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated()

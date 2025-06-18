@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -23,6 +24,11 @@ public class BuyerRequestResponseDTO {
     private String categoryName;
     private LocalDateTime createdOn;
 
+    private String quality;
+    private String producedWay;
+    private LocalDate needByDate;
+
+
     public BuyerRequestResponseDTO(BuyerRequest request) {
         this.id = request.getId();
         this.cropName = request.getCropName();
@@ -33,5 +39,10 @@ public class BuyerRequestResponseDTO {
         this.status = request.getStatus().name();
         this.categoryName = request.getCategory().getName();
         this.createdOn = request.getCreatedOn();
+
+        this.quality = request.getQuality().name();
+        this.producedWay = request.getProducedWay().name();
+        this.needByDate = request.getNeedByDate();
+
     }
 }

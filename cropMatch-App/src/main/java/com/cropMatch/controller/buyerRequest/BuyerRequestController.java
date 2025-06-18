@@ -1,10 +1,12 @@
 package com.cropMatch.controller.buyerRequest;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.dto.buyerDTO.CropMatchProjectionDTO;
 import com.cropMatch.dto.buyerDTO.CropSuggestionDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.farmer.AvailableCrops;
 import com.cropMatch.service.AvailableCrops.AvailableCropsService;
+import com.cropMatch.service.buyer.BuyerMatchingService;
 import com.cropMatch.service.buyer.BuyerService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,8 @@ public class BuyerRequestController {
     private final AvailableCropsService availableCropsService;
 
     private final BuyerService buyerService;
+
+    private final BuyerMatchingService buyerMatchingService;
 
     @GetMapping("/initial-crops")
     public ResponseEntity<List<CropSuggestionDTO>> getInitialCrops(
@@ -94,9 +98,11 @@ public class BuyerRequestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
-        BuyerRequest saved = buyerService.createRequest(dto, principal.getName());
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO buyerRequestDTO, Principal principal){
+        BuyerRequest buyerRequest = buyerService.createRequest(buyerRequestDTO, principal.getName());
+        List<CropMatchProjectionDTO> bestMatchingCrops = buyerMatchingService.findBestMatchingCrops(buyerRequest);
+        buyerMatchingService.SendToFarmers(bestMatchingCrops, buyerRequest);
+        return ResponseEntity.ok(buyerRequest);
     }
 
     @GetMapping

@@ -17,12 +17,13 @@ const AddRequest = () => {
     region: '',
     expectedPrice: '',
     categoryId: '',
-    quality: '',
-    producedWay: '',
-    needByDate: '',
+    quality: 'LOW',
+    producedWay: 'ORGANIC',
+    needByDate: ''
   });
 
-
+  const QUALITIES = ['LOW', 'GOOD', 'BEST'];
+  const PRODUCED_WAYS = ['ORGANIC', 'CHEMICAL', 'MIXED'];
   const [categories, setCategories] = useState([]);
   const [units, setUnits] = useState([]);
   const [error, setError] = useState('');
@@ -33,7 +34,6 @@ const AddRequest = () => {
   const [priceError, setPriceError] = useState('');
   const [quantityError, setQuantityError] = useState('');
 
-  const QUALITIES = ['LOW', 'GOOD', 'BEST'];
 
   useEffect(() => {
     const fetchCropsAndMapping = async () => {
@@ -309,28 +309,42 @@ const AddRequest = () => {
             </select>
         </label>
 
-        <label>
-            Cultivation Method*:
-            <select
-              name="producedWay"
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Method</option>
-              <option value="ORGANIC">Organic</option>
-              <option value="CHEMICAL">Chemical</option>
-              <option value="MIXED">Mixed</option>
-            </select>
-         </label>
 
         <label>
-            Preferred Region*:
-            <input
-              name="region"
-              placeholder="e.g., Gujarat, Punjab"
-              onChange={handleChange}
-              required
-            />
+          Produced Way:
+          <select
+            name="producedWay"
+            value={formData.producedWay}
+            onChange={handleChange}
+            required
+          >
+
+            {PRODUCED_WAYS.map(p => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Need By (Deadline):
+          <input
+            name="needByDate"
+            type="date"
+            min={new Date().toISOString().split('T')[0]}
+            value={formData.needByDate}
+            onChange={handleChange}
+          />
+        </label>
+
+        <label>
+          Preferred Region:
+          <input
+            name="region"
+            value={formData.region}
+            placeholder="e.g., Gujarat, Punjab"
+            onChange={handleChange}
+            required
+          />
         </label>
 
         <label>
@@ -345,16 +359,6 @@ const AddRequest = () => {
               required
             />
             {priceError && <p className="error-text">{priceError}</p>}
-        </label>
-
-        <label>
-            Need By (Deadline)*:
-            <input
-              name="needByDate"
-              type="date"
-              min={new Date().toISOString().split('T')[0]}
-              onChange={handleChange}
-            />
         </label>
 
         <button type="submit">Submit Request</button>
