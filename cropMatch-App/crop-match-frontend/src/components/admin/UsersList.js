@@ -14,6 +14,12 @@ const UsersList = () => {
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [filter, setFilter] = useState('active'); // 'active' | 'deleted'
   const [userType, setUserType] = useState(typeFromUrl === 'buyer' ? 'buyer' : 'farmer');
+  const [modal, setModal] = useState({
+    visible: false,
+    message: '',
+    type: '', // success | error | confirm
+    onConfirm: null
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -53,34 +59,56 @@ const UsersList = () => {
   };
 
   const handleDelete = async (email) => {
-    if (!window.confirm(`Are you sure you want to delete ${userType} "${email}"? This action cannot be undone.`)) {
-      return;
-    }
-
-    setDeleteLoading(email);
-    try {
-      await adminService.deleteUser(email);
-      setUsers(users.filter(user => user.email !== email));
-      alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} deleted successfully`);
-    } catch (error) {
-      alert(`Failed to delete ${userType}: ` + error.message);
-    } finally {
-      setDeleteLoading(null);
-    }
+    setModal({
+      visible: true,
+      type: 'confirm',
+      message: `Are you sure you want to delete ${userType} "${email}"? This action cannot be undone.`,
+      onConfirm: async () => {
+        setDeleteLoading(email);
+        try {
+          await adminService.deleteUser(email);
+          setUsers(users.filter(user => user.email !== email));
+          setModal({
+            visible: true,
+            type: 'success',
+            message: `${userType.charAt(0).toUpperCase() + userType.slice(1)} deleted successfully`
+          });
+        } catch (error) {
+          setModal({
+            visible: true,
+            type: 'error',
+            message: `Failed to delete ${userType}: ${error.message}`
+          });
+        } finally {
+          setDeleteLoading(null);
+        }
+      }
+    });
   };
 
   const handleActivate = async (email) => {
-    if (!window.confirm(`Are you sure you want to reactivate ${userType} "${email}"?`)) {
-      return;
-    }
-
-    try {
-      await adminService.activateUserByEmail(email);
-      alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} reactivated successfully`);
-      fetchUsers();
-    } catch (error) {
-      alert(`Failed to activate ${userType}: ` + error.message);
-    }
+    setModal({
+      visible: true,
+      type: 'confirm',
+      message: `Are you sure you want to reactivate ${userType} "${email}"?`,
+      onConfirm: async () => {
+        try {
+          await adminService.activateUserByEmail(email);
+          setModal({
+            visible: true,
+            type: 'success',
+            message: `${userType.charAt(0).toUpperCase() + userType.slice(1)} reactivated successfully`
+          });
+          fetchUsers();
+        } catch (error) {
+          setModal({
+            visible: true,
+            type: 'error',
+            message: `Failed to activate ${userType}: ${error.message}`
+          });
+        }
+      }
+    });
   };
 
   const filteredUsers = users.filter(user =>
@@ -237,6 +265,41 @@ const UsersList = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {modal.visible && (
+        <div className="custom-modal-overlay">
+          <div className={`custom-modal ${modal.type}`}>
+            <p>{modal.message}</p>
+            <div className="modal-actions">
+              {modal.type === 'confirm' ? (
+                <>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      modal.onConfirm();
+                      setModal({ ...modal, visible: false });
+                    }}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setModal({ ...modal, visible: false })}
+                  >
+                    No
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModal({ ...modal, visible: false })}
+                >
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

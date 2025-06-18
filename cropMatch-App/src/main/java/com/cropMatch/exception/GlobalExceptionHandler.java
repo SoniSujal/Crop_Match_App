@@ -1,11 +1,13 @@
 package com.cropMatch.exception;
 
+import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.dto.responseDTO.ErrorResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 
 import java.nio.file.AccessDeniedException;
@@ -30,6 +32,13 @@ public class GlobalExceptionHandler {
         dto.setErrors(errors);
 
         return new ResponseEntity<>(dto,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<String>> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+        return ResponseEntity
+                .status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(ApiResponse.error("Each image must be less than 1MB"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

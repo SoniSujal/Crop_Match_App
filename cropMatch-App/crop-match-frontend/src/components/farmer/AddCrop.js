@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/constants';
 import { useAuth } from '../../context/AuthContext';
@@ -32,6 +32,9 @@ const AddCrop = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState('');
+  const fileInputRef = useRef(null);
+  const [tempValidImages, setTempValidImages] = useState([]);
 
   const UNITS = [
     'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
@@ -91,14 +94,42 @@ const AddCrop = () => {
   const handleImageChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
     const validImages = selectedFiles.filter(file => allowedTypes.includes(file.type));
 
+    const oversized = selectedFiles.find(file => file.size > 1 * 1024 * 1024);
+    const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+
     if (validImages.length !== selectedFiles.length) {
-      alert('Only JPG, JPEG, and PNG files are allowed.');
+      setImageError('Only JPG, JPEG, and PNG files are allowed.');
+      setTempValidImages([]);
+      return;
+    }
+
+    if (oversized) {
+      setImageError('Each image must be less than or equal to 1MB.');
+      setTempValidImages(validImages); // Save valid ones
+      return;
+    }
+
+    if (totalSize > 10 * 1024 * 1024) {
+      setImageError('Total image size must be less than 10MB.');
+      setTempValidImages(validImages);
       return;
     }
 
     setImages(validImages);
+    setImageError('');
+    setTempValidImages([]);
+  };
+
+  const handleImageErrorOk = () => {
+    setImageError('');
+    setImages(tempValidImages);       // Only keep valid ones
+    setTempValidImages([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Reset file input
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -152,7 +183,11 @@ const AddCrop = () => {
       await cropService.addCrop(form);
       navigate(ROUTES.FARMER_DASHBOARD);
     } catch (err) {
-      setError(err.message || 'Failed to save crop');
+      if (err?.response?.status === 413) {
+          setError("Each image must be less than 1MB.");
+      } else {
+          setError(err.message || 'Failed to save crop');
+      }
     } finally {
       setLoading(false);
     }
@@ -292,8 +327,16 @@ const AddCrop = () => {
           </label>
 
           <label>Images:
-            <input type="file" name="images" accept="image/jpeg,image/jpg,image/png" onChange={handleImageChange} multiple />
+            <input type="file" name="images" accept="image/jpeg,image/jpg,image/png" onChange={handleImageChange} multiple ref={fileInputRef}/>
           </label>
+          {imageError && (
+            <div className="custom-error-popup">
+              <div className="custom-error-box">
+                <p>{imageError}</p>
+                <button onClick={handleImageErrorOk}>OK</button>
+              </div>
+            </div>
+          )}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Saving...' : 'Save Crop'}

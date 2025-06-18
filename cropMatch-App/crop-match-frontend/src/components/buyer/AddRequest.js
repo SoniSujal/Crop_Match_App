@@ -1,5 +1,5 @@
 // components/buyer/AddRequest.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/auth/api';
 import '../../styles/AddRequest.css';
@@ -7,6 +7,8 @@ import '../../styles/AddRequest.css';
 
 const AddRequest = () => {
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     cropName: '',
@@ -28,6 +30,10 @@ const AddRequest = () => {
   const [allCrops, setAllCrops] = useState([]);
   const [cropCategoryMap, setCropCategoryMap] = useState({});
   const [suggestedCrops, setSuggestedCrops] = useState([]);
+  const [priceError, setPriceError] = useState('');
+  const [quantityError, setQuantityError] = useState('');
+
+  const QUALITIES = ['LOW', 'GOOD', 'BEST'];
 
   useEffect(() => {
     const fetchCropsAndMapping = async () => {
@@ -82,7 +88,7 @@ const AddRequest = () => {
     });
   };
 
-  const fetchInitialCrops = async (categoryId) => {
+  const fetchInitialCrops = async (categoryId = formData.categoryId) => {
     try {
       const params = {};
       if (categoryId && categoryId !== "") {
@@ -95,17 +101,44 @@ const AddRequest = () => {
     }
   };
 
-  const handleCropTyping = async (e) => {
-    const value = e.target.value;
-    setFormData({ ...formData, cropName: value });
+  const handleCropSelection = (selectedCrop) => {
+    // First try to find the crop in the suggestedCrops (which might be filtered by category)
+    let selectedCropData = suggestedCrops.find(crop => crop.name === selectedCrop);
 
-    if (!value) {
-      // If input is cleared, reload initial crops
-      fetchInitialCrops();
-      return;
+    // If not found in suggestions, try to find in allCrops
+    if (!selectedCropData) {
+      selectedCropData = allCrops.find(crop => crop.name === selectedCrop);
     }
 
-    if (value.length < 2) return setSuggestedCrops([]);
+    // If we found crop data, use its categoryId or look up in cropCategoryMap
+    const categoryId = selectedCropData?.categoryId || cropCategoryMap[selectedCrop];
+
+    setFormData({
+      ...formData,
+      cropName: selectedCrop,
+      categoryId: categoryId || formData.categoryId // Keep existing if no mapping found
+    });
+
+    setDropdownVisible(false);
+    setSuggestedCrops([]); // Clear suggestions
+    setTimeout(() => inputRef.current?.focus(), 100);
+  };
+
+  const toggleDropdown = () => {
+      if (!dropdownVisible) {
+        fetchInitialCrops();
+      }
+      setDropdownVisible(!dropdownVisible);
+    };
+
+  const handleCropTyping = async (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, cropName: value }));
+
+    if (!value) {
+      fetchInitialCrops(formData.categoryId); // Pass current categoryId
+      return;
+    }
 
     try {
       const res = await api.get('/buyer/buyerRequest/suggest-crops', {
@@ -121,11 +154,44 @@ const AddRequest = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+  // Validate Required Quantity
+    if (name === 'requiredQuantity') {
+      const quantity = parseFloat(value);
+      if (quantity < 0) {
+        setQuantityError('Quantity must be positive');
+      } else {
+        setQuantityError('');
+      }
+    }
+
+    if (name === 'expectedPrice') {
+      const price = parseFloat(value);
+      if (price < 0) {
+        setPriceError('Price must be a positive value');
+      } else {
+        setPriceError('');
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (parseFloat(formData.requiredQuantity) <= 0) {
+        setError('Quantity must be a positive number');
+        return;
+    }
+
+    // Validate price before submission
+    if (parseFloat(formData.expectedPrice) < 0) {
+      setError('Price must be a positive value');
+      return;
+    }
+
     try {
       const response = await api.post('/buyer/buyerRequest/create', formData);
       setSuccess('Request posted successfully!');
@@ -162,46 +228,60 @@ const AddRequest = () => {
           </label>
 
         <label>
-          Crop Name*:
-          <input
-            type="text"
-            name="cropName"
-            value={formData.cropName}
-            onChange={handleCropTyping}
-            autoComplete="off"
-            required
-          />
+            Crop Name*:
+            <div className="crop-input-container">
+              <input
+                type="text"
+                name="cropName"
+                value={formData.cropName}
+                onChange={handleCropTyping}
+                onClick={toggleDropdown}
+                onFocus={() => {
+                        if (!formData.cropName) fetchInitialCrops();
+                      }}
+                onBlur={() => setTimeout(() => setSuggestedCrops([]), 200)}
+                autoComplete="off"
+                required
+                placeholder="Type or select a crop"
+                ref={inputRef}
+              />
+              {dropdownVisible && suggestedCrops.length > 0 && (
+                <div className="dropdown-list">
+                    <div className="dropdown-header">
+                          {formData.categoryId ? "Available Crops (Filtered by Category)" : "Available Crops"}
+                    </div>
+                  {suggestedCrops.map((crop, index) => (
+                    <div
+                      key={index}
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleCropSelection(crop.name);
+                        }}
+                    >
+                      <span>{crop.name}</span>
+                      {crop.categoryName && (
+                                    <span className="category-tag">{crop.categoryName}</span>
+                                  )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
         </label>
-
-        {suggestedCrops.length > 0 && (
-          <ul className="suggestion-list">
-            {suggestedCrops.map((crop, index) => (
-              <li
-                key={index}
-                onClick={() => {
-                  setFormData({
-                    ...formData,
-                    cropName: crop.name,
-                    categoryId: crop.categoryId,
-                  });
-                  setSuggestedCrops([]); // Clear suggestion list
-                }}
-              >
-                {crop.name}
-              </li>
-            ))}
-          </ul>
-        )}
 
         <label>
             Required Quantity*:
             <input
               name="requiredQuantity"
               type="number"
+              min="0.01"
+              step="0.01"
               placeholder="e.g., 1000"
               onChange={handleChange}
               required
             />
+            {quantityError && <p className="error-text">{quantityError}</p>}
           </label>
 
         <label>
@@ -222,15 +302,10 @@ const AddRequest = () => {
 
         <label>
             Quality*:
-            <select
-              name="quality"
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Quality</option>
-              <option value="LOW">Low</option>
-              <option value="GOOD">Good</option>
-              <option value="BEST">Best</option>
+            <select name="quality" value={formData.quality} onChange={handleChange} required>
+              {QUALITIES.map(q => (
+                <option key={q} value={q}>{q}</option>
+              ))}
             </select>
         </label>
 
@@ -263,10 +338,13 @@ const AddRequest = () => {
             <input
               name="expectedPrice"
               type="number"
+              min="0"
+              step="0.01"
               placeholder="e.g., 25.50"
               onChange={handleChange}
               required
             />
+            {priceError && <p className="error-text">{priceError}</p>}
         </label>
 
         <label>
@@ -276,7 +354,6 @@ const AddRequest = () => {
               type="date"
               min={new Date().toISOString().split('T')[0]}
               onChange={handleChange}
-              required
             />
         </label>
 

@@ -107,7 +107,7 @@ public class CropServiceImpl implements CropService {
             if (saveFolder.isDirectory() && saveFolder.listFiles() != null && saveFolder.listFiles().length == 0) {
                 saveFolder.delete();
             }
-
+            log.error("Failed to save images. Transaction rolled back.");
             throw new ImageInByterConvertException("Failed to save images. Transaction rolled back.");
         }
 
