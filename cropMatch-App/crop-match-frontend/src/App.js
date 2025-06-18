@@ -110,7 +110,7 @@ function App() {
                 <Route
                     path="/buyer-requests"
                          element={
-                         <ProtectedRoute requiredRole="buyer">
+                         <ProtectedRoute requiredRole="farmer">
                          <BuyerRequestDashboard />
                          </ProtectedRoute>
                          }

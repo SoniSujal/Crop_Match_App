@@ -1,5 +1,6 @@
 package com.cropMatch.service.crop;
 
+import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 import com.cropMatch.dto.responseDTO.ApiResponse;
@@ -18,6 +19,5 @@ public interface  CropService {
     public Page<RecommendationDTO> getRecommendedCropsDTO(List<Integer> categoryIds, int pageNo, int pageSize, String sortBy, String sortDir);
 
     List<RecommendationDTO> getTopRecommendations(String email);
-//    public List<RecommendationDTO> recommedTopThreeCropsBaseCategory( List<Integer> categoryIds, String region);
 
 }

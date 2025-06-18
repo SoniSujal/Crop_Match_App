@@ -10,13 +10,18 @@ const AddRequest = () => {
 
   const [formData, setFormData] = useState({
     cropName: '',
-    quantity: '',
+    required_quantity: '',
     unit: '',
     region: '',
     expectedPrice: '',
-    categoryId: ''
+    categoryId: '',
+    quality: 'LOW',
+    producedWay: 'ORGANIC',
+    needByDate: ''
   });
 
+  const QUALITIES = ['LOW', 'GOOD', 'BEST'];
+  const PRODUCED_WAYS = ['ORGANIC', 'CHEMICAL', 'MIXED'];
   const [categories, setCategories] = useState([]);
   const [units, setUnits] = useState([]);
   const [error, setError] = useState('');
@@ -70,61 +75,103 @@ const AddRequest = () => {
       {success && <p className="success">{success}</p>}
 
       <form onSubmit={handleSubmit}>
-        <input
-          name="cropName"
-          placeholder="Crop Name"
-          onChange={handleChange}
-          required
-        />
+        <label>
+          Crop Name:
+          <input
+            name="cropName"
+            value={formData.cropName}
+            onChange={handleChange}
+            required
+          />
+        </label>
 
-        <select
-          name="categoryId"
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+        <label>
+          Category:
+          <select name="categoryId" value={formData.categoryId} onChange={handleChange} required>
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
+        </label>
 
-        <input
-          name="quantity"
-          placeholder="Quantity"
-          type="number"
-          onChange={handleChange}
-          required
-        />
+        <label>
+          Required Quantity:
+          <input
+            name="required_quantity"
+            type="number"
+            value={formData.required_quantity}
+            onChange={handleChange}
+            required
+          />
+        </label>
 
-        <select
-          name="unit"
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Unit</option>
-          {units.map((unit) => (
-            <option key={unit.name} value={unit.name}>
-              {unit.displayName}
-            </option>
-          ))}
-        </select>
+        <label>
+          Unit:
+          <select name="unit" value={formData.unit} onChange={handleChange} required>
+            <option value="">Select Unit</option>
+            {units.map((unit) => (
+              <option key={unit.name} value={unit.name}>{unit.displayName}</option>
+            ))}
+          </select>
+        </label>
 
-        <input
-          name="region"
-          placeholder="Preferred Region"
-          onChange={handleChange}
-          required
-        />
+        <label>
+          Quality:
+          <select name="quality" value={formData.quality} onChange={handleChange} required>
+            {QUALITIES.map(q => (
+              <option key={q} value={q}>{q}</option>
+            ))}
+          </select>
+        </label>
 
-        <input
-          name="expectedPrice"
-          placeholder="Expected Price"
-          type="number"
-          onChange={handleChange}
-          required
-        />
+        <label>
+          Produced Way:
+          <select
+            name="producedWay"
+            value={formData.producedWay}
+            onChange={handleChange}
+            required
+          >
+
+            {PRODUCED_WAYS.map(p => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Need By:
+          <input
+            name="needByDate"
+            type="date"
+            min={new Date().toISOString().split('T')[0]}
+            value={formData.needByDate}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <label>
+          Preferred Region:
+          <input
+            name="region"
+            value={formData.region}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <label>
+          Expected Price:
+          <input
+            name="expectedPrice"
+            type="number"
+            value={formData.expectedPrice}
+            onChange={handleChange}
+            required
+          />
+        </label>
 
         <button type="submit">Submit Request</button>
       </form>

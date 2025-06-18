@@ -1,11 +1,13 @@
 package com.cropMatch.controller.buyer;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
+import com.cropMatch.dto.buyerDTO.CropMatchProjectionDTO;
 import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.common.UserDetailRepository;
+import com.cropMatch.service.buyer.BuyerMatchingService;
 import com.cropMatch.service.buyer.BuyerService;
 import com.cropMatch.service.crop.CropService;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,9 @@ public class BuyerController {
 
     private final UserDetailRepository  userDetailRepository;
 
+    private final BuyerMatchingService matchingService;
+
+
     @GetMapping
     public String showBuyersPage() {
         return "buyers";
@@ -38,8 +43,10 @@ public class BuyerController {
 
     @PostMapping("/requests/create")
     public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
-        BuyerRequest saved = buyerService.createRequest(dto, principal.getName());
-        return ResponseEntity.ok(saved);
+        BuyerRequest buyerRequest = buyerService.createRequest(dto, principal.getName());
+        List<CropMatchProjectionDTO> bestMatchingCrops = matchingService.findBestMatchingCrops(buyerRequest);
+        matchingService.SendToFarmers(bestMatchingCrops, buyerRequest);
+        return ResponseEntity.ok(buyerRequest);
     }
 
     @GetMapping("/requests")

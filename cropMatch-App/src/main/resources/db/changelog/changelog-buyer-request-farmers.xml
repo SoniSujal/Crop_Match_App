@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    
+    <changeSet id="create-buyer-request-farmer-table" author="smit">
+        <createTable tableName="buyer_request_farmers">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="buyer_request_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="farmer_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_read" type="BOOLEAN" defaultValue="false"/>
+            <column name="responded_On" type="TIMESTAMP"/>
+            <column name="farmer_status" type="VARCHAR(20)" defaultValue="PENDING"/>
+            <column name="sent_on" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="buyer_request_farmers"
+                baseColumnNames="buyer_request_id"
+                constraintName="fk_brf_buyer_request"
+                referencedTableName="buyer_request"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="buyer_request_farmers"
+                baseColumnNames="farmer_id"
+                constraintName="fk_brf_farmer_user"
+                referencedTableName="user_detail"
+                referencedColumnNames="user_id"/>
+    </changeSet>
+    
+</databaseChangeLog>

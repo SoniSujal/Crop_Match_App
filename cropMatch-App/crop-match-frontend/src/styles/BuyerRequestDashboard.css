@@ -1,0 +1,151 @@
+.buyer-requests-wrapper {
+  padding: 30px 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5fcff;
+}
+
+.buyer-requests-wrapper h2 {
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #222;
+}
+
+.status-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.error-text {
+  color: red;
+}
+
+.request-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.request-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.request-card:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* === Top Line === */
+.top-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.crop-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.crop-info h4 {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+.category-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #00796b;
+  background-color: #e0f2f1;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.price-tag {
+  background-color: #2a9d8f;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+
+/* Info rows with left/right fields */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  color: #333;
+  margin: 4px 0;
+  flex-wrap: wrap;
+}
+
+.info-row p {
+  margin: 4px 0;
+  flex: 1;
+  min-width: 140px;
+}
+
+/* Buttons */
+.card-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.accept-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #388e3c;
+}
+
+.reject-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Fade-in animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

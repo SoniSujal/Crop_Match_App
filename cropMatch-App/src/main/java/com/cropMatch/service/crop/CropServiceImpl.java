@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -161,22 +161,15 @@ public class CropServiceImpl implements CropService {
     @Override
     public List<RecommendationDTO> getTopRecommendations(String email){
         UserDetail buyer = userService.findByUserEmail(email);
-        System.out.println("*****************************");
-        System.out.println(buyer);
         List<Integer> categoryIds = buyerPreferencesRepository.findByBuyerId(buyer.getId())
                 .stream()
                 .map(pref -> pref.getCategory().getId())
                 .toList();
-        log.debug("****************************");
-        log.debug(categoryIds.toString());
         List<Crop> crops = cropRepository.findTopRecommendations(categoryIds,buyer.getRegion());
-        log.debug("***************************");
-        log.debug(crops.toString());
 
         List<RecommendationDTO> list = crops.stream()
                 .map(crop -> new RecommendationDTO(crop, userService))
                 .toList();
-        log.debug(list.toString());
         return list;
     }
 
