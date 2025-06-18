@@ -33,26 +33,12 @@ public class BuyerController {
 
     private final UserDetailRepository  userDetailRepository;
 
-    private final BuyerMatchingService matchingService;
-
 
     @GetMapping
     public String showBuyersPage() {
         return "buyers";
     }
 
-    @PostMapping("/requests/create")
-    public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO dto, Principal principal){
-        BuyerRequest buyerRequest = buyerService.createRequest(dto, principal.getName());
-        List<CropMatchProjectionDTO> bestMatchingCrops = matchingService.findBestMatchingCrops(buyerRequest);
-        matchingService.SendToFarmers(bestMatchingCrops, buyerRequest);
-        return ResponseEntity.ok(buyerRequest);
-    }
-
-    @GetMapping("/requests")
-    public ResponseEntity<?> getAllRequests(Principal principal) {
-        return ResponseEntity.ok(buyerService.getAllRequests(principal.getName()));
-    }
 
     @GetMapping("/categories")
     public ResponseEntity<?> getActiveCategories(){

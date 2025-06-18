@@ -15,15 +15,13 @@ import java.time.LocalDate;
 public class BuyerRequestDTO {
 
     private String cropName;
-    private int required_quantity;
+    private String matchedCropName;
+    private int requiredQuantity;
     private String unit;
     private String region;
     private BigDecimal expectedPrice;
     private int categoryId;
-
     private String quality;
     private String producedWay;
-    private LocalDate needByDate;
-    private boolean isExpired;
-
+    private String needByDate;
 }

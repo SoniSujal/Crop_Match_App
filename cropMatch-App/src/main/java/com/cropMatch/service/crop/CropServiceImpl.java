@@ -8,11 +8,13 @@ import com.cropMatch.exception.CategoryNotFoundException;
 import com.cropMatch.exception.CropNotFoundException;
 import com.cropMatch.exception.ImageInByterConvertException;
 import com.cropMatch.model.admin.Category;
+import com.cropMatch.model.farmer.AvailableCrops;
 import com.cropMatch.model.farmer.Crop;
 import com.cropMatch.model.farmer.CropImage;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.buyer.BuyerPreferencesRepository;
 import com.cropMatch.repository.category.CategoryRepository;
+import com.cropMatch.repository.crop.AvailableCropsRepository;
 import com.cropMatch.repository.crop.CropImageRepository;
 import com.cropMatch.repository.crop.CropRepository;
 import com.cropMatch.service.category.CategoryService;
@@ -60,6 +62,9 @@ public class CropServiceImpl implements CropService {
     @Autowired
     private BuyerPreferencesRepository buyerPreferencesRepository;
 
+    @Autowired
+    private AvailableCropsRepository availableCropsRepository;
+
     @Override
     @Transactional
     public void saveCropWithImages(CropDTO cropDTO, List<MultipartFile> images, Integer farmerId) {
@@ -71,26 +76,47 @@ public class CropServiceImpl implements CropService {
         Crop cropData = cropRepository.save(crop);
 
         String folderName = uploadPath + File.separator + "FARMER_ID_" + farmerId + File.separator + "CROP_ID_" + cropData.getId();
-        File saveFile = new File(folderName);
-        if(!saveFile.exists()) {
-            saveFile.mkdirs();
+        File saveFolder = new File(folderName);
+        if(!saveFolder.exists()) {
+            saveFolder.mkdirs();
         }
+
+        List<Path> savedPaths = new ArrayList<>();
 
         try {
             for (MultipartFile image : images) {
-                // Save file to folder
+
                 Path filePath = Paths.get(folderName, image.getOriginalFilename());
                 Files.copy(image.getInputStream(), filePath);
+                savedPaths.add(filePath);
 
-                // Construct relative image path for frontend use (example: /images/FARMER_ID_x/CROP_ID_y/image.jpg)
                 String relativeImagePath = "/images/FARMER_ID_" + farmerId + "/CROP_ID_" + cropData.getId() + "/" + image.getOriginalFilename();
 
-                // Save CropImage entity with imagePath (no need for imageData if using path)
                 CropImage cropImage = new CropImage(cropData, image, relativeImagePath);
                 cropImageRepository.save(cropImage);
             }
         } catch (IOException e) {
-            throw new ImageInByterConvertException("Image Not Convert in Byte Format");
+            for (Path path : savedPaths) {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException ex) {
+                    log.error("Failed to delete file during rollback: {}", path, ex);
+                }
+            }
+
+            if (saveFolder.isDirectory() && saveFolder.listFiles() != null && saveFolder.listFiles().length == 0) {
+                saveFolder.delete();
+            }
+            log.error("Failed to save images. Transaction rolled back.");
+            throw new ImageInByterConvertException("Failed to save images. Transaction rolled back.");
+        }
+
+        boolean exists = availableCropsRepository.existsByCropNameAndCategory(crop.getName(), category);
+        if (!exists) {
+            AvailableCrops availableCrops = new AvailableCrops();
+            availableCrops.setCropName(crop.getName());
+            availableCrops.setCategory(category);
+            availableCropsRepository.save(availableCrops);
         }
     }
 
@@ -172,7 +198,4 @@ public class CropServiceImpl implements CropService {
                 .toList();
         return list;
     }
-
-
-
 }

@@ -113,14 +113,14 @@ const fetchTopRecommendations = async () => {
             <p>Find and purchase crops from farmers</p>
           </Link>
 
-          <Link to="/buyer/requests/create" className="action-card">
+          <Link to="/buyer/buyerRequest/create" className="action-card">
             <div className="action-icon">➕</div>
             <h3>Create Request</h3>
             <p>Post a buying request for specific crops</p>
           </Link>
 
         {/* New tile for All Requests */}
-        <Link to="/buyer/requests" className="action-card">
+        <Link to="/buyer/buyerRequest" className="action-card">
           <div className="action-icon">📄</div>  {/* You can choose any icon */}
           <h3>All Requests</h3>
           <p>Manage all your buying requests</p>

@@ -13,6 +13,7 @@
     <include file="changelog-crop-image.xml" relativeToChangelogFile="true"/>
     <include file="changelog-buyer-request.xml" relativeToChangelogFile="true"/>
     <include file="changelog-buyer-preference.xml" relativeToChangelogFile="true"/>
+    <include file="changelog-available-crops.xml" relativeToChangelogFile="true"/>
     <include file="changelog-user-detail-inserts.xml" relativeToChangelogFile="true"/>
     <include file="changelog-buyer-request-farmers.xml" relativeToChangelogFile="true"/>
 

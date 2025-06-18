@@ -92,7 +92,7 @@ function App() {
                 }
               />
               <Route
-                  path="/buyer/requests/create"
+                  path="/buyer/buyerRequest/create"
                       element={
                       <ProtectedRoute requiredRole="buyer">
                           <AddRequest />
@@ -100,7 +100,7 @@ function App() {
                       }
                 />
                 <Route
-                    path="/buyer/requests"
+                    path="/buyer/buyerRequest"
                          element={
                          <ProtectedRoute requiredRole="buyer">
                          <AllRequests />

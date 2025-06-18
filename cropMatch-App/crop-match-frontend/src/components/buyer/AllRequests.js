@@ -16,7 +16,7 @@ const AllRequests = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await api.get('/buyer/requests');
+      const response = await api.get('/buyer/buyerRequest');
       setRequests(response.data);
     } catch (err) {
       console.error('Failed to fetch requests:', err);

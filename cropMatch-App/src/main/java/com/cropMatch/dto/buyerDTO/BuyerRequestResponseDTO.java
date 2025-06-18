@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class BuyerRequestResponseDTO {
     private int id;
     private String cropName;
-    private int required_quantity;
+    private int quantity;
     private String unit;
     private String region;
     private BigDecimal expectedPrice;
@@ -27,13 +27,12 @@ public class BuyerRequestResponseDTO {
     private String quality;
     private String producedWay;
     private LocalDate needByDate;
-    private boolean isExpired;
-    private boolean isMatched;
+
 
     public BuyerRequestResponseDTO(BuyerRequest request) {
         this.id = request.getId();
         this.cropName = request.getCropName();
-        this.required_quantity = request.getRequired_quantity();
+        this.quantity = request.getRequiredQuantity();
         this.unit = request.getUnit().name();
         this.region = request.getRegion();
         this.expectedPrice = request.getExpectedPrice();
@@ -44,7 +43,6 @@ public class BuyerRequestResponseDTO {
         this.quality = request.getQuality().name();
         this.producedWay = request.getProducedWay().name();
         this.needByDate = request.getNeedByDate();
-        this.isExpired = request.isExpired();
-        this.isMatched = request.isMatched();
+
     }
 }

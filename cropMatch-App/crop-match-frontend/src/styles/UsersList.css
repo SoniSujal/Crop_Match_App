@@ -353,3 +353,118 @@
     font-size: 0.85rem;
   }
 }
+
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-modal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.custom-modal.success p {
+  color: green;
+}
+
+.custom-modal.error p {
+  color: red;
+}
+
+.modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modal-actions .btn {
+  padding: 0.4rem 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .page-header p {
+    font-size: 0.95rem;
+  }
+
+  .control-group,
+  .page-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-box {
+    margin-left: 0;
+  }
+
+  .page-info {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .custom-modal {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .modal-actions .btn {
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .data-table thead {
+    display: none;
+  }
+
+  .data-table, .data-table tbody, .data-table tr, .data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .data-table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  }
+
+  .data-table td {
+    padding: 0.75rem;
+    text-align: left;
+    position: relative;
+  }
+
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+}
+

@@ -11,6 +11,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,12 +28,15 @@ public class BuyerRequest {
     @Column(nullable = false)
     private String cropName;
 
+    @Column(name = "matched_crop_name")
+    private String matchedCropName;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false  )
     private Category category;
 
     @Column(nullable = false)
-    private int required_quantity;
+    private int requiredQuantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -51,39 +55,41 @@ public class BuyerRequest {
     @Column(nullable = false)
     private RequestStatus status = RequestStatus.PENDING;
 
-    @Column(nullable = false)
-    private LocalDateTime createdOn = LocalDateTime.now();
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Quality quality;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "produced_way", nullable = false)
+    @Column(nullable = false)
     private ProducedWay producedWay;
 
-    @Column(name = "need_by_date")
+    @Column
     private LocalDate needByDate;
 
-    @Column(name = "is_expired")
-    private boolean isExpired;
+    @Column(nullable = false)
+    private Boolean isExpired;
 
-    @Column(name = "is_matched", nullable = false)
-    private boolean isMatched = false;
+    @Column(nullable = false)
+    private Boolean isMatched = true;
+
+    @Column(name = "created_on",insertable = false,updatable = false)
+    private LocalDateTime createdOn;
+
+    @Column(name = "updated_on",updatable = false,insertable = false)
+    private LocalDateTime updatedOn;
 
     public BuyerRequest(BuyerRequestDTO buyerRequestDTO, Category category, Integer buyerId) {
         this.cropName = buyerRequestDTO.getCropName();
+        this.matchedCropName = buyerRequestDTO.getMatchedCropName();
         this.category = category;
-        this.required_quantity = buyerRequestDTO.getRequired_quantity();
-        this.unit = CropUnit.valueOf(buyerRequestDTO.getUnit());
+        this.requiredQuantity = buyerRequestDTO.getRequiredQuantity();
+        this.unit = CropUnit.valueOf(buyerRequestDTO.getUnit().toUpperCase());
         this.region = buyerRequestDTO.getRegion();
         this.expectedPrice = buyerRequestDTO.getExpectedPrice();
         this.buyerId = buyerId;
-        this.createdOn = LocalDateTime.now();
-
         this.quality = Quality.valueOf(buyerRequestDTO.getQuality().toUpperCase());
         this.producedWay = ProducedWay.valueOf(buyerRequestDTO.getProducedWay().toUpperCase());
-        this.needByDate = buyerRequestDTO.getNeedByDate();
-        this.isExpired = buyerRequestDTO.isExpired();
+        this.needByDate = LocalDate.parse(buyerRequestDTO.getNeedByDate());
+        this.isExpired = false;
     }
 }

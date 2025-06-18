@@ -68,7 +68,7 @@ private final UserDetailRepository userDetailRepository;
                 includeQuality ? request.getQuality().name() : null,
                 includeProducedWay ? request.getProducedWay().name() : null,
                 includePrice ? request.getExpectedPrice() : null,
-                includeQuantity ? request.getRequired_quantity() : null
+                includeQuantity ? request.getRequiredQuantity() : null
         );
     }
 
@@ -86,7 +86,7 @@ private final UserDetailRepository userDetailRepository;
         }
 
         if (!farmerIds.isEmpty()){
-            buyerRequest.setMatched(true);
+            buyerRequest.setIsMatched(true);
             buyerRequestRepository.save(buyerRequest);
         }
     }
@@ -98,12 +98,12 @@ private final UserDetailRepository userDetailRepository;
 
         List<BuyerRequestFarmer> matches = buyerRequestFarmerRepository.findByFarmerId(farmer.getId());
 
-        List<BuyerRequestResponseDTO> dtos = new ArrayList<>();
+        List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
         for (BuyerRequestFarmer match : matches){
             if (match.getFarmerStatus() == RequestStatus.PENDING){
-                dtos.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
+                buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
             }
         }
-        return dtos;
+        return buyerRequestResponseDTOList;
     }
 }
