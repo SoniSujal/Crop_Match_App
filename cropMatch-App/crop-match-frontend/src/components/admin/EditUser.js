@@ -21,6 +21,7 @@ const EditUser = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchUser();
@@ -101,10 +102,10 @@ const EditUser = () => {
 
     try {
       await adminService.updateUser(username, formData);
-      alert('User updated successfully!');
-      navigate('/admin/users');
+      setSuccessMessage('User updated successfully!');
     } catch (error) {
       setError('Failed to update user: ' + error.message);
+      setTimeout(() => setError(''), 5000);
     } finally {
       setSaving(false);
     }
@@ -252,6 +253,19 @@ const EditUser = () => {
           </div>
         </form>
       </div>
+      {successMessage && (
+        <div className="custom-modal-overlay">
+          <div className="custom-modal">
+            <p>{successMessage}</p>
+            <button onClick={() => {
+              setSuccessMessage('');
+              navigate('/admin/users');
+            }}>
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -37,7 +37,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/crops/**").hasAuthority("FARMER")
                         .requestMatchers("/api/buyer/**").hasAuthority("BUYER")
-                        .requestMatchers("/api/buyer/**").hasAuthority("buyer")
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated()
                 )

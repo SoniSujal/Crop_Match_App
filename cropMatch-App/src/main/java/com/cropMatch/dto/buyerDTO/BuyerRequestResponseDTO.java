@@ -26,7 +26,7 @@ public class BuyerRequestResponseDTO {
     public BuyerRequestResponseDTO(BuyerRequest request) {
         this.id = request.getId();
         this.cropName = request.getCropName();
-        this.quantity = request.getQuantity();
+        this.quantity = request.getRequiredQuantity();
         this.unit = request.getUnit().name();
         this.region = request.getRegion();
         this.expectedPrice = request.getExpectedPrice();

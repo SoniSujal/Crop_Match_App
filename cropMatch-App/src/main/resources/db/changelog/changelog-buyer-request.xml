@@ -54,4 +54,62 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="buyer_request-4" author="smit">
+        <addColumn tableName="buyer_request">
+            <column name="quality" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="produced_way" type="VARCHAR(20)">
+            </column>
+            <column name="need_by_date" type="DATE">
+            </column>
+            <column name="is_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_matched" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="buyer_request-5" author="smit">
+        <renameColumn
+                tableName="buyer_request"
+                oldColumnName="quantity"
+                newColumnName="required_quantity"
+                columnDataType="INT"/>
+    </changeSet>
+
+    <changeSet id="buyer_request-6" author="sujal">
+        <addColumn tableName="buyer_request">
+            <column name="updated_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="buyer-request-7" author="sujal">
+        <comment>Fix default behavior of created_on and updated_on</comment>
+        <sql>
+            ALTER TABLE buyer_request
+            MODIFY COLUMN created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            MODIFY COLUMN updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
+
+    <changeSet id="buyer_request-8" author="sujal">
+        <addColumn tableName="buyer_request">
+            <column name="matched_crop_name" type="VARCHAR(255)" afterColumn="crop_name">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="buyer-request-9" author="sujal">
+        <comment>Fix default behavior of created_on and updated_on</comment>
+        <sql>
+            ALTER TABLE buyer_request
+            MODIFY COLUMN created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
