@@ -1,24 +1,27 @@
 package com.cropMatch.controller.buyerRequest;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
-import com.cropMatch.dto.buyerDTO.CropMatchProjectionDTO;
+
+import com.cropMatch.dto.buyerDTO.FarmerRequestResponseDTO;
+import com.cropMatch.dto.buyerDTO.CropMatchProjection;
 import com.cropMatch.dto.buyerDTO.CropSuggestionDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
+import com.cropMatch.model.common.UserPrincipal;
 import com.cropMatch.model.farmer.AvailableCrops;
 import com.cropMatch.service.AvailableCrops.AvailableCropsService;
+import com.cropMatch.service.BuyerRequest.BuyerRequestService;
 import com.cropMatch.service.buyer.BuyerMatchingService;
 import com.cropMatch.service.buyer.BuyerService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +38,8 @@ public class BuyerRequestController {
     private final BuyerService buyerService;
 
     private final BuyerMatchingService buyerMatchingService;
+
+    private final BuyerRequestService buyerRequestService;
 
     @GetMapping("/initial-crops")
     public ResponseEntity<List<CropSuggestionDTO>> getInitialCrops(
@@ -100,7 +105,7 @@ public class BuyerRequestController {
     @PostMapping("/create")
     public ResponseEntity<?> createRequest(@RequestBody BuyerRequestDTO buyerRequestDTO, Principal principal){
         BuyerRequest buyerRequest = buyerService.createRequest(buyerRequestDTO, principal.getName());
-        List<CropMatchProjectionDTO> bestMatchingCrops = buyerMatchingService.findBestMatchingCrops(buyerRequest);
+        List<CropMatchProjection> bestMatchingCrops = buyerMatchingService.findBestMatchingCrops(buyerRequest);
         buyerMatchingService.SendToFarmers(bestMatchingCrops, buyerRequest);
         return ResponseEntity.ok(buyerRequest);
     }
@@ -109,4 +114,12 @@ public class BuyerRequestController {
     public ResponseEntity<?> getAllRequests(Principal principal) {
         return ResponseEntity.ok(buyerService.getAllRequests(principal.getName()));
     }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<FarmerRequestResponseDTO>> getAcceptedOrRejectedResponses(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        List<FarmerRequestResponseDTO> responses = buyerRequestService.getAcceptedOrRejectedRequestsForBuyer(userPrincipal.getUsername());
+        return ResponseEntity.ok(responses);
+    }
+
+
 }

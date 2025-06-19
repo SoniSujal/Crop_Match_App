@@ -1,6 +1,6 @@
 package com.cropMatch.repository.buyer;
 
-import com.cropMatch.dto.buyerDTO.CropMatchProjectionDTO;
+import com.cropMatch.dto.buyerDTO.CropMatchProjection;
 import com.cropMatch.model.buyer.BuyerRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -36,7 +36,7 @@ public interface BuyerRequestRepository extends JpaRepository<BuyerRequest, Inte
       AND c.status = true
     ORDER BY matchScore DESC
 """, nativeQuery = true)
-    List<CropMatchProjectionDTO> findMatchingCropsWithFlexibleCriteria(
+    List<CropMatchProjection> findMatchingCropsWithFlexibleCriteria(
             @Param("cropName") String cropName,
             @Param("region") String region,
             @Param("quality") String quality,

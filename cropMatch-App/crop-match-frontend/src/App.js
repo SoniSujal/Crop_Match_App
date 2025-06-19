@@ -13,6 +13,7 @@ import BuyerRequestDashboard from './components/farmer/BuyerRequestDashboard';
 import BuyerDashboard from './components/buyer/BuyerDashboard';
 import RecommendationList from './components/buyer/RecommendationList';
 import RecommendationDetail from './components/buyer/RecommendationDetail';
+import RequestResponses from './components/buyer/RequestResponses';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
@@ -115,6 +116,14 @@ function App() {
                          </ProtectedRoute>
                          }
                  />
+                 <Route
+                 path="/buyer/request-responses"
+                  element={
+                   <ProtectedRoute requiredRole="buyer">
+                  <RequestResponses />
+                  </ProtectedRoute>
+                  }
+                  />
                 <Route
                     path="/buyer/recommendations"
                           element={

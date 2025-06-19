@@ -46,7 +46,7 @@ const BuyerRequestsDashboard = () => {
             <div className="request-card fade-in" key={req.id}>
               <div className="top-line">
                 <div className="crop-info">
-                  <h4>{req.cropName} ({req.required_quantity} {req.unit})</h4>
+                  <h4>{req.matchedCropName} ({req.quantity} {req.unit})</h4>
                   {req.categoryName && <span className="category-text">{req.categoryName}</span>}
                 </div>
                 <div className="price-tag">₹{req.expectedPrice}</div>

@@ -1,5 +1,6 @@
 package com.cropMatch.service.BuyerRequest;
 
+import com.cropMatch.dto.buyerDTO.FarmerRequestResponseDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.farmer.AvailableCrops;
 
@@ -10,5 +11,7 @@ public interface BuyerRequestService {
     List<BuyerRequest> getAllBuyerRequest();
     BuyerRequest saveRequest(BuyerRequest buyerRequest);
     AvailableCrops resolveClosestCropName(String inputCropName, Integer categoryId);
+
+    List<FarmerRequestResponseDTO> getAcceptedOrRejectedRequestsForBuyer(String buyerEmail);
 
 }

@@ -1,7 +1,7 @@
 package com.cropMatch.service.buyer;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
-import com.cropMatch.dto.buyerDTO.CropMatchProjectionDTO;
+import com.cropMatch.dto.buyerDTO.CropMatchProjection;
 import com.cropMatch.enums.RequestStatus;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.buyer.BuyerRequestFarmer;
@@ -25,8 +25,8 @@ private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
 private final UserDetailRepository userDetailRepository;
 
     @Override
-    public List<CropMatchProjectionDTO> findBestMatchingCrops(BuyerRequest request) {
-        List<CropMatchProjectionDTO> matches = runMatchingQuery(
+    public List<CropMatchProjection> findBestMatchingCrops(BuyerRequest request) {
+        List<CropMatchProjection> matches = runMatchingQuery(
                 request, true, true, true, true, true
         );
 
@@ -54,7 +54,7 @@ private final UserDetailRepository userDetailRepository;
     }
 
     @Override
-    public List<CropMatchProjectionDTO> runMatchingQuery(
+    public List<CropMatchProjection> runMatchingQuery(
             BuyerRequest request,
             boolean includePrice,
             boolean includeQuantity,
@@ -62,8 +62,9 @@ private final UserDetailRepository userDetailRepository;
             boolean includeQuality,
             boolean includeRegion
     ) {
+        String cropNameForMatching = request.getMatchedCropName() != null ? request.getMatchedCropName() : request.getCropName();
         return buyerRequestRepository.findMatchingCropsWithFlexibleCriteria(
-                request.getCropName(),
+                cropNameForMatching,
                 includeRegion ? request.getRegion() : null,
                 includeQuality ? request.getQuality().name() : null,
                 includeProducedWay ? request.getProducedWay().name() : null,
@@ -73,7 +74,7 @@ private final UserDetailRepository userDetailRepository;
     }
 
     @Override
-    public void SendToFarmers(List<CropMatchProjectionDTO> bestMatchingCrops, BuyerRequest buyerRequest) {
+    public void SendToFarmers(List<CropMatchProjection> bestMatchingCrops, BuyerRequest buyerRequest) {
 
         List<Integer> farmerIds = bestMatchingCrops.stream().map(farmer -> farmer.getCreatedBy()).toList();
         for (Integer farmerId : farmerIds){
