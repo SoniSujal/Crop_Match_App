@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Toast from '../notify/Toast'; //
 import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '../../utils/constants';
 import '../../styles/Auth.css';
 
@@ -20,6 +21,7 @@ const Register = () => {
   const [success, setSuccess] = useState('');
   const [selectedPrefs, setSelectedPrefs] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [toast, setToast] = useState({ message: '', type: '' });
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -97,6 +99,8 @@ const Register = () => {
     setErrors({});
     setSuccess('');
 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Validate all fields
     const newErrors = {};
     Object.keys(formData).forEach(key => {
@@ -124,12 +128,15 @@ const Register = () => {
         : formData;
 
       await register(dataToSend);
-      setSuccess('Registration successful! Please login with your credentials.');
+      setToast({ message: 'Registration successful! Redirecting to login...', type: 'success' });
       setTimeout(() => {
         navigate('/login');
-      }, 2000);
+      }, 3000);
     } catch (error) {
-      setErrors({ general: error.message || 'Registration failed. Please try again.' });
+      setToast({
+            message: error.message || 'Registration failed. Please try again.',
+            type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -350,6 +357,13 @@ const Register = () => {
           </p>
         </div>
       </div>
+      {toast.message && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ message: '', type: '' })}
+        />
+      )}
     </div>
   );
 };

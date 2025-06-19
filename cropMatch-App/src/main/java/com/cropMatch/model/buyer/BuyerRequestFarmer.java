@@ -1,6 +1,7 @@
 package com.cropMatch.model.buyer;
 
 import com.cropMatch.enums.RequestStatus;
+import com.cropMatch.enums.ResponseStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,10 +36,9 @@ public class BuyerRequestFarmer {
         private LocalDateTime respondedOn;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "farmer_status", nullable = false)
-        private RequestStatus farmerStatus = RequestStatus.PENDING;
+        @Column(name = "buyer_offer_status", nullable = false)
+        private ResponseStatus farmerStatus = ResponseStatus.PENDING;
 
         @Column(name = "sent_on", nullable = false)
         private LocalDateTime sentOn = LocalDateTime.now();
-
 }

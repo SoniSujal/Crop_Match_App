@@ -149,3 +149,14 @@
     transform: translateY(0);
   }
 }
+
+.filter-row {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.filter-row label {
+  margin-right: 0.5rem;
+  font-weight: bold;
+}

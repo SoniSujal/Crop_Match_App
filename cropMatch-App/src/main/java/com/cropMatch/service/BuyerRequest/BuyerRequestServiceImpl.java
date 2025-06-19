@@ -1,5 +1,6 @@
 package com.cropMatch.service.BuyerRequest;
 
+import com.cropMatch.enums.ResponseStatus;
 import com.cropMatch.dto.buyerDTO.FarmerRequestResponseDTO;
 import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
 import com.cropMatch.dto.farmerDTO.FarmerDTO;
@@ -16,6 +17,9 @@ import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.List;
@@ -24,15 +28,17 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BuyerRequestServiceImpl implements BuyerRequestService{
-
+    @Autowired
     private BuyerRequestRepository buyerRequestRepository;
-
-    private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
-
-    private final UserDetailRepository userDetailRepository;
 
     @Autowired
     private AvailableCropsService availableCropsService;
+
+    @Autowired
+    private UserDetailRepository userDetailRepository;
+
+    @Autowired
+    private BuyerRequestFarmerRepository buyerRequestFarmerRepository;
 
     @Override
     public List<BuyerRequest> getAllBuyerRequest() {
@@ -74,6 +80,20 @@ public class BuyerRequestServiceImpl implements BuyerRequestService{
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
                 .orElse(null);
+    }
+
+    @Override
+    public void handleResponse(Integer requestId, String farmerUsername, String action) {
+        BuyerRequest buyerRequest = buyerRequestRepository.findById(requestId) .orElseThrow(() -> new RuntimeException("Request not found"));;
+        UserDetail farmerDetail = userDetailRepository.findByEmail(farmerUsername) .orElseThrow(() -> new RuntimeException("Farmer not found"));;
+        List<BuyerRequestFarmer> byBuyerRequestId = buyerRequestFarmerRepository.findByBuyerRequest_Id(buyerRequest.getId());
+        List<BuyerRequestFarmer> buyerRequestFarmers = byBuyerRequestId.stream().filter(buyerRequestFarmer -> buyerRequestFarmer.getFarmerId() == farmerDetail.getId()).toList();
+        BuyerRequestFarmer buyerRequestFarmer = buyerRequestFarmers.get(0);
+        buyerRequestFarmer.setBuyerRequest(buyerRequest);
+        buyerRequestFarmer.setFarmerId(farmerDetail.getId());
+        buyerRequestFarmer.setFarmerStatus(action.equalsIgnoreCase("ACCEPTED") ? ResponseStatus.ACCEPTED : ResponseStatus.REJECTED);
+        buyerRequestFarmer.setRespondedOn(LocalDateTime.now());
+        buyerRequestFarmerRepository.save(buyerRequestFarmer);
     }
 
     @Override

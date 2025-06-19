@@ -14,4 +14,6 @@ public interface BuyerRequestFarmerRepository extends JpaRepository<BuyerRequest
 
     @Query("SELECT brf FROM BuyerRequestFarmer brf WHERE brf.buyerRequest.buyerId = :buyerId AND brf.farmerStatus IN ('ACCEPTED', 'REJECTED')")
     List<BuyerRequestFarmer> findByBuyerIdAndAcceptedOrRejected(@Param("buyerId") Integer buyerId);
+    List<BuyerRequestFarmer> findByBuyerRequest_Id(Integer buyerRequestId);
+
 }

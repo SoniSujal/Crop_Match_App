@@ -38,5 +38,9 @@
                 referencedTableName="user_detail"
                 referencedColumnNames="user_id"/>
     </changeSet>
+
+    <changeSet id="change-column-name" author="sujal">
+        <renameColumn tableName="buyer_request_farmers" oldColumnName="farmer_status" newColumnName="buyer_offer_status" columnDataType="VARCHAR(20)"/>
+    </changeSet>
     
 </databaseChangeLog>
