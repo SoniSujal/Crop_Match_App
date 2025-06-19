@@ -12,6 +12,10 @@ public interface BuyerMatchingService {
 
     List<BuyerRequestResponseDTO> getPendingRequestsForFarmer(String email);
 
+    public List<BuyerRequestResponseDTO> getRejectedRequestsForFarmer(String email);
+
+    public List<BuyerRequestResponseDTO> getAcceptedRequestsForFarmer(String email);
+
     public List<CropMatchProjection> findBestMatchingCrops(BuyerRequest request);
 
     public List<CropMatchProjection> runMatchingQuery(

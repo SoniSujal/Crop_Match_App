@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Toast from '../notify/Toast.js';
 import '../../styles/Auth.css';
 
 
@@ -10,6 +11,7 @@ const Login = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
@@ -27,10 +29,13 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setToast(null);
 
     try {
       const response = await login(formData);
       const userRole = response.data.role;
+
+      setToast({ message: 'Login successful!', type: 'success' });
 
       // Redirect based on role
       if (userRole === 'admin') {
@@ -42,6 +47,8 @@ const Login = () => {
       }
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.');
+      setTimeout(() => {
+        }, 5000);
     } finally {
       setLoading(false);
     }

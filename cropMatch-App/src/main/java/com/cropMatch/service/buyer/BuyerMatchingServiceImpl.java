@@ -3,12 +3,14 @@ package com.cropMatch.service.buyer;
 import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
 import com.cropMatch.dto.buyerDTO.CropMatchProjection;
 import com.cropMatch.enums.RequestStatus;
+import com.cropMatch.enums.ResponseStatus;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.buyer.BuyerRequestFarmer;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.buyer.BuyerRequestFarmerRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
 import com.cropMatch.repository.common.UserDetailRepository;
+import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ public class BuyerMatchingServiceImpl implements BuyerMatchingService{
 
 private final BuyerRequestRepository buyerRequestRepository;
 private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
-private final UserDetailRepository userDetailRepository;
+private final UserService userService;
 
     @Override
     public List<CropMatchProjection> findBestMatchingCrops(BuyerRequest request) {
@@ -81,7 +83,7 @@ private final UserDetailRepository userDetailRepository;
             BuyerRequestFarmer match = new BuyerRequestFarmer();
             match.setBuyerRequest(buyerRequest);
             match.setFarmerId(farmerId);
-            match.setFarmerStatus(RequestStatus.PENDING);
+            match.setFarmerStatus(ResponseStatus.PENDING);
             match.setSentOn(LocalDateTime.now());
             buyerRequestFarmerRepository.save(match);
         }
@@ -94,14 +96,43 @@ private final UserDetailRepository userDetailRepository;
 
     @Override
     public List<BuyerRequestResponseDTO> getPendingRequestsForFarmer(String email){
-        UserDetail farmer = userDetailRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Farmer not found"));
+        UserDetail farmer = userService.findByUserEmail(email);
 
         List<BuyerRequestFarmer> matches = buyerRequestFarmerRepository.findByFarmerId(farmer.getId());
 
         List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
         for (BuyerRequestFarmer match : matches){
-            if (match.getFarmerStatus() == RequestStatus.PENDING){
+            if (match.getFarmerStatus() == ResponseStatus.PENDING){
+                buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
+            }
+        }
+        return buyerRequestResponseDTOList;
+    }
+
+    @Override
+    public List<BuyerRequestResponseDTO> getAcceptedRequestsForFarmer(String email){
+        UserDetail farmer = userService.findByUserEmail(email);
+
+        List<BuyerRequestFarmer> matches = buyerRequestFarmerRepository.findByFarmerId(farmer.getId());
+
+        List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
+        for (BuyerRequestFarmer match : matches){
+            if (match.getFarmerStatus() == ResponseStatus.ACCEPTED){
+                buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
+            }
+        }
+        return buyerRequestResponseDTOList;
+    }
+
+    @Override
+    public List<BuyerRequestResponseDTO> getRejectedRequestsForFarmer(String email){
+        UserDetail farmer = userService.findByUserEmail(email);
+
+        List<BuyerRequestFarmer> matches = buyerRequestFarmerRepository.findByFarmerId(farmer.getId());
+
+        List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
+        for (BuyerRequestFarmer match : matches){
+            if (match.getFarmerStatus() == ResponseStatus.REJECTED){
                 buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
             }
         }
