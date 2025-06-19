@@ -107,7 +107,7 @@ const fetchTopRecommendations = async () => {
       <div className="quick-actions">
         <h2>Quick Actions</h2>
         <div className="actions-grid">
-          <Link to="/buyer/browse" className="action-card">
+          <Link to="/buyer/recommendations" className="action-card">
             <div className="action-icon">🌾</div>
             <h3>Browse Crops</h3>
             <p>Find and purchase crops from farmers</p>
@@ -121,9 +121,15 @@ const fetchTopRecommendations = async () => {
 
         {/* New tile for All Requests */}
         <Link to="/buyer/buyerRequest" className="action-card">
-          <div className="action-icon">📄</div>  {/* You can choose any icon */}
+          <div className="action-icon">📄</div>
           <h3>All Requests</h3>
           <p>Manage all your buying requests</p>
+        </Link>
+
+        <Link to="/buyer/request-responses" className="action-card">
+          <div className="action-icon">📨</div>
+          <h3>Responses</h3>
+          <p>View farmer responses to your requests</p>
         </Link>
 
           <Link to="/buyer/orders" className="action-card">

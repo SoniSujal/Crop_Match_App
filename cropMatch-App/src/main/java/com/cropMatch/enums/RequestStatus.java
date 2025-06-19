@@ -2,7 +2,7 @@ package com.cropMatch.enums;
 
 public enum RequestStatus {
         PENDING,
-        APPROVED,
+        ACCEPTED,
         REJECTED,
         COMPLETED
 }

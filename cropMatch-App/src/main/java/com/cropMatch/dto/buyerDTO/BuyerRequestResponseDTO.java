@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class BuyerRequestResponseDTO {
     private int id;
     private String cropName;
+    private String matchedCropName;
     private int quantity;
     private String unit;
     private String region;
@@ -32,6 +33,7 @@ public class BuyerRequestResponseDTO {
     public BuyerRequestResponseDTO(BuyerRequest request) {
         this.id = request.getId();
         this.cropName = request.getCropName();
+        this.matchedCropName = request.getMatchedCropName();
         this.quantity = request.getRequiredQuantity();
         this.unit = request.getUnit().name();
         this.region = request.getRegion();

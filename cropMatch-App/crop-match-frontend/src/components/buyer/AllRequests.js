@@ -65,18 +65,16 @@ const AllRequests = () => {
             <div className="request-card" key={req.id}>
               <div className="request-header">
                 <div className="crop-title">
-                  <span className="crop-label">🌾 Crop:</span> {req.cropName}
+                  <span className="crop-label">🌾 Crop:</span> {req.matchedCropName}
                 </div>
                 <span className={`request-status ${req.status.toLowerCase()}`}>
                   {req.status}
                 </span>
               </div>
 
-
               {req.categoryName && (
                 <p className="category-badge">{req.categoryName}</p>
               )}
-
 
               <p><strong>Quantity:</strong> {req.quantity} {req.unit}</p>
               <p><strong>Region:</strong> {req.region}</p>

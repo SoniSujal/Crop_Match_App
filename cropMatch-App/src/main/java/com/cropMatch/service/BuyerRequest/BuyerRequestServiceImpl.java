@@ -1,8 +1,15 @@
 package com.cropMatch.service.BuyerRequest;
 
+import com.cropMatch.dto.buyerDTO.FarmerRequestResponseDTO;
+import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
+import com.cropMatch.dto.farmerDTO.FarmerDTO;
 import com.cropMatch.model.buyer.BuyerRequest;
+import com.cropMatch.model.buyer.BuyerRequestFarmer;
 import com.cropMatch.model.farmer.AvailableCrops;
+import com.cropMatch.model.user.UserDetail;
+import com.cropMatch.repository.buyer.BuyerRequestFarmerRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
+import com.cropMatch.repository.common.UserDetailRepository;
 import com.cropMatch.service.AvailableCrops.AvailableCropsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
@@ -13,13 +20,16 @@ import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BuyerRequestServiceImpl implements BuyerRequestService{
 
     private BuyerRequestRepository buyerRequestRepository;
+
+    private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
+
+    private final UserDetailRepository userDetailRepository;
 
     @Autowired
     private AvailableCropsService availableCropsService;
@@ -64,5 +74,25 @@ public class BuyerRequestServiceImpl implements BuyerRequestService{
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
                 .orElse(null);
+    }
+
+    @Override
+    public List<FarmerRequestResponseDTO> getAcceptedOrRejectedRequestsForBuyer(String buyerEmail) {
+        UserDetail buyer = userDetailRepository.findByEmail(buyerEmail)
+                .orElseThrow(() -> new RuntimeException("Buyer not found"));
+        List<BuyerRequestFarmer> records = buyerRequestFarmerRepository.findByBuyerIdAndAcceptedOrRejected(buyer.getId());
+
+        return records.stream().map(record -> {
+            UserDetail farmerUser = userDetailRepository.findById(record.getFarmerId())
+                    .orElseThrow(() -> new RuntimeException("Farmer not found"));
+
+            return new FarmerRequestResponseDTO(
+                    record.getId(),
+                    record.getFarmerStatus().name(),
+                    record.getRespondedOn(),
+                    new BuyerRequestResponseDTO(record.getBuyerRequest()),
+                    new FarmerDTO(farmerUser)
+            );
+        }).toList();
     }
 }
