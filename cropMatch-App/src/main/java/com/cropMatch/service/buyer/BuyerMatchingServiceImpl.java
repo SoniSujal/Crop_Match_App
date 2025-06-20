@@ -10,13 +10,17 @@ import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.buyer.BuyerRequestFarmerRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
 import com.cropMatch.repository.common.UserDetailRepository;
+import com.cropMatch.repository.crop.CropRepository;
 import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class BuyerMatchingServiceImpl implements BuyerMatchingService{
 private final BuyerRequestRepository buyerRequestRepository;
 private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
 private final UserService userService;
+private final CropRepository cropRepository;
 
     @Override
     public List<CropMatchProjection> findBestMatchingCrops(BuyerRequest request) {
@@ -85,6 +90,10 @@ private final UserService userService;
             match.setFarmerId(farmerId);
             match.setFarmerStatus(ResponseStatus.PENDING);
             match.setSentOn(LocalDateTime.now());
+            List<Integer> cropMatchingFarmerId = bestMatchingCrops.stream()
+                    .filter(farmer12 -> farmer12.getCreatedBy() == farmerId)
+                    .map(farmer31 -> farmer31.getId()).toList();
+            match.setCrop(cropRepository.findById(cropMatchingFarmerId.get(0)).orElse(null));
             buyerRequestFarmerRepository.save(match);
         }
 
@@ -132,7 +141,7 @@ private final UserService userService;
 
         List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
         for (BuyerRequestFarmer match : matches){
-            if (match.getFarmerStatus() == ResponseStatus.REJECTED){
+            if (match.getFarmerStatus() == ResponseStatus.CLOSED){
                 buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
             }
         }

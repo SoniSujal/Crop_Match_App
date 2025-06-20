@@ -17,6 +17,8 @@ const BuyerRequestsDashboard = () => {
   const fetchRequests = async (status) => {
   setLoading(true);
     try {
+      console.log(status);
+      console.log({status});
       const response = await api.get(`/farmer/buyer-requests/${status}`);
       setRequests(response.data);
       setError('');

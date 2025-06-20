@@ -2,6 +2,7 @@ package com.cropMatch.model.buyer;
 
 import com.cropMatch.enums.RequestStatus;
 import com.cropMatch.enums.ResponseStatus;
+import com.cropMatch.model.farmer.Crop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,8 @@ public class BuyerRequestFarmer {
         @Column(name = "farmer_id", nullable = false)
         private Integer farmerId;
 
-        @Column(name = "is_read", nullable = false)
-        private boolean isRead = false;
+        @Column(name = "is_selected", nullable = false)
+        private boolean isSelected = false;
 
         @Column(name = "responded_on")
         private LocalDateTime respondedOn;
@@ -41,4 +42,10 @@ public class BuyerRequestFarmer {
 
         @Column(name = "sent_on", nullable = false)
         private LocalDateTime sentOn = LocalDateTime.now();
+
+        @ManyToOne
+        @JoinColumn(name = "crop_id")
+        private Crop crop;
+
 }
+

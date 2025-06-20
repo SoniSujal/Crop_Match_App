@@ -42,5 +42,28 @@
     <changeSet id="change-column-name" author="sujal">
         <renameColumn tableName="buyer_request_farmers" oldColumnName="farmer_status" newColumnName="buyer_offer_status" columnDataType="VARCHAR(20)"/>
     </changeSet>
-    
+
+    <changeSet id="add-crop-id" author="smit">
+        <addColumn tableName="buyer_request_farmers">
+            <column name="crop_id" type="INT"/>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="buyer_request_farmers"
+                baseColumnNames="crop_id"
+                constraintName="fk_brf_crop"
+                referencedTableName="crop"
+                referencedColumnNames="crop_id"/>
+    </changeSet>
+
+    <changeSet id="rename-is-read" author="smit">
+        <renameColumn
+                tableName="buyer_request_farmers"
+                oldColumnName="is_read"
+                newColumnName="is_selected"
+                columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>
+
+

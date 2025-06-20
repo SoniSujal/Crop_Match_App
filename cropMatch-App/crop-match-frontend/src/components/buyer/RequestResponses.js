@@ -25,7 +25,7 @@ const RequestResponses = () => {
 
   const handleFarmerResponse = async (requestId, action) => {
     try {
-      await api.post(`/buyer/respond-to-farmer/${requestId}`, { action }); // Adjust API if needed
+      await api.post(`/buyer/buyerRequest/respond-to-farmer/${requestId}`, { action }); // Adjust API if needed
       setResponses(prev => prev.filter(r => r.id !== requestId));
     } catch (err) {
       console.error('Failed to respond to farmer:', err);
@@ -55,27 +55,32 @@ const RequestResponses = () => {
 
               <div className="info-row">
                 <p><strong>Region:</strong> {res.buyerRequest.region}</p>
-                <p><strong>Preferred Quality:</strong> {res.buyerRequest.quality}</p>
-              </div>
-
-              <div className="info-row">
-                <p><strong>Produced Way:</strong> {res.buyerRequest.producedWay}</p>
                 <p><strong>Seller Name:</strong> {res.farmer.username}</p>
               </div>
 
               <div className="info-row">
-                <p><strong>Responded On: </strong>
-                      {res.respondedOn && !isNaN(new Date(res.respondedOn))
-                        ? new Date(res.respondedOn).toLocaleString()
-                        : 'N/A'}
-                    </p>
+                <p><strong>Preferred Produced Way:</strong> {res.buyerRequest.producedWay}</p>
+                <p><strong>Offered Produced Way:</strong> {res.offeredProducedWay}</p>
+              </div>
+
+              <div className="info-row">
+              <p><strong>Preferred Quality:</strong> {res.buyerRequest.quality}</p>
+                <p><strong>Offered Quality:</strong> {res.offeredQuality}</p>
+              </div>
+
+              <div className="info-row">
+              <p><strong>Responded On: </strong>
+                {res.respondedOn && !isNaN(new Date(res.respondedOn))
+                  ? new Date(res.respondedOn).toLocaleString()
+                  : 'N/A'}
+              </p>
               </div>
 
               <div className="card-actions">
                 <button className="btn accept-btn" onClick={() => handleFarmerResponse(res.id, "ACCEPTED")}>
                   Accept Farmer
                 </button>
-                <button className="btn reject-btn" onClick={() => handleFarmerResponse(res.id, "REJECTED")}>
+                <button className="btn reject-btn" onClick={() => handleFarmerResponse(res.id, "CLOSED")}>
                   Reject Farmer
                 </button>
               </div>
