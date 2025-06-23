@@ -1,4 +1,3 @@
-
 /* Layout */
 .header {
   background-color: #ffffff;
@@ -8,6 +7,7 @@
   top: 0;
   z-index: 100;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .header-container {
@@ -19,9 +19,12 @@
   flex-wrap: nowrap;
 }
 
-/* Logo */
+/* Logo and Hamburger Icon Section */
 .header-left {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -29,14 +32,17 @@
   font-weight: bold;
   color: #2e7d32;
   text-decoration: none;
+  white-space: nowrap;
 }
 
-/* Navigation */
-.header-nav {
-  flex: 2;
+/* Desktop Navigation */
+.header-nav.desktop-nav {
+  flex: 1;
   display: flex;
   justify-content: center;
   gap: 16px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .nav-link {
@@ -47,6 +53,7 @@
   border-radius: 6px;
   transition: all 0.3s ease;
   position: relative;
+  white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -60,27 +67,34 @@
   font-weight: 700;
 }
 
-/* Right Section */
+/* Right Section - User Info & Dropdown */
 .header-right {
   flex: 1;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 20px;
+  gap: 20px; /* Space between user info and dropdown icon */
+  min-width: 0;
 }
 
-/* User Info */
+/* User Info (Welcome text + Role tag) */
 .user-info-clean {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 10px; /* Space between welcome text and role tag */
   font-size: 14px;
   color: #444;
+  white-space: nowrap; /* Keep on one line for flex behavior initially */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for hidden overflow */
 }
 
 .welcome-text {
   font-size: 15px;
   color: #333;
+  /* Allow welcome-text to shrink if needed but prefer not to break */
+  flex-shrink: 1;
+  min-width: 0; /* Important for flex items with text-overflow: ellipsis */
 }
 
 .welcome-text strong {
@@ -95,6 +109,8 @@
   text-transform: capitalize;
   background-color: #e0e0e0;
   color: #555;
+  flex-shrink: 0; /* Prevent role tag from shrinking */
+  white-space: nowrap; /* Ensure role tag text stays on one line */
 }
 
 .role-tag.admin {
@@ -112,10 +128,11 @@
   color: #2e7d32;
 }
 
-/* User Dropdown */
+/* User Dropdown Icon and Menu */
 .user-dropdown {
   position: relative;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .user-icon {
@@ -151,6 +168,7 @@
   border: none;
   width: 100%;
   transition: background-color 0.2s;
+  box-sizing: border-box;
 }
 
 .dropdown-item:hover {
@@ -161,4 +179,239 @@
 .dropdown-icon {
   color: #2e7d32;
   min-width: 16px;
+}
+
+/* --- Mobile-Specific Styles for Header (General) --- */
+
+/* Hamburger icon styles */
+.menu-icon-toggle {
+  display: none; /* Hidden by default, shown on mobile */
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.menu-icon-toggle:hover {
+  color: #2e7d32;
+}
+
+/* Mobile Navigation Drawer styles */
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: -280px; /* Hidden off-screen by default */
+  width: 260px; /* Width of the drawer */
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 101; /* Higher than header */
+  transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Allow scrolling if many links */
+}
+
+.mobile-nav-drawer.open {
+  left: 0; /* Slide in */
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.drawer-header .logo {
+  font-size: 24px;
+}
+
+.close-drawer-icon {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.close-drawer-icon:hover {
+  color: #c62828; /* Red for close button */
+}
+
+.drawer-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drawer-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.drawer-nav-link:hover {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+}
+
+.drawer-nav-link.active {
+  background-color: #c8e6c9;
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+.drawer-icon {
+  color: #2e7d32;
+  min-width: 20px;
+}
+
+.drawer-nav-link.logout-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drawer-nav-link.logout-btn:hover {
+  background-color: #ffcdd2;
+  color: #c62828;
+}
+
+.drawer-nav-link.logout-btn .drawer-icon {
+  color: #c62828;
+}
+
+/* Overlay to dim background when drawer is open */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+
+/* --- Mobile Responsiveness Media Queries --- */
+
+@media (max-width: 768px) {
+  .header {
+    padding: 10px 15px;
+  }
+
+  .header-container {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-left {
+    gap: 10px;
+    width: auto;
+  }
+
+  /* Show hamburger only on mobile */
+  .menu-icon-toggle {
+    display: block;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  /* Hide desktop nav on mobile */
+  .header-nav.desktop-nav {
+    display: none;
+  }
+
+  .header-right {
+    flex: 1; /* Allow it to take available space */
+    width: auto;
+    gap: 10px;
+    justify-content: flex-end; /* Keep content pushed to the right */
+    /* Add a max-width to header-right itself to prevent it from pushing the logo too far */
+    max-width: calc(100% - 80px); /* Approx. 80px for logo + hamburger space */
+  }
+
+  .user-info-clean {
+    font-size: 12px;
+    gap: 5px;
+    /* Remove padding-right from here as it caused issues */
+    /* Ensure user-info-clean can shrink, but the role-tag won't */
+    flex-wrap: nowrap; /* Keep welcome text and role tag on one line if possible */
+    min-width: 0; /* Allow the flex item to shrink below its content size */
+  }
+
+  .welcome-text {
+    font-size: 13px;
+    /* Let welcome-text take up available space, but truncate if too long */
+    flex-grow: 1; /* Allow welcome-text to grow */
+    flex-shrink: 1; /* Allow welcome-text to shrink */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .role-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    flex-shrink: 0; /* Ensure the role tag never shrinks */
+    margin-left: auto; /* Push role tag to the right, creating space for welcome text */
+  }
+
+  .user-icon {
+    font-size: 24px; /* Use font-size for icon size */
+  }
+
+  .dropdown-menu {
+    top: 30px;
+    min-width: 120px;
+  }
+
+  .dropdown-item {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 10px;
+  }
+
+  .header-left {
+    gap: 8px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .header-right {
+    max-width: calc(100% - 60px); /* More aggressive constraint for very small screens */
+  }
+
+  .user-info-clean {
+    gap: 3px; /* Even less gap on very small screens */
+  }
+
+  .welcome-text {
+    font-size: 12px;
+  }
+
+  .role-tag {
+    font-size: 9px;
+    padding: 1px 5px;
+  }
 }

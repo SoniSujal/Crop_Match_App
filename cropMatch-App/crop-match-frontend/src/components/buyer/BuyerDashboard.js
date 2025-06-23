@@ -90,7 +90,7 @@ const fetchTopRecommendations = async () => {
           <div className="stat-content">
             <h3>{stats.activeRequests}</h3>
             <p>Active Requests</p>
-            <Link to="/buyer/requests" className="stat-link">Manage Requests →</Link>
+            <Link to="/buyer/buyerRequest" className="stat-link">Manage Requests →</Link>
           </div>
         </div>
 

@@ -90,10 +90,11 @@ private final CropRepository cropRepository;
             match.setFarmerId(farmerId);
             match.setFarmerStatus(ResponseStatus.PENDING);
             match.setSentOn(LocalDateTime.now());
-            List<Integer> cropMatchingFarmerId = bestMatchingCrops.stream()
-                    .filter(farmer12 -> farmer12.getCreatedBy() == farmerId)
-                    .map(farmer31 -> farmer31.getId()).toList();
-            match.setCrop(cropRepository.findById(cropMatchingFarmerId.get(0)).orElse(null));
+            List<Integer> matchedCropIdsForFarmer = bestMatchingCrops.stream()
+                    .filter(crop -> crop.getCreatedBy() == farmerId)
+                    .map(CropMatchProjection::getId)
+                    .toList();
+            match.setCrop(cropRepository.findById(matchedCropIdsForFarmer.get(0)).orElse(null));
             buyerRequestFarmerRepository.save(match);
         }
 
