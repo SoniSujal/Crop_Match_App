@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -32,7 +31,19 @@ public class BuyerMatchingController {
 
     @GetMapping("/rejected")
     public ResponseEntity<List<BuyerRequestResponseDTO>> getBuyerRequestsRejected(@AuthenticationPrincipal UserPrincipal userDetails) {
-        List<BuyerRequestResponseDTO> requests = matchingService.getRejectedRequestsForFarmer(userDetails.getUsername())    ;
+        List<BuyerRequestResponseDTO> requests = matchingService.getRejectedRequestsForFarmer(userDetails.getUsername());
+        return ResponseEntity.ok(requests);
+    }
+
+    @GetMapping("/declined")
+    public ResponseEntity<List<BuyerRequestResponseDTO>> getBuyerRequestDeclined(@AuthenticationPrincipal UserPrincipal userDetails) {
+        List<BuyerRequestResponseDTO> requests = matchingService.getExpiredRequestsForFarmer(userDetails.getUsername());
+        return ResponseEntity.ok(requests);
+    }
+
+    @GetMapping("/selected")
+    public ResponseEntity<List<BuyerRequestResponseDTO>> getBuyerRequestSelected(@AuthenticationPrincipal UserPrincipal userDetails) {
+        List<BuyerRequestResponseDTO> requests = matchingService.getSelectedRequestsForFarmer(userDetails.getUsername());
         return ResponseEntity.ok(requests);
     }
 }

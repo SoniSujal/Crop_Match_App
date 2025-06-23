@@ -110,11 +110,11 @@ public class BuyerRequestServiceImpl implements BuyerRequestService{
             selected.setFarmerStatus(ResponseStatus.SELECTED);
 
 
-            List<BuyerRequestFarmer> others = buyerRequestFarmerRepository.findByBuyerRequest_Id(selected.getBuyerRequest().getId());
-            for (BuyerRequestFarmer o : others) {
-                if (!o.getId().equals(requestId)) {
-                    o.setFarmerStatus(ResponseStatus.IS_EXPIRED);
-                    buyerRequestFarmerRepository.save(o);
+            List<BuyerRequestFarmer> rejected = buyerRequestFarmerRepository.findByBuyerRequest_Id(selected.getBuyerRequest().getId());
+            for (BuyerRequestFarmer farmer : rejected) {
+                if (!farmer.getId().equals(requestId)) {
+                    farmer.setFarmerStatus(ResponseStatus.IS_EXPIRED);
+                    buyerRequestFarmerRepository.save(farmer);
                 }
             }
         }else if ("CLOSED".equalsIgnoreCase(action)){

@@ -148,4 +148,34 @@ private final CropRepository cropRepository;
         }
         return buyerRequestResponseDTOList;
     }
+
+    @Override
+    public List<BuyerRequestResponseDTO> getExpiredRequestsForFarmer(String email){
+        UserDetail farmer = userService.findByUserEmail(email);
+
+        List<BuyerRequestFarmer> matches = buyerRequestFarmerRepository.findByFarmerId(farmer.getId());
+
+        List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
+        for (BuyerRequestFarmer match : matches){
+            if (match.getFarmerStatus() == ResponseStatus.IS_EXPIRED){
+                buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
+            }
+        }
+        return buyerRequestResponseDTOList;
+    }
+
+    @Override
+    public List<BuyerRequestResponseDTO> getSelectedRequestsForFarmer(String email){
+        UserDetail farmer = userService.findByUserEmail(email);
+
+        List<BuyerRequestFarmer> matches = buyerRequestFarmerRepository.findByFarmerId(farmer.getId());
+
+        List<BuyerRequestResponseDTO> buyerRequestResponseDTOList = new ArrayList<>();
+        for (BuyerRequestFarmer match : matches){
+            if (match.getFarmerStatus() == ResponseStatus.SELECTED){
+                buyerRequestResponseDTOList.add(new BuyerRequestResponseDTO(match.getBuyerRequest()));
+            }
+        }
+        return buyerRequestResponseDTOList;
+    }
 }

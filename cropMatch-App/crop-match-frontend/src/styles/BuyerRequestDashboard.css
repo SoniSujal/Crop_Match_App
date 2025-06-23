@@ -160,3 +160,25 @@
   margin-right: 0.5rem;
   font-weight: bold;
 }
+
+.custom-message {
+  margin: 12px 0;
+  font-weight: 500;
+  color: #555;
+}
+
+.status-message-wrapper {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.custom-message {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  background-color: #f7f7f7;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+}
+

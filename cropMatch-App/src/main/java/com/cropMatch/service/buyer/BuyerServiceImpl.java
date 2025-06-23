@@ -76,7 +76,6 @@ public class BuyerServiceImpl implements BuyerService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     @Transactional
     public boolean updateBuyerPreferences(String username, List<Integer> newCategoryIds) {

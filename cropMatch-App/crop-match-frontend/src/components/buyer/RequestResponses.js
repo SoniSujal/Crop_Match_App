@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/auth/api';
 import '../../styles/BuyerRequestDashboard.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const RequestResponses = () => {
   const [responses, setResponses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     fetchResponses();
@@ -25,10 +27,20 @@ const RequestResponses = () => {
 
   const handleFarmerResponse = async (requestId, action) => {
     try {
-      await api.post(`/buyer/buyerRequest/respond-to-farmer/${requestId}`, { action }); // Adjust API if needed
-      setResponses(prev => prev.filter(r => r.id !== requestId));
+      // First, make the API call to update the farmer's response status
+      await api.post(`/buyer/buyerRequest/respond-to-farmer/${requestId}`, { action });
+
+      // If the action is ACCEPTED, navigate to the order creation page
+      if (action === "ACCEPTED") {
+        navigate(`/buyer/orders/create?requestId=${requestId}`);
+      } else {
+        // For other actions (like "CLOSED"), filter out the response
+        setResponses(prev => prev.filter(r => r.id !== requestId));
+      }
     } catch (err) {
       console.error('Failed to respond to farmer:', err);
+      // Optionally, set an error state to inform the user
+      setError('Failed to process your response.');
     }
   };
 

@@ -1,0 +1,110 @@
+
+/* Base container */
+.order-creation {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.order-creation h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+/* Crop image */
+.order-creation img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Info styling */
+.order-creation h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #34495e;
+}
+
+.order-creation p {
+  margin: 8px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.order-creation strong {
+  color: #555;
+}
+
+/* Quantity input */
+.quantity {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  gap: 12px;
+}
+
+.quantity label {
+  font-weight: bold;
+}
+
+.quantity input {
+  width: 80px;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.quantity span {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Total price */
+.order-creation .total-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Button */
+.order-creation button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.order-creation button:hover {
+  background-color: #1e8449;
+}
+
+/* Error message */
+.error {
+  color: #e74c3c;
+  text-align: center;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+/* Loading text */
+.loading-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #888;
+}

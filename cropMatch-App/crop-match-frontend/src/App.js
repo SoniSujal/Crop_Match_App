@@ -14,6 +14,8 @@ import BuyerDashboard from './components/buyer/BuyerDashboard';
 import RecommendationList from './components/buyer/RecommendationList';
 import RecommendationDetail from './components/buyer/RecommendationDetail';
 import RequestResponses from './components/buyer/RequestResponses';
+import OrderCreation from './components/buyer/OrderCreation';
+import SelectedRequestsDashboard from './components/farmer/SelectedRequestsDashboard';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
 import AddCrop from './components/farmer/AddCrop';
@@ -140,6 +142,31 @@ function App() {
                          </ProtectedRoute>
                          }
                 />
+                <Route
+                    path="/buyer/orders/create"
+                          element={
+                          <ProtectedRoute requiredRole="buyer">
+                          <OrderCreation />
+                          </ProtectedRoute>
+                          }
+                          />
+                <Route
+                    path="/buyer/orders/my-orders"
+                          element={
+                          <ProtectedRoute requiredRole="buyer">
+                          <div>My Orders Page (Coming Soon!)
+                          </div>
+                          </ProtectedRoute>
+                          }
+                          />
+                <Route
+                    path="/selected-requests"
+                         element={
+                         <ProtectedRoute requiredRole="farmer">
+                         <SelectedRequestsDashboard />
+                         </ProtectedRoute>
+                          }
+                          />
                 <Route
                     path="/admin/categories"
                         element={
