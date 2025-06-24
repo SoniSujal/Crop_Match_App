@@ -11,6 +11,7 @@ const OrderCreation = () => {
   const requestId = params.get('requestId');
 
   const [order, setOrder] = useState(null);
+  const [deliveryRegion, setDeliveryRegion] = useState('');
   const [qty, setQty] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -37,16 +38,24 @@ const OrderCreation = () => {
 
   const onPlaceOrder = async () => {
     if (qty < 1) return setError('Quantity must be ≥ 1');
-    try {
-      await api.post('/buyer/orders/place-order', {
-        cropId: order.cropId,
-        requestFarmId: order.buyerRequestFarmId,
-        quantity: qty,
-      });
-      navigate('/buyer/orders/my-orders');
-    } catch (e) {
-      setError('Order placement failed');
-    }
+//    try {
+//      await api.post('/buyer/orders/place-order', {
+//        cropId: order.cropId,
+//        requestFarmId: order.buyerRequestFarmId,
+//        quantity: qty,
+//        deliveryRegion: deliveryRegion.trim(),
+//      });
+      navigate('/buyer/orders/payment', {
+            state: {
+              cropName: order.cropName,
+              unitPrice: order.unitPrice,
+              quantity: qty,
+              totalPrice: total,
+            },
+          });
+//    } catch (e) {
+//      setError('Order placement failed');
+//    }
   };
 
   if (loading) return <p>Loading...</p>;
@@ -74,6 +83,18 @@ const OrderCreation = () => {
         />
         <span>{order.unit}</span>
       </div>
+      <div className="delivery-region">
+        <label htmlFor="deliveryRegion">Delivery Region: </label>
+        <input
+          type="text"
+          id="deliveryRegion"
+          value={deliveryRegion}
+          onChange={(e) => setDeliveryRegion(e.target.value)}
+          required
+        />
+      </div>
+
+
       <p><strong>Total Price:</strong> ₹{total.toFixed(2)}</p>
 
       <button onClick={onPlaceOrder}>Place Order</button>

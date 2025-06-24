@@ -52,7 +52,7 @@ const RequestResponses = () => {
       {error && <p className="status-text error-text">{error}</p>}
 
       {!loading && responses.length === 0 ? (
-        <p className="status-text">No accepted or rejected responses yet.</p>
+        <p className="status-text">No accepted responses yet.</p>
       ) : (
         <div className="request-cards">
           {responses.map((res) => (

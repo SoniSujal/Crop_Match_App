@@ -15,6 +15,7 @@ import RecommendationList from './components/buyer/RecommendationList';
 import RecommendationDetail from './components/buyer/RecommendationDetail';
 import RequestResponses from './components/buyer/RequestResponses';
 import OrderCreation from './components/buyer/OrderCreation';
+import PaymentPage from './components/buyer/PaymentPage';
 import SelectedRequestsDashboard from './components/farmer/SelectedRequestsDashboard';
 import EditProfile from './components/user/EditProfile';
 import AddRequest from './components/buyer/AddRequest';
@@ -175,6 +176,14 @@ function App() {
                         </ProtectedRoute>
                         }
                 />
+                <Route
+                    path="/buyer/orders/payment"
+                        element={
+                        <ProtectedRoute requiredRole="buyer">
+                        <PaymentPage />
+                        </ProtectedRoute>
+                        }
+                        />
             </Route>
 
             {/* Default redirect */}

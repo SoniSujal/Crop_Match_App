@@ -16,5 +16,6 @@
     <include file="changelog-available-crops.xml" relativeToChangelogFile="true"/>
     <include file="changelog-buyer-request-farmers.xml" relativeToChangelogFile="true"/>
     <include file="changelog-user-detail-inserts.xml" relativeToChangelogFile="true"/>
+    <include file="changelog-order-and-order-sources.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

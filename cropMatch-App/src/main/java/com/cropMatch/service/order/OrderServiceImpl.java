@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService{
         Crop crop = cropRepository.findById(cropId)
                 .orElseThrow(() -> new RuntimeException("Crop not found"));
 
-        Integer farmerId = crop.getCreatedBy();   // get farmer ID from response
+        Integer farmerId = crop.getCreatedBy();
         String farmerUsername = userService.findByUsernameUsingId(farmerId);
 
         return new OrderDetailDTO(
