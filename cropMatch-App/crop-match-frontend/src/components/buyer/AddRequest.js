@@ -4,6 +4,32 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/auth/api';
 import '../../styles/AddRequest.css';
 
+const CATEGORY_UNIT_MAP = {
+  Vegetables: ['KILOGRAM', 'GRAM', 'QUINTAL', 'TONNE', 'BAG', 'CRATE', 'BUNDLE'],
+  Fruits: ['KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'BOX', 'CRATE', 'BAG'],
+  Grains: ['KILOGRAM', 'GRAM', 'QUINTAL', 'TONNE', 'BAG'],
+  'Dairy Products': ['LITRE', 'MILLILITRE', 'PIECE', 'BOX'],
+  Oils: ['LITRE', 'MILLILITRE'],
+  Flowers: ['BUNDLE', 'PIECE', 'DOZEN'],
+  'Herbs / Spices': ['GRAM', 'KILOGRAM', 'BAG'],
+  'Nuts / Dry Fruits': ['GRAM', 'KILOGRAM', 'BAG', 'BOX'],
+  'Saplings / Nursery Plants': ['PIECE', 'BAG', 'CRATE']
+};
+
+const UNIVERSAL_PACKAGE_GUIDELINES = {
+  BOX: 'Box usually contains 20-30 pieces.',
+  BAG: 'Bag usually contains 10-15 pieces.',
+  CRATE: 'Crate usually contains 30-50 pieces.',
+  BUNDLE: 'Bundle usually contains 5-10 pieces.'
+};
+
+const UNITS = [
+  'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
+  'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX', 'CRATE', 'BAG'
+];
+
+
+const PACKAGED_UNITS = ['BOX', 'BAG', 'CRATE', 'BUNDLE'];
 
 const AddRequest = () => {
   const navigate = useNavigate();
@@ -25,7 +51,8 @@ const AddRequest = () => {
   const QUALITIES = ['LOW', 'GOOD', 'BEST'];
   const PRODUCED_WAYS = ['ORGANIC', 'CHEMICAL', 'MIXED'];
   const [categories, setCategories] = useState([]);
-  const [units, setUnits] = useState([]);
+  const [units, setUnits] = useState(UNITS); // Default full list
+  const [validUnits, setValidUnits] = useState(UNITS); // Based on category
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [allCrops, setAllCrops] = useState([]);
@@ -74,7 +101,12 @@ const AddRequest = () => {
 
   const handleCategoryChange = (e) => {
     const newCategoryId = e.target.value;
-    setFormData({ ...formData, categoryId: newCategoryId, cropName: '' });
+    const selectedCategoryName = categories.find(cat => String(cat.id) === newCategoryId)?.name;
+    const unitsForCategory = CATEGORY_UNIT_MAP[selectedCategoryName] || UNITS;
+
+    setValidUnits(unitsForCategory);
+
+    setFormData({ ...formData, categoryId: newCategoryId, cropName: '', unit: '' });
     fetchInitialCrops(newCategoryId);
   };
 
@@ -289,15 +321,30 @@ const AddRequest = () => {
             <select
               name="unit"
               onChange={handleChange}
+              value={formData.unit}
               required
             >
               <option value="">Select Unit</option>
-              {units.map((unit) => (
-                <option key={unit.name} value={unit.name}>
-                  {unit.displayName}
-                </option>
+              {validUnits.map((unit) => (
+                <option key={unit} value={unit}>{unit}</option>
               ))}
             </select>
+
+            {/* Packaging guidelines */}
+            {PACKAGED_UNITS.includes(formData.unit) && (
+              <p style={{
+                backgroundColor: '#fffbcc',
+                padding: '5px 8px',
+                borderRadius: '3px',
+                marginTop: '2px',
+                color: '#856404',
+                fontWeight: '100',
+                fontStyle: 'italic',
+                border: '1px solid #ffeeba',
+              }}>
+                {UNIVERSAL_PACKAGE_GUIDELINES[formData.unit]}
+              </p>
+            )}
         </label>
 
         <label>

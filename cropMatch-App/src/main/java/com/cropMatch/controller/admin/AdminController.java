@@ -29,7 +29,8 @@ public class AdminController {
     @GetMapping("/farmers")
     public ResponseEntity<ApiResponse<List<FarmerDTO>>> getAllActiveFarmers() {
         try {
-            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream().filter(UserDetail::getActive)
+            List<FarmerDTO> farmers = adminService.getAllUsersByRole("FARMER").stream()
+                    .filter(UserDetail::getActive)
                     .map( FarmerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(farmers));
@@ -69,7 +70,8 @@ public class AdminController {
     @GetMapping("/buyers")
     public ResponseEntity<ApiResponse<List<BuyerDTO>>> getAllActiveBuyers() {
         try {
-            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream().filter(UserDetail::getActive)
+            List<BuyerDTO> buyers = adminService.getAllUsersByRole("BUYER").stream()
+                    .filter(UserDetail::getActive)
                     .map( BuyerDTO::new)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ApiResponse.success(buyers));

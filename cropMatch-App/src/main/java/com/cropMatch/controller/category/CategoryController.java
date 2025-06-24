@@ -2,6 +2,7 @@ package com.cropMatch.controller.category;
 
 import com.cropMatch.model.admin.Category;
 import com.cropMatch.repository.category.CategoryRepository;
+import com.cropMatch.repository.crop.CropRepository;
 import com.cropMatch.service.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     private final CategoryRepository categoryRepository;
+
+    private final CropRepository cropRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -59,6 +62,9 @@ public class CategoryController {
             Category category = optionalCategory.get();
             category.setIsActive(!category.getIsActive());
             categoryRepository.save(category);
+
+//            cropRepository.
+
             return ResponseEntity.ok("Category status updated successfully");
         }
         return ResponseEntity.notFound().build();

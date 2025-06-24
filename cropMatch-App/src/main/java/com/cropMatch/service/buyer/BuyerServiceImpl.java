@@ -60,11 +60,9 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     public List<UnitDTO> getAllUnits() {
         List<UnitDTO> units = new ArrayList<>();
-
         for (CropUnit unit : CropUnit.values()) {
-            units.add(new UnitDTO(unit.name(), unit.getDisplayName()));
+            units.add(new UnitDTO(unit.name().toUpperCase(), unit.getDisplayName().toUpperCase()));
         }
-
         return units;
     }
 

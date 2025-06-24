@@ -5,7 +5,6 @@ import com.cropMatch.service.BuyerRequest.BuyerRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -27,7 +26,7 @@ public class FarmerRequestController {
         String action = body.get("action"); // "ACCEPTED" or "REJECTED"
         String farmerUsername = userDetails.getUsername();
 
-        buyerRequestService.handleResponse(requestId, farmerUsername, action);
+        buyerRequestService.handleFarmerResponse(requestId, farmerUsername, action);
         return ResponseEntity.ok("Response recorded");
     }
 

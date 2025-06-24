@@ -2,57 +2,67 @@ package com.cropMatch.service.buyer;
 
 import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
 import com.cropMatch.dto.buyerDTO.CropMatchProjection;
-import com.cropMatch.enums.RequestStatus;
+import com.cropMatch.enums.CropUnit;
 import com.cropMatch.enums.ResponseStatus;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.buyer.BuyerRequestFarmer;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.buyer.BuyerRequestFarmerRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
-import com.cropMatch.repository.common.UserDetailRepository;
 import com.cropMatch.service.user.UserService;
+import com.cropMatch.utils.UnitConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BuyerMatchingServiceImpl implements BuyerMatchingService{
 
-private final BuyerRequestRepository buyerRequestRepository;
-private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
-private final UserService userService;
+    private final BuyerRequestRepository buyerRequestRepository;
+    private final BuyerRequestFarmerRepository buyerRequestFarmerRepository;
+    private final UserService userService;
+    private UnitConverter unitConverter;
+
 
     @Override
     public List<CropMatchProjection> findBestMatchingCrops(BuyerRequest request) {
-        List<CropMatchProjection> matches = runMatchingQuery(
+        List<CropMatchProjection> allMatches = runMatchingQuery(
                 request, true, true, true, true, true
         );
 
-        if (matches.size() >= 5) return matches;
+        List<CropMatchProjection> high = new ArrayList<>();
+        List<CropMatchProjection> medium = new ArrayList<>();
+        List<CropMatchProjection> low = new ArrayList<>();
 
-        // 1st fallback: Relax price
-        matches = runMatchingQuery(request, false, true, true, true, true);
-        if (matches.size() >= 5) return matches;
+        for (CropMatchProjection match : allMatches) {
+            int score = match.getMatchScore();
+            if (score >= 8) {
+                high.add(match);
+            } else if (score >= 5) {
+                medium.add(match);
+            } else {
+                low.add(match);
+            }
+        }
 
-        // 2nd fallback: Relax quantity
-        matches = runMatchingQuery(request, false, false, true, true, true);
-        if (matches.size() >= 5) return matches;
+        List<CropMatchProjection> finalList = new ArrayList<>();
+        if (high.size() >= 5) {
+            finalList.addAll(high);
+        } else if (high.size() + medium.size() >= 5) {
+            finalList.addAll(high);
+            finalList.addAll(medium);
+        } else {
+            finalList.addAll(high);
+            finalList.addAll(medium);
+            finalList.addAll(low);
+        }
 
-        // 3rd fallback: Relax producedWay
-        matches = runMatchingQuery(request, false, false, false, true, true);
-        if (matches.size() >= 5) return matches;
-
-        // 4th fallback: Relax quality
-        matches = runMatchingQuery(request, false, false, false, false, true);
-        if (matches.size() >= 5) return matches;
-
-        // 5th fallback: Relax region (only cropName match guaranteed)
-        matches = runMatchingQuery(request, false, false, false, false, false);
-        return matches;
+        return finalList;
     }
 
     @Override
@@ -65,13 +75,17 @@ private final UserService userService;
             boolean includeRegion
     ) {
         String cropNameForMatching = request.getMatchedCropName() != null ? request.getMatchedCropName() : request.getCropName();
+        CropUnit unitConverterBaseUnit = unitConverter.getBaseUnit(request.getUnit());
+        double convertBuyerRequiredQuantityInBaseUnit = unitConverter.convert(request.getRequiredQuantity(), request.getUnit(), unitConverterBaseUnit);
+        double expectedFinalPrice = ((1000 * Double.parseDouble(String.valueOf(request.getExpectedPrice()))) / convertBuyerRequiredQuantityInBaseUnit);
+
         return buyerRequestRepository.findMatchingCropsWithFlexibleCriteria(
                 cropNameForMatching,
                 includeRegion ? request.getRegion() : null,
                 includeQuality ? request.getQuality().name() : null,
                 includeProducedWay ? request.getProducedWay().name() : null,
-                includePrice ? request.getExpectedPrice() : null,
-                includeQuantity ? request.getRequiredQuantity() : null
+                includePrice ? expectedFinalPrice : null,
+                includeQuantity ? convertBuyerRequiredQuantityInBaseUnit : null
         );
     }
 

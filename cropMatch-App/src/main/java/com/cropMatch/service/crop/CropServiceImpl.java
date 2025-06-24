@@ -4,6 +4,7 @@ import com.cropMatch.dto.buyerDTO.RecommendationDTO;
 import com.cropMatch.dto.farmerDTO.CropDTO;
 
 import com.cropMatch.dto.responseDTO.ApiResponse;
+import com.cropMatch.enums.CropUnit;
 import com.cropMatch.exception.CategoryNotFoundException;
 import com.cropMatch.exception.CropNotFoundException;
 import com.cropMatch.exception.ImageInByterConvertException;
@@ -19,6 +20,7 @@ import com.cropMatch.repository.crop.CropImageRepository;
 import com.cropMatch.repository.crop.CropRepository;
 import com.cropMatch.service.category.CategoryService;
 import com.cropMatch.service.user.UserService;
+import com.cropMatch.utils.UnitConverter;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,9 @@ public class CropServiceImpl implements CropService {
     @Autowired
     private AvailableCropsRepository availableCropsRepository;
 
+    @Autowired
+    private UnitConverter unitConverter;
+
     @Override
     @Transactional
     public void saveCropWithImages(CropDTO cropDTO, List<MultipartFile> images, Integer farmerId) {
@@ -72,7 +77,14 @@ public class CropServiceImpl implements CropService {
         Category category = categoryRepository.findById(cropDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category Not Found!"));
 
-        Crop crop = new Crop(cropDTO, category,farmerId);
+        CropUnit unitConverterBaseUnit = unitConverter.getBaseUnit(CropUnit.valueOf(cropDTO.getStockUnit().toUpperCase()));
+        double convertBaseQuantity = unitConverter.convert(cropDTO.getStockQuantity(), CropUnit.valueOf(cropDTO.getStockUnit()), CropUnit.GRAM);
+
+        CropUnit unitConverterBaseUnit1 = unitConverter.getBaseUnit(CropUnit.valueOf(cropDTO.getSellingUnit()));
+        double convertValue = unitConverter.convert(cropDTO.getSellingQuantity(), CropUnit.valueOf(cropDTO.getSellingUnit()), unitConverterBaseUnit1);
+        double finalPricePerKG = (Double.parseDouble(String.valueOf(cropDTO.getPrice())) * 1000) / convertValue;
+
+        Crop crop = new Crop(cropDTO, category,farmerId, convertBaseQuantity, unitConverterBaseUnit, finalPricePerKG);
         Crop cropData = cropRepository.save(crop);
 
         String folderName = uploadPath + File.separator + "FARMER_ID_" + farmerId + File.separator + "CROP_ID_" + cropData.getId();

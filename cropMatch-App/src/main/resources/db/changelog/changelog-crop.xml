@@ -84,4 +84,23 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="crop-5" author="sujal">
+        <addColumn tableName="crop">
+            <column name="normalized_quantity" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="normalization_unit_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="crop-6" author="sujal">
+        <addColumn tableName="crop">
+            <column name="normalization_price_per_KG" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

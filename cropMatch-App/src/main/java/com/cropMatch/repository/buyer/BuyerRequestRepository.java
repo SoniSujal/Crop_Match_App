@@ -14,7 +14,6 @@ import java.util.List;
 public interface BuyerRequestRepository extends JpaRepository<BuyerRequest, Integer> {
     List<BuyerRequest> findByBuyerId(Integer buyerId);
 
-
     @Query(value = """
     SELECT c.crop_id AS id,
            c.name,
@@ -25,11 +24,11 @@ public interface BuyerRequestRepository extends JpaRepository<BuyerRequest, Inte
            c.produced_way AS producedWay,
            c.quality,
            c.created_by AS createdBy,
-           (CASE WHEN (:region IS NOT NULL AND c.region = :region) THEN 1 ELSE 0 END +
+           (CASE WHEN (:region IS NOT NULL AND c.region = :region) THEN 2 ELSE 0 END +
             CASE WHEN (:quality IS NOT NULL AND c.quality = :quality) THEN 1 ELSE 0 END +
             CASE WHEN (:producedWay IS NOT NULL AND c.produced_way = :producedWay) THEN 1 ELSE 0 END +
-            CASE WHEN (:expectedPrice IS NOT NULL AND c.price <= :expectedPrice) THEN 1 ELSE 0 END +
-            CASE WHEN (:requiredQuantity IS NOT NULL AND c.selling_quantity >= :requiredQuantity) THEN 1 ELSE 0 END
+            CASE WHEN (:expectedPrice IS NOT NULL AND c.normalization_price_per_KG <= :expectedPrice) THEN 3 ELSE 0 END +
+            CASE WHEN (:requiredQuantity IS NOT NULL AND c.normalized_quantity >= :requiredQuantity) THEN 3 ELSE 0 END
            ) AS matchScore
     FROM crop c
     WHERE c.name = :cropName
@@ -41,11 +40,8 @@ public interface BuyerRequestRepository extends JpaRepository<BuyerRequest, Inte
             @Param("region") String region,
             @Param("quality") String quality,
             @Param("producedWay") String producedWay,
-            @Param("expectedPrice") BigDecimal expectedPrice,
-            @Param("requiredQuantity") Integer requiredQuantity
+            @Param("expectedPrice") Double expectedPrice,
+            @Param("requiredQuantity") Double requiredQuantity
     );
-
-
-
 }
 

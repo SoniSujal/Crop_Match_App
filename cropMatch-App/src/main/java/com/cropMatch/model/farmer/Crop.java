@@ -2,6 +2,7 @@ package com.cropMatch.model.farmer;
 
 import com.cropMatch.dto.farmerDTO.CropDTO;
 import com.cropMatch.enums.AvailabilityStatus;
+import com.cropMatch.enums.CropUnit;
 import com.cropMatch.enums.ProducedWay;
 import com.cropMatch.enums.Quality;
 import com.cropMatch.model.admin.Category;
@@ -91,7 +92,16 @@ public class Crop {
 //    @Convert(converter = YearMonthAttributeConverter.class)
     private String expectedReadyMonth;
 
-    public Crop(CropDTO cropDTO,Category category, Integer farmerId) {
+    @Column(name = "normalized_quantity", nullable = false)
+    private double normalizedQuantity;
+
+    @Column(name = "normalization_unit_type", nullable = false)
+    private String normalizationUnitType;
+
+    @Column(name = "normalization_price_per_KG", nullable = false)
+    private Double normalizationPricePerKg;
+
+    public Crop(CropDTO cropDTO, Category category, Integer farmerId, Double baseQuantity, CropUnit unitConverterBaseUnit, double finalPricePerKG) {
         this.name = cropDTO.getName();
         this.description = cropDTO.getDescription();
         this.category = category;
@@ -111,5 +121,8 @@ public class Crop {
         this.producedWay = cropDTO.getProducedWay();
         this.availabilityStatus = cropDTO.getAvailabilityStatus();
         this.expectedReadyMonth = String.valueOf(cropDTO.getExpectedReadyMonth());
+        this.normalizedQuantity = baseQuantity;
+        this.normalizationUnitType = String.valueOf(unitConverterBaseUnit);
+        this.normalizationPricePerKg = finalPricePerKG;
     }
 }
