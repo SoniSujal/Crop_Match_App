@@ -2,15 +2,15 @@ import api from '../auth/api';
 
 const adminService = {
 
-   activateUserByEmail: async (email) => {
-     const response = await api.put(`/admin/users/email/${encodeURIComponent(email)}/activate`);
+   activateUserByEmail: async (userId ,email) => {
+     const response = await api.put(`/admin/${userId}/users/email/${encodeURIComponent(email)}/activate`);
      return response.data;
    },
 
   // Get all active farmers
-  getAllFarmers: async () => {
+  getAllFarmers: async (userId) => {
     try {
-      const response = await api.get('/admin/farmers');
+      const response = await api.get(`/admin/${userId}/farmers`);
       if (response.data.status === 'SUCCESS') {
         return response.data.data;
       } else {
@@ -25,9 +25,9 @@ const adminService = {
   },
 
   // Get deleted Farmers
-  getDeletedFarmers: async () => {
+  getDeletedFarmers: async (userId) => {
     try {
-      const response = await api.get('/admin/farmers/deleted');
+      const response = await api.get(`/admin/${userId}/farmers/deleted`);
       if (response.data.status === 'SUCCESS') {
         return response.data.data;
       } else {
@@ -42,9 +42,9 @@ const adminService = {
   },
 
   // Get All Farmers
-  getAllFarmersIncludingDeleted: async () => {
+  getAllFarmersIncludingDeleted: async (userId) => {
     try {
-      const response = await api.get('/admin/farmers/all');
+      const response = await api.get(`/admin/${userId}/farmers/all`);
       if (response.data.status === 'SUCCESS') {
          return response.data.data;
       } else {
@@ -60,9 +60,9 @@ const adminService = {
   },
 
   // Get all buyers
-  getAllBuyers: async () => {
+  getAllBuyers: async (userId) => {
     try {
-      const response = await api.get('/admin/buyers');
+      const response = await api.get(`/admin/${userId}/buyers`);
       if (response.data.status === 'SUCCESS') {
         return response.data.data;
       } else {
@@ -77,9 +77,9 @@ const adminService = {
   },
 
   // Get deleted Buyers
-    getDeletedBuyers: async () => {
+    getDeletedBuyers: async (userId) => {
       try {
-        const response = await api.get('/admin/buyers/deleted');
+        const response = await api.get(`/admin/${userId}/buyers/deleted`);
         if (response.data.status === 'SUCCESS') {
           return response.data.data;
         } else {
@@ -94,9 +94,9 @@ const adminService = {
     },
 
     // Get All Buyers
-    getAllBuyersIncludingDeleted: async () => {
+    getAllBuyersIncludingDeleted: async (userId) => {
       try {
-        const response = await api.get('/admin/buyers/all');
+        const response = await api.get(`/admin/${userId}/buyers/all`);
         if (response.data.status === 'SUCCESS') {
            return response.data.data;
         } else {
@@ -111,9 +111,9 @@ const adminService = {
     },
 
   // Get user by username
-  getUser: async (username) => {
+  getUser: async (username,userId) => {
     try {
-      const response = await api.get(`/admin/user/${username}`);
+      const response = await api.get(`/admin/${userId}/user/${username}`);
       if (response.data.status === 'SUCCESS') {
         return response.data.data;
       } else {
@@ -128,9 +128,9 @@ const adminService = {
   },
 
   // Update user
-  updateUser: async (username, userData) => {
+  updateUser: async (username, userData, userId) => {
     try {
-      const response = await api.put(`/admin/user/${username}`, userData);
+      const response = await api.put(`/admin/${userId}/user/${username}`, userData);
       if (response.data.status === 'SUCCESS') {
         return response.data;
       } else {
@@ -145,9 +145,9 @@ const adminService = {
   },
 
   // Delete user
-  deleteUser: async (username) => {
+  deleteUser: async (username, userId) => {
     try {
-      const response = await api.delete(`/admin/user/${username}`);
+      const response = await api.delete(`/admin/${userId}/user/${username}`);
       if (response.data.status === 'SUCCESS') {
         return response.data;
       } else {

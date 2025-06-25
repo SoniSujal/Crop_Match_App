@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useParams } from 'react-router-dom';
 import adminService from '../../services/admin/adminService';
 import '../../styles/UsersList.css';
 
 const UsersList = () => {
   const [searchParams] = useSearchParams();
   const typeFromUrl = searchParams.get('type');
+  const { userId } = JSON.parse(localStorage.getItem('currentUser'));
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,12 +41,12 @@ const UsersList = () => {
 
       if (userType === 'farmer') {
         usersData = filter === 'active'
-          ? await adminService.getAllFarmers()
-          : await adminService.getDeletedFarmers();
+          ? await adminService.getAllFarmers(userId)
+          : await adminService.getDeletedFarmers(userId);
       } else if (userType === 'buyer') {
         usersData = filter === 'active'
-          ? await adminService.getAllBuyers()
-          : await adminService.getDeletedBuyers();
+          ? await adminService.getAllBuyers(userId)
+          : await adminService.getDeletedBuyers(userId);
       }
 
       setUsers(usersData);
@@ -66,7 +67,7 @@ const UsersList = () => {
       onConfirm: async () => {
         setDeleteLoading(email);
         try {
-          await adminService.deleteUser(email);
+          await adminService.deleteUser(email, userId);
           setUsers(users.filter(user => user.email !== email));
           setModal({
             visible: true,
@@ -93,7 +94,7 @@ const UsersList = () => {
       message: `Are you sure you want to reactivate ${userType} "${email}"?`,
       onConfirm: async () => {
         try {
-          await adminService.activateUserByEmail(email);
+          await adminService.activateUserByEmail(userId, email);
           setModal({
             visible: true,
             type: 'success',
@@ -245,7 +246,7 @@ const UsersList = () => {
                       ) : (
                         <>
                           <Link
-                            to={`/admin/edit-user/${user.email}`}
+                            to={`/admin/${userId}/edit-user/${user.email}`}
                             className="btn btn-edit"
                           >
                             Edit

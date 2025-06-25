@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import adminService from '../../services/admin/adminService';
 import '../../styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const { userId } = JSON.parse(localStorage.getItem('currentUser'));
   const [stats, setStats] = useState({
     totalFarmers: 0,
     totalBuyers: 0,
@@ -21,8 +22,8 @@ const AdminDashboard = () => {
   const fetchDashboardStats = async () => {
     try {
       const [farmers, buyers] = await Promise.all([
-        adminService.getAllFarmers(),
-        adminService.getAllBuyers()
+        adminService.getAllFarmers(userId),
+        adminService.getAllBuyers(userId)
       ]);
 
       setStats({
@@ -68,7 +69,7 @@ const AdminDashboard = () => {
           <div className="stat-content">
             <h3>{stats.totalFarmers}</h3>
             <p>Total Farmers</p>
-           <Link to="/admin/users?type=farmer" className="stat-link">View All Farmers →</Link>
+           <Link to={`/admin/${userId}/users?type=farmer`} className="stat-link">View All Farmers →</Link>
           </div>
         </div>
 
@@ -77,7 +78,7 @@ const AdminDashboard = () => {
           <div className="stat-content">
             <h3>{stats.totalBuyers}</h3>
             <p>Total Buyers</p>
-            <Link to="/admin/users?type=buyer" className="stat-link">View All Buyers →</Link>
+            <Link to={`/admin/${userId}/users?type=buyer`} className="stat-link">View All Buyers →</Link>
           </div>
         </div>
 
@@ -94,19 +95,19 @@ const AdminDashboard = () => {
       <div className="quick-actions">
         <h2>Quick Actions</h2>
         <div className="actions-grid">
-                  <Link to="/admin/users" className="action-card">
+                  <Link to={`/admin/${userId}/users`} className="action-card">
                     <div className="action-icon">👥</div>
                     <h3>Manage Users</h3>
                     <p>View, edit, and manage all user accounts</p>
                   </Link>
 
-          <Link to="/admin/categories" className="action-card">
+          <Link to={`/admin/${userId}/categories`} className="action-card">
             <div className="action-icon">📂</div>
             <h3>Manage Categories</h3>
             <p>View, edit, and manage categories</p>
           </Link>
 
-          <Link to="/profile/edit" className="action-card">
+          <Link to={`/profile/${userId}/edit`} className="action-card">
             <div className="action-icon">⚙️</div>
             <h3>Profile Settings</h3>
             <p>Update your admin profile information</p>

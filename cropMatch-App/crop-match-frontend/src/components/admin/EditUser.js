@@ -7,6 +7,7 @@ import '../../styles/EditUser.css';
 const EditUser = () => {
   const { username } = useParams();
   const navigate = useNavigate();
+  const { userId } = JSON.parse(localStorage.getItem('currentUser'));
 
   const [formData, setFormData] = useState({
     username: '',
@@ -29,7 +30,7 @@ const EditUser = () => {
 
   const fetchUser = async () => {
     try {
-      const userData = await adminService.getUser(username);
+      const userData = await adminService.getUser(username, userId);
       const userInfo = {
         username: userData.username,
         email: userData.email,
@@ -101,7 +102,7 @@ const EditUser = () => {
     }
 
     try {
-      await adminService.updateUser(username, formData);
+      await adminService.updateUser(username, formData, userId);
       setSuccessMessage('User updated successfully!');
     } catch (error) {
       setError('Failed to update user: ' + error.message);
@@ -259,7 +260,7 @@ const EditUser = () => {
             <p>{successMessage}</p>
             <button onClick={() => {
               setSuccessMessage('');
-              navigate('/admin/users');
+              navigate(`/admin/${userId}/users`);
             }}>
               OK
             </button>

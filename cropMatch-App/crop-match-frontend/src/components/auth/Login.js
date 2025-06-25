@@ -33,17 +33,19 @@ const Login = () => {
 
     try {
       const response = await login(formData);
-      const userRole = response.data.role;
+      const { role: userRole, userId } = response.data;
+      console.log(userId);
+      console.log('${userId}');
 
       setToast({ message: 'Login successful!', type: 'success' });
 
       // Redirect based on role
       if (userRole === 'admin') {
-        navigate('/admin/dashboard');
+        navigate(`/admin/${userId}/dashboard`); // ✅ backticks used correctly here
       } else if (userRole === 'farmer') {
-        navigate('/farmer/dashboard');
+        navigate(`/farmer/${userId}/dashboard`);
       } else if (userRole === 'buyer') {
-        navigate('/buyer/dashboard');
+        navigate(`/buyer/${userId}/dashboard`);
       }
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.');
