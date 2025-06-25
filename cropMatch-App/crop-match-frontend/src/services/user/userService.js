@@ -2,9 +2,9 @@ import api from '../auth/api';
 
 const userService = {
   // Get current user profile
-  getProfile: async () => {
+  getProfile: async (userId) => {
     try {
-      const response = await api.get('/user/profile');
+      const response = await api.get(`/user/${userId}/profile`);
       if (response.data.status === 'SUCCESS') {
         return response.data.data;
       } else {
@@ -19,9 +19,9 @@ const userService = {
   },
 
   // Update current user profile
-  updateProfile: async (profileData) => {
+  updateProfile: async (profileData,userId) => {
     try {
-      const response = await api.put('/user/profile', profileData);
+      const response = await api.put(`/user/${userId}/profile`, profileData);
       if (response.data.status === 'SUCCESS') {
         return response.data;
       } else {

@@ -77,7 +77,7 @@ function App() {
                 }
               />
               <Route
-                path="/profile/edit"
+                path="/profile/:userId/edit"
                 element={
                   <ProtectedRoute>
                     <EditProfile />

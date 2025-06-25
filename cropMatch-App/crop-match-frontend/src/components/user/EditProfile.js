@@ -36,7 +36,7 @@ const EditProfile = () => {
   // Fetch user profile data including preferences
   const fetchProfile = async () => {
     try {
-      const profile = await userService.getProfile();
+      const profile = await userService.getProfile(user.userId);
       setFormData({
         username: profile.username,
         email: profile.email,
@@ -187,7 +187,7 @@ const EditProfile = () => {
         ...(user?.role.toUpperCase() === 'BUYER' ? { preferenceCategoryIds: selectedPrefs } : {})
       };
 
-      await userService.updateProfile(updateData);
+      await userService.updateProfile(updateData, user.userId);
 
       setSuccess('Profile updated successfully!');
       setOriginalData(formData);

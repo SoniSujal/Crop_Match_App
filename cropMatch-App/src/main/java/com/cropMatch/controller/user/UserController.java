@@ -2,12 +2,14 @@ package com.cropMatch.controller.user;
 
 import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.dto.common.UserUpdateDTO;
+import com.cropMatch.model.common.UserPrincipal;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.service.buyer.BuyerService;
 import com.cropMatch.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +28,16 @@ public class UserController {
 
     private final BuyerService buyerService;
 
-    @GetMapping("/profile")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getUserProfile(Principal principal) {
+    @GetMapping("/{userId}/profile")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getUserProfile(Principal principal,
+                                                                           @PathVariable Integer userId,
+                                                                           @AuthenticationPrincipal UserPrincipal userPrincipal ) {
+
+        if (!userService.findByUserEmail(userPrincipal.getUsername()).getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("User unauthorized"));
+        }
+
         try {
             if (principal == null) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -62,12 +72,19 @@ public class UserController {
         }
     }
 
-    @PutMapping("/profile")
+    @PutMapping("/{userId}/profile")
     public ResponseEntity<ApiResponse<String>> updateProfile(@Valid @RequestBody UserUpdateDTO dto,
                                                              BindingResult result,
-                                                             Principal principal) {
+                                                             Principal principal,
+                                                             @PathVariable Integer userId,
+                                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         if (principal == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (!userService.findByUserEmail(userPrincipal.getUsername()).getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("User unauthorized"));
         }
 
         if (result.hasErrors()) {
