@@ -2,6 +2,7 @@
 import React, { useState, useEffect , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/auth/api';
+import Toast from '../notify/Toast';
 import '../../styles/AddRequest.css';
 
 const CATEGORY_UNIT_MAP = {
@@ -35,6 +36,8 @@ const AddRequest = () => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [redirectMessage, setRedirectMessage] = useState('');
+  const [toast, setToast] = useState({ message: '', type: '' });
 
   const [formData, setFormData] = useState({
     cropName: '',
@@ -226,20 +229,34 @@ const AddRequest = () => {
 
     try {
       const response = await api.post('/buyer/buyerRequest/create', formData);
-      setSuccess('Request posted successfully!');
+      setToast({ message: 'Request posted successfully!', type: 'success' });
       setTimeout(() => navigate('/buyer/buyerRequest'), 1000);
     } catch (err) {
-      console.error('Submission error:', err);
-      setError('Failed to create request');
+      const redirect = err?.response?.data?.redirect;
+      const message = err?.response?.data?.message;
+
+      if (redirect) {
+        setToast({ message: message || 'Crop not found. Redirecting...', type: 'error' });
+        setTimeout(() => navigate('/buyer/recommendations'), 5000); // redirect in 5 seconds
+      } else {
+        setToast({ message: 'Failed to create request', type: 'error' });
+      }
     }
   };
 
+
   return (
+      <>
+          {toast.message && (
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={() => setToast({ message: '', type: '' })}
+            />
+          )}
+
     <div className="form-container">
       <h2>Create a Crop Request</h2>
-
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
 
       <form onSubmit={handleSubmit}>
         <label>
@@ -411,6 +428,7 @@ const AddRequest = () => {
         <button type="submit">Submit Request</button>
       </form>
     </div>
+    </>
   );
 };
 

@@ -74,4 +74,13 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(response, status);
     }
+
+    @ExceptionHandler(CropNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCropNotFound(CropNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "redirect", true,
+                        "message", ex.getMessage()
+                ));
+    }
 }

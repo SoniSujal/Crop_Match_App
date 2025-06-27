@@ -61,7 +61,6 @@ public class BuyerMatchingServiceImpl implements BuyerMatchingService{
             finalList.addAll(medium);
             finalList.addAll(low);
         }
-
         return finalList;
     }
 
@@ -84,7 +83,7 @@ public class BuyerMatchingServiceImpl implements BuyerMatchingService{
                 includeRegion ? request.getRegion() : null,
                 includeQuality ? request.getQuality().name() : null,
                 includeProducedWay ? request.getProducedWay().name() : null,
-                includePrice ? expectedFinalPrice : null,
+                includePrice ? (expectedFinalPrice * 1.15): null,
                 includeQuantity ? convertBuyerRequiredQuantityInBaseUnit : null
         );
     }
