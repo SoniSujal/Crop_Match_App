@@ -6,6 +6,32 @@ import cropService from '../../services/farmer/cropService';
 import categoryService from '../../services/common/categoryService';
 import '../../styles/AddCrop.css';
 
+const CATEGORY_UNIT_MAP = {
+  Vegetables: ['KILOGRAM', 'GRAM', 'QUINTAL', 'TONNE', 'BAG', 'CRATE', 'BUNDLE'],
+  Fruits: ['KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'BOX', 'CRATE', 'BAG'],
+  Grains: ['KILOGRAM', 'GRAM', 'QUINTAL', 'TONNE', 'BAG'],
+  'Dairy Products': ['LITRE', 'MILLILITRE', 'PIECE', 'BOX'],
+  Oils: ['LITRE', 'MILLILITRE'],
+  Flowers: ['BUNDLE', 'PIECE', 'DOZEN'],
+  'Herbs / Spices': ['GRAM', 'KILOGRAM', 'BAG'],
+  'Nuts / Dry Fruits': ['GRAM', 'KILOGRAM', 'BAG', 'BOX'],
+  'Saplings / Nursery Plants': ['PIECE', 'BAG', 'CRATE']
+};
+
+const UNIVERSAL_PACKAGE_GUIDELINES = {
+  BOX: 'Box usually contains 20-30 pieces.',
+  BAG: 'Bag usually contains 10-15 pieces.',
+  CRATE: 'Crate usually contains 30-50 pieces.',
+  BUNDLE: 'Bundle usually contains 5-10 pieces.'
+};
+
+
+  const UNITS = [
+    'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
+    'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX', 'CRATE', 'BAG'
+  ];
+const PACKAGED_UNITS = ['BOX', 'BAG', 'CRATE', 'BUNDLE'];
+
 const AddCrop = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -25,7 +51,8 @@ const AddCrop = () => {
     producedWay: 'ORGANIC',
     availabilityStatus: 'AVAILABLE_NOW',
     expectedReadyMonth: '',
-    expireMonth: ''
+    expireMonth: '',
+    packageContains: ''
   });
 
   const [images, setImages] = useState([]);
@@ -35,11 +62,9 @@ const AddCrop = () => {
   const [imageError, setImageError] = useState('');
   const fileInputRef = useRef(null);
   const [tempValidImages, setTempValidImages] = useState([]);
+  const [validUnits, setValidUnits] = useState(UNITS); // will update based on category
+  const [packageContains, setPackageContains] = useState(''); // for BOX, BAG etc.
 
-  const UNITS = [
-    'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
-    'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX', 'CRATE', 'BAG'
-  ];
 
   const QUALITIES = ['LOW', 'GOOD', 'BEST'];
   const PRODUCED_WAYS = ['ORGANIC', 'CHEMICAL', 'MIXED'];
@@ -74,6 +99,13 @@ const AddCrop = () => {
           setError(`Please select a month that is ${name === 'expectedReadyMonth' ? 'in the future' : 'not in the past'}`);
           return;
         }
+      }
+
+      if (name === 'category') {
+        const unitsForCategory = CATEGORY_UNIT_MAP[value] || UNITS;
+        setValidUnits(unitsForCategory);
+        setFormData({ ...formData, [name]: value, stockUnit: unitsForCategory[0], sellingUnit: unitsForCategory[0] });
+        return;
       }
 
       // Validate positive numbers for quantities and price
@@ -170,8 +202,10 @@ const AddCrop = () => {
     const cropBlob = {
       ...formData,
       categoryId,
-      quantity: parseInt(formData.quantity),
-      price: parseFloat(formData.price),
+      stockQuantity: parseFloat(formData.stockQuantity),
+        sellingQuantity: parseFloat(formData.sellingQuantity),
+        price: parseFloat(formData.price),
+        packageContains: PACKAGED_UNITS.includes(formData.sellingUnit) ? parseInt(formData.packageContains) : null
     };
 
     const form = new FormData();
@@ -233,10 +267,24 @@ const AddCrop = () => {
 
           <label>Stock Unit:
             <select name="stockUnit" value={formData.stockUnit} onChange={handleChange} required>
-              {UNITS.map(unit => (
+              {validUnits.map(unit => (
                 <option key={unit} value={unit}>{unit}</option>
               ))}
             </select>
+            {PACKAGED_UNITS.includes(formData.stockUnit) && (
+              <p style={{
+                backgroundColor: '#fffbcc',
+                padding: '8px 12px',
+                borderRadius: '5px',
+                marginTop: '8px',
+                color: '#856404',
+                fontWeight: '600',
+                fontStyle: 'italic',
+                border: '1px solid #ffeeba',
+              }}>
+                {UNIVERSAL_PACKAGE_GUIDELINES[formData.stockUnit]}
+              </p>
+            )}
           </label>
 
           <label>Price:
@@ -264,10 +312,24 @@ const AddCrop = () => {
 
           <label>Selling Unit:
             <select name="sellingUnit" value={formData.sellingUnit} onChange={handleChange} required>
-              {UNITS.map(unit => (
+              {validUnits.map(unit => (
                 <option key={unit} value={unit}>{unit}</option>
               ))}
             </select>
+            {PACKAGED_UNITS.includes(formData.sellingUnit) && (
+              <p style={{
+                backgroundColor: '#fffbcc',
+                padding: '8px 12px',
+                borderRadius: '5px',
+                marginTop: '8px',
+                color: '#856404',
+                fontWeight: '600',
+                fontStyle: 'italic',
+                border: '1px solid #ffeeba',
+              }}>
+                {UNIVERSAL_PACKAGE_GUIDELINES[formData.sellingUnit]}
+              </p>
+            )}
           </label>
 
           <label>Region:

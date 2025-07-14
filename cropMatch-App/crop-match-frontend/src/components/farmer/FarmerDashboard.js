@@ -17,7 +17,7 @@ const FarmerDashboard = () => {
 
   const fetchProfile = async () => {
     try {
-      const profileData = await userService.getProfile();
+      const profileData = await userService.getProfile(user.userId);
       setProfile(profileData);
     } catch (error) {
       setError('Failed to load profile data');

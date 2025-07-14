@@ -4,6 +4,7 @@ import com.cropMatch.dto.authDTO.AuthResponseDTO;
 import com.cropMatch.dto.responseDTO.ApiResponse;
 import com.cropMatch.dto.authDTO.LoginDTO;
 import com.cropMatch.dto.authDTO.RegistrationDTO;
+import com.cropMatch.model.common.UserPrincipal;
 import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.security.JwtUtil;
 import com.cropMatch.service.logout.LogoutService;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +47,7 @@ public class AuthController {
                 String role = user.getUserTypes().iterator().next().getUserType().getName();
                 String token = jwtUtil.generateToken(user.getEmail(), role);
 
-                AuthResponseDTO dto = new AuthResponseDTO(token, role.toLowerCase(), user.getUsername(), user.getEmail());
+                AuthResponseDTO dto = new AuthResponseDTO(token, role.toLowerCase(), user.getUsername(), user.getEmail(), user.getId());
                 return ResponseEntity.ok(ApiResponse.success(dto));
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

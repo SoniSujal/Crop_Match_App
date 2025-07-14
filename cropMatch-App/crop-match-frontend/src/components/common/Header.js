@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FaRegUserCircle} from 'react-icons/fa';
 import { MdOutlineLogout } from "react-icons/md";
@@ -29,9 +30,9 @@ const Header = () => {
   };
 
   const getDashboardLink = () => {
-    if (user?.role === 'admin') return '/admin/dashboard';
-    if (user?.role === 'farmer') return '/farmer/dashboard';
-    if (user?.role === 'buyer') return '/buyer/dashboard';
+    if (user?.role === 'admin') return `/admin/${user.userId}/dashboard`;
+    if (user?.role === 'farmer') return `/farmer/${user.userId}/dashboard`;
+    if (user?.role === 'buyer') return `/buyer/${user.userId}/dashboard`;
     return '/';
   };
 
@@ -94,21 +95,21 @@ const Header = () => {
           {user?.role === 'admin' && (
             <>
               <Link
-                to="/admin/dashboard"
-                className={`nav-link ${location.pathname === '/admin/dashboard' ? 'active' : ''}`}
+                to={`/admin/${user.userId}/dashboard`}
+                className={`nav-link ${location.pathname === `/admin/${user.userId}/dashboard` ? 'active' : ''}`}
               >
                 Dashboard
               </Link>
               <Link
-                to="/admin/users?type=farmer"
+                to={`/admin/${user.userId}/users?type=farmer`}
                 className={`nav-link ${location.pathname.startsWith('/admin/users') && new URLSearchParams(location.search).get('type') === 'farmer' ? 'active' : ''}`}
               >
                 Farmers
               </Link>
               <Link
-                to="/admin/users?type=buyer"
+                to={`/admin/${user.userId}/users?type=buyer`}
                 className={`nav-link ${location.pathname.startsWith('/admin/users') && new URLSearchParams(location.search).get('type') === 'buyer' ? 'active' : ''}`}
-              >
+                 >
                 Buyers
               </Link>
             </>
@@ -130,7 +131,7 @@ const Header = () => {
 
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <Link to="/profile/edit" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                  <Link to={`/profile/${user.userId}/edit`} className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                     <LuUserPen className="dropdown-icon" size={20}/> Edit Profile
                   </Link>
                   <button onClick={handleLogout} className="dropdown-item">

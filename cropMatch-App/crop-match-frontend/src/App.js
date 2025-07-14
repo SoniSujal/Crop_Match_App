@@ -38,7 +38,7 @@ function App() {
             <Route element={<Layout />}>
               {/* Admin Routes */}
               <Route
-                path="/admin/dashboard"
+                path="/admin/:userId/dashboard"
                 element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboard />
@@ -46,7 +46,7 @@ function App() {
                 }
               />
               <Route
-                  path="/admin/users"
+                  path="/admin/:userId/users"
                    element={
                    <ProtectedRoute requiredRole="admin">
                       <UsersList />
@@ -54,7 +54,7 @@ function App() {
                       }
                    />
               <Route
-                path="/admin/edit-user/:username"
+                path="/admin/:userId/edit-user/:username"
                 element={
                   <ProtectedRoute requiredRole="admin">
                     <EditUser />
@@ -64,7 +64,7 @@ function App() {
 
               {/* User Routes */}
               <Route
-                path="/farmer/dashboard"
+                path="/farmer/:userId/dashboard"
                 element={
                   <ProtectedRoute requiredRole="farmer">
                     <FarmerDashboard />
@@ -72,7 +72,7 @@ function App() {
                 }
               />
               <Route
-                path="/buyer/dashboard"
+                path="/buyer/:userId/dashboard"
                 element={
                   <ProtectedRoute requiredRole="buyer">
                     <BuyerDashboard />
@@ -80,7 +80,7 @@ function App() {
                 }
               />
               <Route
-                path="/profile/edit"
+                path="/profile/:userId/edit"
                 element={
                   <ProtectedRoute>
                     <EditProfile />
@@ -169,7 +169,7 @@ function App() {
                           }
                           />
                 <Route
-                    path="/admin/categories"
+                    path="/admin/:userId/categories"
                         element={
                         <ProtectedRoute requiredRole="admin">
                         <AdminCategoryManager />

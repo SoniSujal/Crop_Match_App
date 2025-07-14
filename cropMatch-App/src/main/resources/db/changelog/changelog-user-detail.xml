@@ -32,7 +32,7 @@
 
     <changeSet id="add-region-to-user_detail" author="smit">
         <addColumn tableName="user_detail">
-            <column name="region" type="VARCHAR(50)" remarks="User's region">
+            <column name="region" type="VARCHAR(50)" remarks="User's region" afterColumn="country">
                 <constraints nullable="true"/>
             </column>
         </addColumn>

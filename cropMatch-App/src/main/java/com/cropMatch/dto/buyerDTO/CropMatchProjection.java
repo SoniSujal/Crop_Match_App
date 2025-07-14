@@ -3,7 +3,7 @@ package com.cropMatch.dto.buyerDTO;
 import java.math.BigDecimal;
 
 public interface CropMatchProjection {
-    int getId();
+    int getId(); // crop_id
     String getName();
     String getRegion();
     BigDecimal getPrice();

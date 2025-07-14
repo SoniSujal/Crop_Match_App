@@ -11,7 +11,7 @@ public interface BuyerRequestService {
     List<BuyerRequest> getAllBuyerRequest();
     BuyerRequest saveRequest(BuyerRequest buyerRequest);
     AvailableCrops resolveClosestCropName(String inputCropName, Integer categoryId);
-    void handleResponse(Integer requestId,String farmerUsername,String action);
+    void handleFarmerResponse(Integer requestId, String farmerUsername, String action);
 
     List<FarmerRequestResponseDTO> getAcceptedRequestsForBuyer(String buyerEmail);
 

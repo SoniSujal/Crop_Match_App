@@ -33,7 +33,11 @@ const AdminCategoryManager = () => {
       await loadCategories();
     } catch (err) {
       console.error(err);
-      showMessage('error', '❌ Failed to update category status');
+      if (err.response && err.response.data) {
+        showMessage('error', `❌ ${err.response.data}`);
+      } else {
+        showMessage('error', '❌ Failed to add category');
+      }
     }
   };
 
@@ -56,7 +60,11 @@ const AdminCategoryManager = () => {
       await loadCategories();
     } catch (err) {
       console.error(err);
-      showMessage('error', 'Failed to add category');
+      if (err.response && err.response.data) {
+        showMessage('error', `❌ ${err.response.data}`);
+      } else {
+        showMessage('error', '❌ Failed to add category');
+      }
     }
   };
 

@@ -36,7 +36,7 @@ public class BuyerController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<?> getActiveCategories(){
+    public ResponseEntity<?> getActiveCategories() {
         return ResponseEntity.ok(buyerService.getActiveCategories());
     }
 
@@ -58,7 +58,7 @@ public class BuyerController {
 
         List<Integer> categoryIds = buyerService.getBuyerPreferenceCategoryIds(buyer.getId());
 
-        Page<RecommendationDTO> recommendations = cropService.getRecommendedCropsDTO(categoryIds, pageNo, pageSize, sortBy,  sortDir);
+        Page<RecommendationDTO> recommendations = cropService.getRecommendedCropsDTO(categoryIds, pageNo, pageSize, sortBy, sortDir);
 
         return ResponseEntity.ok(recommendations);
     }
@@ -81,11 +81,11 @@ public class BuyerController {
     }
 
     @PostMapping("/preferences")
-    public ResponseEntity<?> updatePreferences(@RequestBody List<Integer> categoryIds,Principal principal){
-        boolean updated = buyerService.updateBuyerPreferences(principal.getName(),categoryIds);
-        if (updated){
+    public ResponseEntity<?> updatePreferences(@RequestBody List<Integer> categoryIds, Principal principal) {
+        boolean updated = buyerService.updateBuyerPreferences(principal.getName(), categoryIds);
+        if (updated) {
             return ResponseEntity.ok("Preference updated successfully!");
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No New Preferences were added.");
         }
     }
