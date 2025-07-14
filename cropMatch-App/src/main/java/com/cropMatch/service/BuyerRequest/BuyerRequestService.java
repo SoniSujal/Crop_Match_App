@@ -14,7 +14,6 @@ public interface BuyerRequestService {
     void handleFarmerResponse(Integer requestId, String farmerUsername, String action);
 
     List<FarmerRequestResponseDTO> getAcceptedRequestsForBuyer(String buyerEmail);
-
     void buyerRespondToFarmer(Integer requestId, String action);
 
 }

@@ -132,9 +132,11 @@ public class BuyerRequestServiceImpl implements BuyerRequestService{
     }
 
     @Override
-    public List<FarmerRequestResponseDTO> getAcceptedOrRejectedRequestsForBuyer(String buyerEmail) {
+    public List<FarmerRequestResponseDTO> getAcceptedRequestsForBuyer(String buyerEmail) {
         UserDetail buyer = userService.findByUserEmail(buyerEmail);
-        List<BuyerRequestFarmer> records = buyerRequestFarmerRepository.findByBuyerIdAndAcceptedOrRejected(buyer.getId());
+        List<ResponseStatus> acceptedStatuses = List.of(ResponseStatus.ACCEPTED);
+
+        List<BuyerRequestFarmer> records = buyerRequestFarmerRepository.findByBuyerIdAndStatus(buyer.getId(),acceptedStatuses);
 
         return records.stream().map(record -> {
             UserDetail farmerUser = userDetailRepository.findById(record.getFarmerId())
