@@ -6,18 +6,19 @@ const authService = {
       const response = await api.post('/auth/login', credentials);
 
       if (response.data.status === 'SUCCESS') {
-        const { token, role, username, email } = response.data.data;
+        const { token, role, username, email, userId } = response.data.data;
 
         // Store token and user data
         localStorage.setItem('authToken', token);
         localStorage.setItem('currentUser', JSON.stringify({
           username,
           email,
-          role
+          role,
+          userId
         }));
 
         return {
-          data: { username, email, role },
+          data: { username, email, role, userId },
           token
         };
       } else {

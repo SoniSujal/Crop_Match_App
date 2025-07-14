@@ -10,6 +10,9 @@
             <column name="crop_id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="created_by" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -24,9 +27,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="unit" type="VARCHAR(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="BOOLEAN">
@@ -51,34 +51,56 @@
                 referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="crop-3" author="sujal">
+    <changeSet id="crop-7" author="sujal">
         <renameColumn tableName="crop" oldColumnName="unit" newColumnName="stock_unit" columnDataType="VARCHAR(50)"/>
+    </changeSet>
+
+    <changeSet id="crop-3" author="sujal">
 
         <addColumn tableName="crop">
-            <column name="selling_unit" type="VARCHAR(50)">
+            <column name="selling_unit" type="VARCHAR(50)" afterColumn="stock_unit">
                 <constraints nullable="false"/>
             </column>
-            <column name="expire_month" type="VARCHAR(7)">
+            <column name="expire_month" type="VARCHAR(7)" afterColumn="region">
                 <constraints nullable="false"/>
             </column>
-            <column name="crop_type" type="VARCHAR(255)"/>
+            <column name="crop_type" type="VARCHAR(255)" afterColumn="name"/>
             <column name="quality" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="produced_way" type="VARCHAR(50)">
+            <column name="produced_way" type="VARCHAR(50)" afterColumn="region">
                 <constraints nullable="false"/>
             </column>
-            <column name="availability_status" type="VARCHAR(50)">
+            <column name="availability_status" type="VARCHAR(50)" afterColumn="expire_month">
                 <constraints nullable="false"/>
             </column>
-            <column name="expected_ready_month" type="VARCHAR(7)"/>
+            <column name="expected_ready_month" type="VARCHAR(7)" afterColumn="availability_status"/>
         </addColumn>
     </changeSet>
 
     <changeSet id="crop-4" author="sujal">
         <renameColumn tableName="crop" oldColumnName="quantity" newColumnName="stock_quantity" columnDataType="INT"/>
         <addColumn tableName="crop">
-            <column name="selling_quantity" type="INT">
+            <column name="selling_quantity" type="INT" afterColumn="selling_unit">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="crop-5" author="sujal" >
+        <addColumn tableName="crop" >
+            <column name="normalized_quantity" type="double" afterColumn="expected_ready_month">
+                <constraints nullable="false"/>
+            </column>
+            <column name="normalization_unit_type" type="varchar(255)" afterColumn="normalized_quantity">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="crop-6" author="sujal">
+        <addColumn tableName="crop">
+            <column name="normalization_price_per_KG" type="double" afterColumn="normalization_unit_type">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

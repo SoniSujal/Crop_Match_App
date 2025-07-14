@@ -3,6 +3,7 @@ package com.cropMatch.service.buyer;
 import com.cropMatch.dto.buyerDTO.BuyerRequestDTO;
 import com.cropMatch.dto.buyerDTO.BuyerRequestResponseDTO;
 import com.cropMatch.enums.CropUnit;
+import com.cropMatch.exception.CropNotFoundException;
 import com.cropMatch.model.buyer.BuyerPreference;
 import com.cropMatch.model.buyer.BuyerRequest;
 import com.cropMatch.model.admin.Category;
@@ -39,7 +40,7 @@ public class BuyerServiceImpl implements BuyerService {
         AvailableCrops matchedCrop = buyerRequestService.resolveClosestCropName(buyerRequestDTO.getCropName(), buyerRequestDTO.getCategoryId());
 
         if (matchedCrop == null) {
-            throw new IllegalArgumentException("Crop name not recognized. Please select a valid crop.");
+            throw new CropNotFoundException("Your selected crop was not recognized or currently not available. Please check recommendations.");
         }
 
         buyerRequestDTO.setMatchedCropName(matchedCrop.getCropName());
@@ -60,11 +61,9 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     public List<UnitDTO> getAllUnits() {
         List<UnitDTO> units = new ArrayList<>();
-
         for (CropUnit unit : CropUnit.values()) {
-            units.add(new UnitDTO(unit.name(), unit.getDisplayName()));
+            units.add(new UnitDTO(unit.name().toUpperCase(), unit.getDisplayName().toUpperCase()));
         }
-
         return units;
     }
 

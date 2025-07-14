@@ -2,13 +2,42 @@
 import React, { useState, useEffect , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/auth/api';
+import Toast from '../notify/Toast';
 import '../../styles/AddRequest.css';
 
+const CATEGORY_UNIT_MAP = {
+  Vegetables: ['KILOGRAM', 'GRAM', 'QUINTAL', 'TONNE', 'BAG', 'CRATE', 'BUNDLE'],
+  Fruits: ['KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'BOX', 'CRATE', 'BAG'],
+  Grains: ['KILOGRAM', 'GRAM', 'QUINTAL', 'TONNE', 'BAG'],
+  'Dairy Products': ['LITRE', 'MILLILITRE', 'PIECE', 'BOX'],
+  Oils: ['LITRE', 'MILLILITRE'],
+  Flowers: ['BUNDLE', 'PIECE', 'DOZEN'],
+  'Herbs / Spices': ['GRAM', 'KILOGRAM', 'BAG'],
+  'Nuts / Dry Fruits': ['GRAM', 'KILOGRAM', 'BAG', 'BOX'],
+  'Saplings / Nursery Plants': ['PIECE', 'BAG', 'CRATE']
+};
+
+const UNIVERSAL_PACKAGE_GUIDELINES = {
+  BOX: 'Box usually contains 20-30 pieces.',
+  BAG: 'Bag usually contains 10-15 pieces.',
+  CRATE: 'Crate usually contains 30-50 pieces.',
+  BUNDLE: 'Bundle usually contains 5-10 pieces.'
+};
+
+const UNITS = [
+  'KILOGRAM', 'GRAM', 'DOZEN', 'PIECE', 'LITRE',
+  'MILLILITRE', 'QUINTAL', 'TONNE', 'BUNDLE', 'BOX', 'CRATE', 'BAG'
+];
+
+
+const PACKAGED_UNITS = ['BOX', 'BAG', 'CRATE', 'BUNDLE'];
 
 const AddRequest = () => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [redirectMessage, setRedirectMessage] = useState('');
+  const [toast, setToast] = useState({ message: '', type: '' });
 
   const [formData, setFormData] = useState({
     cropName: '',
@@ -25,7 +54,8 @@ const AddRequest = () => {
   const QUALITIES = ['LOW', 'GOOD', 'BEST'];
   const PRODUCED_WAYS = ['ORGANIC', 'CHEMICAL', 'MIXED'];
   const [categories, setCategories] = useState([]);
-  const [units, setUnits] = useState([]);
+  const [units, setUnits] = useState(UNITS); // Default full list
+  const [validUnits, setValidUnits] = useState(UNITS); // Based on category
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [allCrops, setAllCrops] = useState([]);
@@ -74,7 +104,12 @@ const AddRequest = () => {
 
   const handleCategoryChange = (e) => {
     const newCategoryId = e.target.value;
-    setFormData({ ...formData, categoryId: newCategoryId, cropName: '' });
+    const selectedCategoryName = categories.find(cat => String(cat.id) === newCategoryId)?.name;
+    const unitsForCategory = CATEGORY_UNIT_MAP[selectedCategoryName] || UNITS;
+
+    setValidUnits(unitsForCategory);
+
+    setFormData({ ...formData, categoryId: newCategoryId, cropName: '', unit: '' });
     fetchInitialCrops(newCategoryId);
   };
 
@@ -194,20 +229,34 @@ const AddRequest = () => {
 
     try {
       const response = await api.post('/buyer/buyerRequest/create', formData);
-      setSuccess('Request posted successfully!');
+      setToast({ message: 'Request posted successfully!', type: 'success' });
       setTimeout(() => navigate('/buyer/buyerRequest'), 1000);
     } catch (err) {
-      console.error('Submission error:', err);
-      setError('Failed to create request');
+      const redirect = err?.response?.data?.redirect;
+      const message = err?.response?.data?.message;
+
+      if (redirect) {
+        setToast({ message: message || 'Crop not found. Redirecting...', type: 'error' });
+        setTimeout(() => navigate('/buyer/recommendations'), 5000); // redirect in 5 seconds
+      } else {
+        setToast({ message: 'Failed to create request', type: 'error' });
+      }
     }
   };
 
+
   return (
+      <>
+          {toast.message && (
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={() => setToast({ message: '', type: '' })}
+            />
+          )}
+
     <div className="form-container">
       <h2>Create a Crop Request</h2>
-
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
 
       <form onSubmit={handleSubmit}>
         <label>
@@ -289,15 +338,30 @@ const AddRequest = () => {
             <select
               name="unit"
               onChange={handleChange}
+              value={formData.unit}
               required
             >
               <option value="">Select Unit</option>
-              {units.map((unit) => (
-                <option key={unit.name} value={unit.name}>
-                  {unit.displayName}
-                </option>
+              {validUnits.map((unit) => (
+                <option key={unit} value={unit}>{unit}</option>
               ))}
             </select>
+
+            {/* Packaging guidelines */}
+            {PACKAGED_UNITS.includes(formData.unit) && (
+              <p style={{
+                backgroundColor: '#fffbcc',
+                padding: '5px 8px',
+                borderRadius: '3px',
+                marginTop: '2px',
+                color: '#856404',
+                fontWeight: '100',
+                fontStyle: 'italic',
+                border: '1px solid #ffeeba',
+              }}>
+                {UNIVERSAL_PACKAGE_GUIDELINES[formData.unit]}
+              </p>
+            )}
         </label>
 
         <label>
@@ -364,6 +428,7 @@ const AddRequest = () => {
         <button type="submit">Submit Request</button>
       </form>
     </div>
+    </>
   );
 };
 
