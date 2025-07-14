@@ -17,6 +17,8 @@ const BuyerRequestsDashboard = () => {
   const fetchRequests = async (status) => {
   setLoading(true);
     try {
+      console.log(status);
+      console.log({status});
       const response = await api.get(`/farmer/buyer-requests/${status}`);
       setRequests(response.data);
       setError('');
@@ -65,8 +67,18 @@ const BuyerRequestsDashboard = () => {
             <option value="pending">Pending</option>
             <option value="accepted">Accepted</option>
             <option value="rejected">Rejected</option>
+            <option value="declined">Declined</option>
           </select>
       </div>
+        {statusFilter !== 'pending' && (
+            <div className="status-message-wrapper">
+              <p className="status-text custom-message">
+                {statusFilter === 'accepted' && 'Buyer Requests You Accepted'}
+                {statusFilter === 'rejected' && 'Buyer Requests You Rejected'}
+                {statusFilter === 'declined' && 'Your Responses That Got Declined by Buyer'}
+              </p>
+            </div>
+          )}
 
       {loading && <p className="status-text">Loading requests...</p>}
       {error && <p className="status-text error-text">{error}</p>}

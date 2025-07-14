@@ -11,7 +11,9 @@ import com.cropMatch.model.user.UserDetail;
 import com.cropMatch.repository.buyer.BuyerRequestFarmerRepository;
 import com.cropMatch.repository.buyer.BuyerRequestRepository;
 import com.cropMatch.repository.common.UserDetailRepository;
+import com.cropMatch.repository.crop.CropRepository;
 import com.cropMatch.service.AvailableCrops.AvailableCropsService;
+import jakarta.transaction.Transactional;
 import com.cropMatch.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
@@ -36,6 +38,9 @@ public class BuyerRequestServiceImpl implements BuyerRequestService{
 
     @Autowired
     private UserDetailRepository userDetailRepository;
+
+    @Autowired
+    private CropRepository cropRepository;
 
     @Autowired
     private UserService userService;
@@ -97,26 +102,62 @@ public class BuyerRequestServiceImpl implements BuyerRequestService{
         BuyerRequestFarmer buyerRequestFarmer = buyerRequestFarmers.get(0);
         buyerRequestFarmer.setBuyerRequest(buyerRequest);
         buyerRequestFarmer.setFarmerId(farmerDetail.getId());
-        buyerRequestFarmer.setFarmerStatus(action.equalsIgnoreCase("ACCEPTED") ? ResponseStatus.ACCEPTED : ResponseStatus.REJECTED);
+        buyerRequestFarmer.setFarmerStatus(action.equalsIgnoreCase("ACCEPTED") ? ResponseStatus.ACCEPTED : ResponseStatus.CLOSED);
         buyerRequestFarmer.setRespondedOn(LocalDateTime.now());
         buyerRequestFarmerRepository.save(buyerRequestFarmer);
     }
 
     @Override
-    public List<FarmerRequestResponseDTO> getAcceptedOrRejectedRequestsForBuyer(String buyerEmail) {
+    @Transactional
+    public void buyerRespondToFarmer(Integer requestId, String action){
+        BuyerRequestFarmer selected = buyerRequestFarmerRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Selected not found"));
+
+        if ("ACCEPTED".equalsIgnoreCase(action)) {
+            selected.setSelected(true);
+            selected.setFarmerStatus(ResponseStatus.SELECTED);
+
+
+            List<BuyerRequestFarmer> rejected = buyerRequestFarmerRepository.findByBuyerRequest_Id(selected.getBuyerRequest().getId());
+            for (BuyerRequestFarmer farmer : rejected) {
+                if (!farmer.getId().equals(requestId)) {
+                    farmer.setFarmerStatus(ResponseStatus.IS_EXPIRED);
+                    buyerRequestFarmerRepository.save(farmer);
+                }
+            }
+        }else if ("CLOSED".equalsIgnoreCase(action)){
+            selected.setFarmerStatus(ResponseStatus.IS_EXPIRED);
+        }
+        buyerRequestFarmerRepository.save(selected);
+    }
+
+    @Override
+    public List<FarmerRequestResponseDTO> getAcceptedRequestsForBuyer(String buyerEmail) {
         UserDetail buyer = userService.findByUserEmail(buyerEmail);
-        List<BuyerRequestFarmer> records = buyerRequestFarmerRepository.findByBuyerIdAndAcceptedOrRejected(buyer.getId());
+        List<ResponseStatus> acceptedStatuses = List.of(ResponseStatus.ACCEPTED);
+
+        List<BuyerRequestFarmer> records = buyerRequestFarmerRepository.findByBuyerIdAndStatus(buyer.getId(),acceptedStatuses);
 
         return records.stream().map(record -> {
             UserDetail farmerUser = userDetailRepository.findById(record.getFarmerId())
                     .orElseThrow(() -> new RuntimeException("Farmer not found"));
+
+            String offeredQuality = null;
+            String offeredProducedWay = null;
+
+            if (record.getCrop() != null) {
+                offeredQuality = record.getCrop().getQuality().name();
+                offeredProducedWay = record.getCrop().getProducedWay().name();
+            }
 
             return new FarmerRequestResponseDTO(
                     record.getId(),
                     record.getFarmerStatus().name(),
                     record.getRespondedOn(),
                     new BuyerRequestResponseDTO(record.getBuyerRequest()),
-                    new FarmerDTO(farmerUser)
+                    new FarmerDTO(farmerUser),
+                    offeredQuality,
+                    offeredProducedWay
             );
         }).toList();
     }

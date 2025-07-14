@@ -1,10 +1,11 @@
-.dashboard-container {
+dashboard-container {
   max-width: 1100px;
   margin: 2rem auto;
   padding: 0 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
   background: #fff;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .dashboard-header {
@@ -146,12 +147,6 @@
   text-decoration: underline;
 }
 
-.stat-subtitle {
-  font-size: 0.9rem;
-  color: #888;
-  margin-top: 0.2rem;
-}
-
 .quick-actions {
   margin-bottom: 3rem;
 }
@@ -164,12 +159,13 @@
 .actions-grid {
   display: flex;
   gap: 1.5rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Ensure actions wrap */
+  justify-content: center; /* Center items when they wrap */
 }
 
 .action-card {
   flex: 1;
-  min-width: 220px;
+  min-width: 220px; /* Keep this for desktop/tablet but override for mobile */
   background: #e8f5e9;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(46, 125, 50, 0.2);
@@ -178,6 +174,7 @@
   color: #2e7d32;
   text-decoration: none;
   transition: background-color 0.3s ease;
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .action-card:hover {
@@ -229,3 +226,107 @@
   font-weight: 700;
 }
 
+/* --- Mobile Responsiveness for AdminDashboard --- */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0 15px; /* Reduce horizontal padding */
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem; /* Slightly smaller header font */
+  }
+
+  .dashboard-header p {
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr; /* Stack stat cards on top of each other */
+    gap: 1.5rem; /* Reduce gap */
+  }
+
+  .stat-card {
+    flex-direction: column; /* Stack icon and content vertically */
+    text-align: center;
+    gap: 0.8rem;
+    padding: 1rem; /* Reduce padding */
+  }
+
+  .stat-icon {
+    font-size: 3rem; /* Slightly smaller icon */
+  }
+
+  .stat-content h3 {
+    font-size: 2rem; /* Smaller number font */
+  }
+
+  .stat-content p {
+    font-size: 0.9rem;
+  }
+
+  .actions-grid {
+    gap: 1rem; /* Reduce gap between action cards */
+  }
+
+  .action-card {
+    min-width: calc(50% - 0.5rem); /* Two columns, with gap */
+    padding: 0.8rem 1rem; /* Adjust padding */
+  }
+
+  .action-icon {
+    font-size: 2.5rem; /* Smaller icon */
+  }
+
+  .action-card h3 {
+    font-size: 1rem;
+  }
+
+  .action-card p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 0 10px; /* Even less padding on very small screens */
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .dashboard-header p {
+    font-size: 0.9rem;
+  }
+
+  .stat-card {
+    padding: 0.8rem;
+  }
+
+  .stat-icon {
+    font-size: 2.5rem;
+  }
+
+  .stat-content h3 {
+    font-size: 1.8rem;
+  }
+
+  .action-card {
+    min-width: 100%; /* Stack action cards in a single column */
+  }
+
+  .activity-summary {
+    padding: 0.8rem 1rem;
+  }
+
+  .summary-item {
+    font-size: 0.9rem;
+    flex-direction: column; /* Stack label and value if needed */
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+
+  .summary-value {
+    text-align: left;
+  }
+}

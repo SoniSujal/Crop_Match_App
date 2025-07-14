@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Create orders table -->
+    <changeSet id="orders-1" author="smit">
+        <createTable tableName="orders">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="buyer_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="crop_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_price" type="DECIMAL(12,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Foreign keys for orders -->
+    <changeSet id="orders-2" author="smit">
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="buyer_id"
+                referencedTableName="user_detail"
+                referencedColumnNames="user_id"
+                constraintName="fk_orders_buyer_id"/>
+    </changeSet>
+
+    <changeSet id="orders-3" author="smit">
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="crop_id"
+                referencedTableName="crop"
+                referencedColumnNames="crop_id"
+                constraintName="fk_orders_crop_id"/>
+    </changeSet>
+
+    <!-- Create order_sources table -->
+    <changeSet id="order_sources-1" author="smit">
+        <createTable tableName="order_sources">
+            <column name="order_id" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="source_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Foreign key for order_sources -->
+    <changeSet id="order_sources-2" author="smit">
+        <addForeignKeyConstraint
+                baseTableName="order_sources"
+                baseColumnNames="order_id"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                constraintName="fk_order_sources_order_id"/>
+    </changeSet>
+
+</databaseChangeLog>

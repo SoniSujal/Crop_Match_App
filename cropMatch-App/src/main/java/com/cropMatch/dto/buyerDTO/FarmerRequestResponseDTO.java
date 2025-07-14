@@ -15,4 +15,6 @@ public class FarmerRequestResponseDTO {
         private LocalDateTime respondedOn;
         private BuyerRequestResponseDTO buyerRequest;
         private FarmerDTO farmer;
+        private String offeredQuality;
+        private String offeredProducedWay;
 }

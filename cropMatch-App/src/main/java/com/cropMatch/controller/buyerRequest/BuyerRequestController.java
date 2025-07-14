@@ -117,9 +117,17 @@ public class BuyerRequestController {
 
     @GetMapping("/status")
     public ResponseEntity<List<FarmerRequestResponseDTO>> getAcceptedOrRejectedResponses(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        List<FarmerRequestResponseDTO> responses = buyerRequestService.getAcceptedOrRejectedRequestsForBuyer(userPrincipal.getUsername());
+        List<FarmerRequestResponseDTO> responses = buyerRequestService.getAcceptedRequestsForBuyer(userPrincipal.getUsername());
         return ResponseEntity.ok(responses);
     }
 
-
+    @PostMapping("/respond-to-farmer/{requestId}")
+    public ResponseEntity<Void> respondToFarmer(
+            @PathVariable Integer requestId,
+            @RequestBody Map<String, String> body
+    ) {
+        String action = body.get("action");
+        buyerRequestService.buyerRespondToFarmer(requestId,action);
+        return ResponseEntity.ok().build();
+    }
 }

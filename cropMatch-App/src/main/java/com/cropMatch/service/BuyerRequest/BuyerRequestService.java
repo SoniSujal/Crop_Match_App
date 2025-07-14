@@ -13,6 +13,7 @@ public interface BuyerRequestService {
     AvailableCrops resolveClosestCropName(String inputCropName, Integer categoryId);
     void handleFarmerResponse(Integer requestId, String farmerUsername, String action);
 
-    List<FarmerRequestResponseDTO> getAcceptedOrRejectedRequestsForBuyer(String buyerEmail);
+    List<FarmerRequestResponseDTO> getAcceptedRequestsForBuyer(String buyerEmail);
+    void buyerRespondToFarmer(Integer requestId, String action);
 
 }

@@ -2,6 +2,8 @@ package com.cropMatch.enums;
 
 public enum ResponseStatus {
     ACCEPTED,
-    REJECTED,
-    PENDING
+    PENDING,
+    CLOSED,
+    SELECTED,
+    IS_EXPIRED
 }

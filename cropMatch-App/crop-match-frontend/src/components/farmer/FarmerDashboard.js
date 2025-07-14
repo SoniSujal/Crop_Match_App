@@ -99,12 +99,13 @@ const FarmerDashboard = () => {
           </div>
         </Link>
 
+        <Link to="/selected-requests" className="stat-link">
           <div className="action-card">
             <div className="action-icon">💰</div>
             <h3>Sales Analytics</h3>
             <p>View your sales performance and earnings</p>
-            <span className="coming-soon">Coming Soon</span>
           </div>
+        </Link>
 
           <Link to="/profile/edit" className="action-card active">
             <div className="action-icon">⚙️</div>
